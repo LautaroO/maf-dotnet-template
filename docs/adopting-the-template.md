@@ -1,56 +1,73 @@
-# Adopting the template
+# Adopting the guidance pack
 
-## 1. Copy the shared guidance
+## 1. Choose the solution profile before copying `AGENTS.md`
 
-Copy `AGENTS.md`, `.agents/`, and the relevant setup files into the target
-repository root.
+Do not assume MAF should own repository-wide guidance.
 
-## 2. Customize project context
+Choose:
 
-Update only the project-specific section first. Include:
+- `ai-first` when MAF is central to the repository;
+- `application-with-ai-module` when MAF lives in one project/module inside a larger product.
 
-- solution and project names;
-- target framework and SDK;
-- MAF packages and versions;
-- provider-neutral interfaces and concrete adapters;
-- source and test layout;
-- build, test, format, and run commands;
-- checkpoint, memory, retrieval, and persistence choices;
-- hosting model and deployment constraints;
-- security, approval, and data-retention requirements.
+See `../profiles/README.md`.
 
-## 3. Keep shared rules stable
+## 2. Install the shared MAF knowledge layer once
 
-Avoid rewriting general rules to match a shortcut in one application. If a
-project needs an exception, document it locally and explain:
+Keep `.agents/skills/` and `.agents/references/` at repository root so all relevant code can discover the same MAF guidance.
 
-- why the exception is required;
-- where it is isolated;
-- how it affects portability;
-- how it is tested.
+Do not fork skills per project/module unless framework behavior truly differs.
 
-## 4. Merge `.gitignore`
+## 3. Scope `AGENTS.md` hierarchically
 
-Do not replace an established `.gitignore` automatically. Preserve project rules
-and add missing entries for:
+### AI-first
 
-- .NET build outputs;
-- IDE state;
-- secrets and local environment files;
-- local databases;
-- workflow checkpoints and agent state;
-- logs, traces, and generated files;
-- personal Codex configuration.
+Install the MAF-centric `AGENTS.md` at repository root.
 
-## 5. Verify Codex discovery
+### Application with AI module
 
-Start a fresh Codex session at the repository root and ask:
+Keep the root `AGENTS.md` application-centric. Merge only the supplied AI-boundary fragment into it, then put the MAF-specific `AGENTS.md` inside the AI project.
+
+Example:
 
 ```text
-List the instruction files and MAF skills you loaded, then summarize their scope.
+src/MyProduct.AI/AGENTS.md
 ```
 
-## 6. Let Codex inspect real package versions
+Do not duplicate the entire root file into nested directories. Nested instructions should refine the parent scope.
 
-The template deliberately does not pin a MAF package version. The target
-repository's installed NuGet packages are authoritative for compilable APIs.
+## 4. Populate project-specific context
+
+Ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints.
+
+## 5. Keep application/domain behavior outside the AI layer
+
+In mixed solutions, use `.agents/references/application-boundaries.md` as the default boundary model.
+
+MAF agents/workflows/tools may orchestrate or adapt application capabilities. They should not become a parallel domain/application layer.
+
+## 6. Keep provider-specific rules local
+
+If one project intentionally uses a provider-only capability, document it in project context and the provider adapter area. Do not rewrite generic MAF skills around that provider.
+
+## 7. Add additional nested guidance only for real local differences
+
+Examples:
+
+```text
+src/MyProduct.AI/Providers/OpenAI/AGENTS.md
+src/MyProduct.AI/Workflows/AGENTS.md
+```
+
+Use these only when a subtree genuinely needs stricter/different rules.
+
+## 8. Feed real mistakes back into the shared skills
+
+When Codex repeatedly makes a MAF-specific mistake:
+
+- decide which abstraction skill owns it;
+- add a short rule/reference/example;
+- prefer concrete “use X instead of Y when Z” guidance;
+- update the changelog;
+- retest skill triggering in a fresh Codex session.
+
+If the mistake is specific to one solution shape, update the profile/boundary reference rather than every MAF skill.

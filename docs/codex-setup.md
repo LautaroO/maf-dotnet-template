@@ -1,54 +1,39 @@
 # Codex setup
 
-## 1. Add repository guidance
+Codex reads repository `AGENTS.md` automatically and discovers repository-scoped skills under `.agents/skills/`.
 
-Place `AGENTS.md` at the Git repository root.
+## Skills
 
-Codex reads instruction files from the repository root down to the current working directory. A closer `AGENTS.override.md` takes precedence for that directory.
-
-## 2. Add repository skills
-
-Place skills under:
+Invoke explicitly with `$skill-name` when you want deterministic selection, for example:
 
 ```text
-.agents/skills/<skill-name>/SKILL.md
+$maf-workflows Implement the approved workflow design.
 ```
 
-Codex scans `.agents/skills` from the current directory toward the repository root.
+Otherwise Codex can select a skill implicitly based on its `description`.
 
-## 3. Optional global configuration
+Descriptions in this template are intentionally specific so `maf-agents`, `maf-tools`, and `maf-workflows` do not all trigger for generic MAF work.
 
-Personal configuration belongs in:
+## Progressive disclosure
 
-```text
-~/.codex/config.toml
-~/.codex/AGENTS.md
-```
+Keep detailed MAF knowledge in skill references. Do not move all references back into `AGENTS.md`; that defeats progressive disclosure and consumes project-instruction budget on every task.
 
-Do not commit personal secrets or machine-specific configuration.
+## Project instructions
 
-## 4. Verify discovery
+Codex layers project instructions from repository root toward the working directory, with more local guidance taking precedence. This is why the pack uses adoption profiles instead of one universal MAF-centric root file.
 
-Launch a new Codex session at the repository root and ask:
+For an application that contains one AI project, keep product architecture at the root and place the MAF-specific `AGENTS.md` in that AI subtree. See `../profiles/application-with-ai-module/`.
 
-```text
-List the instruction files and skills you loaded.
-```
+Keep root guidance concise and use skills/references for task-specific detail.
 
-For CLI verification of instructions:
+Official Codex references:
 
-```bash
-codex --ask-for-approval never "Summarize the current instructions."
-```
+- https://developers.openai.com/codex/agent-configuration/agents-md
+- https://developers.openai.com/codex/build-skills
+- https://developers.openai.com/codex/learn/best-practices
 
-## 5. Recommended usage
+## Configuration
 
-Use `maf-architecture` before substantial design changes.
+Personal authentication/provider/model settings belong in the user's Codex home config. Commit only safe project examples.
 
-Use `maf-implementation` after the architecture is clear or for localized MAF changes.
-
-Use `maf-review` for pull requests, refactors, and architecture assessments.
-
-## 6. Keep versions aligned
-
-Record MAF NuGet package versions with central package management or project files. The skill instructs Codex to inspect installed versions before relying on current online samples.
+See `.codex/config.toml.example` for a minimal reference.

@@ -1,18 +1,14 @@
-# ------------------------------
 # .NET build outputs
-# ------------------------------
 **/bin/
 **/obj/
 **/out/
 artifacts/
-
-# NuGet packages
 *.nupkg
 *.snupkg
 packages/
 .nuget/packages/
 
-# Test results and coverage
+# Test results / coverage
 TestResults/
 **/TestResults/
 coverage/
@@ -20,90 +16,61 @@ coverage-results/
 *.coverage
 *.coveragexml
 *.trx
-
-# BenchmarkDotNet
 BenchmarkDotNet.Artifacts/
 
-# ------------------------------
-# IDEs and editors
-# ------------------------------
-
-# Visual Studio
+# IDEs
 .vs/
+.idea/
+_ReSharper*/
+*.DotSettings.user
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 *.rsuser
-
-# JetBrains Rider / ReSharper
-.idea/
-_ReSharper*/
-*.DotSettings.user
-
-# VS Code local settings
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.example.json
 !.vscode/launch.example.json
 !.vscode/tasks.example.json
 
-# ------------------------------
-# Operating system
-# ------------------------------
-
-# macOS
+# OS
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
-
-# Windows
 Thumbs.db
 Desktop.ini
 
-# ------------------------------
-# Environment and secrets
-# ------------------------------
+# Environment / secrets
 .env
 .env.*
 !.env.example
-
 secrets.json
 appsettings.Local.json
 appsettings.Development.local.json
 appsettings.*.local.json
-
-# Local user secrets or credentials
 **/credentials.json
 **/service-account*.json
 **/*-credentials.json
 **/*-secret.json
 **/*-secrets.json
-
-# Certificates and private keys
 *.pfx
 *.p12
 *.pem
 *.key
 *.crt
 *.cer
-
-# Azure / cloud local state
 .azure/
 .azurite/
 .emulator/
 
-# ------------------------------
-# Local databases and persistence
-# ------------------------------
+# Local data / state
 *.db
 *.db-shm
 *.db-wal
 *.sqlite
 *.sqlite3
-
-# Local workflow checkpoints, memory and agent state
 .checkpoints/
 .memory/
 .agent-state/
@@ -111,9 +78,7 @@ appsettings.*.local.json
 data/local/
 storage/local/
 
-# ------------------------------
-# Logs and temporary files
-# ------------------------------
+# Logs / temp
 logs/
 *.log
 *.tmp
@@ -122,24 +87,15 @@ logs/
 *.swp
 *~
 
-# ------------------------------
-# Generated files
-# ------------------------------
+# Generated
 generated/
 Generated/
 *.generated.cs
 
-# ------------------------------
-# Docker local overrides
-# ------------------------------
+# Docker local override
 docker-compose.override.yml
 
-# ------------------------------
-# Codex local configuration
-# ------------------------------
-
-# Personal Codex configuration should normally live in ~/.codex,
-# but ignore machine-specific files if they appear in the repository.
+# Codex local state
 .codex/config.toml
 .codex/auth.json
 .codex/history.json
