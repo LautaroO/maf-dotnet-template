@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Small structural validator for the repo-scoped Codex skill set."""
+"""Validate the structure, routing contract, metadata, and hygiene of the guidance pack."""
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -10,6 +11,28 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / ".agents" / "skills"
 REFERENCES = ROOT / ".agents" / "references"
 PROFILES = ROOT / "profiles"
+MATRIX = ROOT / "docs" / "capabilities" / "maf-dotnet-1.18.md"
+CATALOG = ROOT / "docs" / "patterns" / "v4.md"
+ROUTING = ROOT / "evaluations" / "skill-routing" / "v1.jsonl"
+
+REQUIRED_SKILLS = {
+    "maf-adoption", "maf-agents", "maf-architecture", "maf-context-memory",
+    "maf-devui", "maf-hosting", "maf-middleware", "maf-observability",
+    "maf-provider-integration", "maf-review", "maf-security", "maf-testing",
+    "maf-tools", "maf-workflows",
+}
+PLAYBOOK_HEADINGS = [
+    "Intent", "Responsibility classification", "Recommended abstraction",
+    "State and trust boundaries", "Maturity/provider constraints",
+    "Illustrative C# fragment", "Implementation prompt", "Review checklist",
+    "Acceptance/evaluation criteria",
+]
+PROFILE_BUDGETS = {
+    "AGENTS.md": 12_000,
+    "profiles/ai-first/AGENTS.md": 12_000,
+    "profiles/application-with-ai-module/AGENTS.ai-module.md": 7_000,
+    "profiles/application-with-ai-module/AGENTS.root-fragment.md": 3_000,
+}
 
 
 def fail(message: str, errors: list[str]) -> None:
@@ -18,133 +41,240 @@ def fail(message: str, errors: list[str]) -> None:
 
 def parse_frontmatter(path: Path, errors: list[str]) -> tuple[str, str] | None:
     text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
-        fail(f"{path.relative_to(ROOT)}: missing YAML frontmatter", errors)
+    match = re.match(r"\A---\n(.*?)\n---\n", text, re.DOTALL)
+    if not match:
+        fail(f"{path.relative_to(ROOT)}: missing or malformed YAML frontmatter", errors)
         return None
-    try:
-        _, frontmatter, _ = text.split("---", 2)
-    except ValueError:
-        fail(f"{path.relative_to(ROOT)}: malformed YAML frontmatter", errors)
-        return None
-
     values: dict[str, str] = {}
-    for line in frontmatter.strip().splitlines():
+    for line in match.group(1).splitlines():
         if ":" in line:
             key, value = line.split(":", 1)
             values[key.strip()] = value.strip()
-
-    name = values.get("name", "")
-    description = values.get("description", "")
-    if not name:
-        fail(f"{path.relative_to(ROOT)}: missing name", errors)
+    name, description = values.get("name", ""), values.get("description", "")
+    if not re.fullmatch(r"[a-z0-9-]{1,63}", name):
+        fail(f"{path.relative_to(ROOT)}: invalid skill name {name!r}", errors)
     if not description:
         fail(f"{path.relative_to(ROOT)}: missing description", errors)
+    elif len(description) > 500:
+        fail(f"{path.relative_to(ROOT)}: description exceeds 500 characters", errors)
     return name, description
 
 
-def validate_relative_markdown_refs(path: Path, errors: list[str]) -> None:
+def validate_local_links(path: Path, errors: list[str]) -> None:
     text = path.read_text(encoding="utf-8")
-    # Skills deliberately name local references in inline code. Validate those paths.
-    candidates = re.findall(r"`((?:\.\./|references/)[^`]+\.md)`", text)
+    candidates = set(re.findall(r"`((?:\.\./|references/)[^`]+\.md)`", text))
+    candidates.update(
+        target for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text)
+        if not re.match(r"(?:https?://|mailto:|#)", target)
+    )
     for candidate in candidates:
-        target = (path.parent / candidate).resolve()
+        clean = candidate.split("#", 1)[0]
+        if not clean:
+            continue
+        target = (path.parent / clean).resolve()
         try:
             target.relative_to(ROOT.resolve())
         except ValueError:
-            fail(f"{path.relative_to(ROOT)}: reference escapes repo: {candidate}", errors)
+            fail(f"{path.relative_to(ROOT)}: reference escapes repository: {candidate}", errors)
             continue
-        if not target.is_file():
-            fail(f"{path.relative_to(ROOT)}: missing reference {candidate}", errors)
+        if not target.exists():
+            fail(f"{path.relative_to(ROOT)}: missing local reference {candidate}", errors)
+
+
+def validate_matrix(errors: list[str]) -> None:
+    if not MATRIX.is_file():
+        fail(f"Missing capability matrix: {MATRIX.relative_to(ROOT)}", errors)
+        return
+    text = MATRIX.read_text(encoding="utf-8")
+    for metadata in ("Matrix version:", "Last verified MAF release:", "Verification date:"):
+        if metadata not in text:
+            fail(f"{MATRIX.relative_to(ROOT)}: missing {metadata}", errors)
+    header = "| Feature | .NET availability | Maturity | Required package/boundary | Provider or hosting restrictions | Official source | Verified release | Verified date |"
+    if header not in text:
+        fail(f"{MATRIX.relative_to(ROOT)}: incomplete matrix header", errors)
+    rows = [line for line in text.splitlines() if line.startswith("| ")][1:]
+    if len(rows) < 20:
+        fail(f"{MATRIX.relative_to(ROOT)}: expected at least 20 feature rows, found {len(rows)}", errors)
+    for number, row in enumerate(rows, 1):
+        if len(row.split("|")) != 10:
+            fail(f"{MATRIX.relative_to(ROOT)}: row {number} does not have 8 fields", errors)
+        if any(marker in row for marker in ("TBD", "TODO", "????")):
+            fail(f"{MATRIX.relative_to(ROOT)}: row {number} has incomplete metadata", errors)
+        if "http" not in row or "2026-" not in row or "dotnet-" not in row:
+            fail(f"{MATRIX.relative_to(ROOT)}: row {number} lacks source/release/date metadata", errors)
+
+
+def validate_catalog(errors: list[str]) -> None:
+    if not CATALOG.is_file():
+        fail(f"Missing pattern catalog: {CATALOG.relative_to(ROOT)}", errors)
+        return
+    text = CATALOG.read_text(encoding="utf-8")
+    matches = list(re.finditer(r"^## (\d+)\. .+$", text, re.MULTILINE))
+    if len(matches) != 17 or [int(m.group(1)) for m in matches] != list(range(1, 18)):
+        fail(f"{CATALOG.relative_to(ROOT)}: expected numbered playbooks 1 through 17", errors)
+        return
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        section = text[match.end():end]
+        for heading in PLAYBOOK_HEADINGS:
+            if f"### {heading}\n" not in section:
+                fail(f"{CATALOG.relative_to(ROOT)}: playbook {index + 1} missing {heading!r}", errors)
+
+
+def validate_routing(known_skills: set[str], errors: list[str]) -> None:
+    if not ROUTING.is_file():
+        fail(f"Missing routing dataset: {ROUTING.relative_to(ROOT)}", errors)
+        return
+    ids: set[str] = set()
+    records: list[dict[str, object]] = []
+    for number, line in enumerate(ROUTING.read_text(encoding="utf-8").splitlines(), 1):
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            fail(f"{ROUTING.relative_to(ROOT)}:{number}: invalid JSON: {exc}", errors)
+            continue
+        records.append(record)
+        fixture_id = record.get("id")
+        if not isinstance(fixture_id, str) or fixture_id in ids:
+            fail(f"{ROUTING.relative_to(ROOT)}:{number}: missing/duplicate id", errors)
+        else:
+            ids.add(fixture_id)
+        for field in ("expected_skills", "must_not_route"):
+            values = record.get(field)
+            if not isinstance(values, list) or any(v not in known_skills for v in values):
+                fail(f"{ROUTING.relative_to(ROOT)}:{number}: invalid {field}", errors)
+    required_ids = {
+        "rag-two-step", "consequential-tool", "deterministic-routing", "hosting-choice",
+        "security-review", "provider-migration", "old-package", "generic-dotnet-nullability",
+    }
+    missing = required_ids - ids
+    if missing:
+        fail(f"{ROUTING.relative_to(ROOT)}: missing required fixtures: {', '.join(sorted(missing))}", errors)
+    if not any(not record.get("expected_skills") for record in records):
+        fail(f"{ROUTING.relative_to(ROOT)}: needs at least one negative routing fixture", errors)
+
+
+def validate_hygiene(errors: list[str]) -> None:
+    forbidden_names = {".DS_Store", "Thumbs.db"}
+    forbidden_suffixes = {
+        ".pyc", ".dll", ".exe", ".nupkg", ".snupkg",
+        ".cs", ".csproj", ".fsproj", ".vbproj", ".sln",
+    }
+    forbidden_dirs = {"__pycache__", "bin", "obj"}
+    for path in ROOT.rglob("*"):
+        relative = path.relative_to(ROOT)
+        if ".git" in relative.parts:
+            continue
+        if path.name in forbidden_names or path.suffix.lower() in forbidden_suffixes:
+            fail(f"Forbidden generated/copied artifact: {relative}", errors)
+        if path.is_dir() and path.name in forbidden_dirs:
+            fail(f"Forbidden generated directory: {relative}", errors)
+    if (ROOT / "scripts" / "install-guidance.py").exists():
+        fail("Obsolete installer must not exist", errors)
+    if (ROOT / ".codex-plugin" / "plugin.json").exists():
+        fail("Plugin manifest is outside this guidance-only release", errors)
+    for skill_file in ROOT.rglob("SKILL.md"):
+        try:
+            skill_file.relative_to(SKILLS)
+        except ValueError:
+            fail(f"Runtime/copied skill outside repository Codex skill root: {skill_file.relative_to(ROOT)}", errors)
+    secret_patterns = [
+        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+        re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+        re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
+    ]
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or ".git" in path.relative_to(ROOT).parts:
+            continue
+        if path.suffix.lower() not in {".md", ".py", ".sh", ".toml", ".json", ".jsonl", ".yml", ".yaml"}:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if any(pattern.search(text) for pattern in secret_patterns):
+            fail(f"Potential committed secret in {path.relative_to(ROOT)}", errors)
 
 
 def main() -> int:
     errors: list[str] = []
     skill_files = sorted(SKILLS.glob("*/SKILL.md"))
-    if not skill_files:
-        fail("No skills found", errors)
-
     names: dict[str, Path] = {}
+    descriptions: dict[str, Path] = {}
     for skill_file in skill_files:
         parsed = parse_frontmatter(skill_file, errors)
-        validate_relative_markdown_refs(skill_file, errors)
         if not parsed:
             continue
         name, description = parsed
         if name in names:
-            fail(
-                f"Duplicate skill name {name!r}: {names[name].relative_to(ROOT)} and {skill_file.relative_to(ROOT)}",
-                errors,
-            )
+            fail(f"Duplicate skill name {name!r}", errors)
         names[name] = skill_file
+        if description in descriptions:
+            fail(f"Duplicate skill description in {skill_file.relative_to(ROOT)}", errors)
+        descriptions[description] = skill_file
         if skill_file.parent.name != name:
-            fail(
-                f"{skill_file.relative_to(ROOT)}: directory name must match skill name {name!r}",
-                errors,
-            )
-        if len(description) > 700:
-            fail(f"{skill_file.relative_to(ROOT)}: description is too broad/long ({len(description)} chars)", errors)
-
-    # Generic implementation skill is deliberately forbidden in v2.
-    if (SKILLS / "maf-implementation").exists():
-        fail("maf-implementation must not exist in v2; route by MAF abstraction instead", errors)
-
-    for md in sorted(SKILLS.rglob("*.md")):
-        validate_relative_markdown_refs(md, errors)
-
-    required = {
-        "maf-architecture",
-        "maf-agents",
-        "maf-tools",
-        "maf-workflows",
-        "maf-context-memory",
-        "maf-middleware",
-        "maf-provider-integration",
-        "maf-observability",
-        "maf-devui",
-        "maf-testing",
-        "maf-review",
-    }
-    missing = required - set(names)
+            fail(f"{skill_file.relative_to(ROOT)}: directory must match skill name", errors)
+    missing = REQUIRED_SKILLS - set(names)
+    extra = set(names) - REQUIRED_SKILLS
     if missing:
         fail(f"Missing required skills: {', '.join(sorted(missing))}", errors)
+    if extra:
+        fail(f"Unexpected skills (update routing contract deliberately): {', '.join(sorted(extra))}", errors)
+    if (SKILLS / "maf-implementation").exists():
+        fail("Generic maf-implementation skill is forbidden", errors)
 
-    required_references = {
-        "official-sources.md",
-        "provider-neutrality.md",
-        "langgraph-crosswalk.md",
-        "application-boundaries.md",
+    for required in ("official-sources.md", "provider-neutrality.md", "langgraph-crosswalk.md", "application-boundaries.md"):
+        if not (REFERENCES / required).is_file():
+            fail(f"Missing shared reference: .agents/references/{required}", errors)
+    for markdown in ROOT.rglob("*.md"):
+        if ".git" not in markdown.relative_to(ROOT).parts:
+            validate_local_links(markdown, errors)
+
+    for relative, budget in PROFILE_BUDGETS.items():
+        path = ROOT / relative
+        if not path.is_file():
+            fail(f"Missing profile instruction: {relative}", errors)
+        elif len(path.read_bytes()) > budget:
+            fail(f"{relative}: exceeds {budget}-byte instruction budget", errors)
+    if (ROOT / "AGENTS.md").is_file() and (PROFILES / "ai-first" / "AGENTS.md").is_file():
+        if (ROOT / "AGENTS.md").read_bytes() != (PROFILES / "ai-first" / "AGENTS.md").read_bytes():
+            fail("Root AGENTS.md must stay synchronized with AI-first profile", errors)
+
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip() if (ROOT / "VERSION").is_file() else ""
+    if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+        fail("VERSION must contain Semantic Versioning x.y.z", errors)
+    if version and f"## [{version}]" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
+        fail("CHANGELOG does not contain current VERSION", errors)
+
+    validate_matrix(errors)
+    validate_catalog(errors)
+    validate_routing(set(names), errors)
+    validate_hygiene(errors)
+
+    entrypoint_links = {
+        ROOT / "README.md": ["docs/capabilities/maf-dotnet-1.18.md", "docs/patterns/v4.md", "evaluations/skill-routing/v1.jsonl"],
+        ROOT / "docs" / "patterns" / "README.md": ["v4.md"],
     }
-    for filename in sorted(required_references):
-        if not (REFERENCES / filename).is_file():
-            fail(f"Missing shared reference: .agents/references/{filename}", errors)
+    for path, required_targets in entrypoint_links.items():
+        text = path.read_text(encoding="utf-8") if path.is_file() else ""
+        for target in required_targets:
+            if target not in text:
+                fail(f"{path.relative_to(ROOT)}: missing required catalog/evaluation link {target}", errors)
 
-    required_profile_files = [
-        PROFILES / "README.md",
-        PROFILES / "ai-first" / "AGENTS.md",
-        PROFILES / "application-with-ai-module" / "AGENTS.root-fragment.md",
-        PROFILES / "application-with-ai-module" / "AGENTS.ai-module.md",
-        PROFILES / "application-with-ai-module" / "README.md",
-    ]
-    for profile_file in required_profile_files:
-        if not profile_file.is_file():
-            fail(f"Missing adoption profile file: {profile_file.relative_to(ROOT)}", errors)
+    smoke_gate = ROOT / "docs" / "releases" / "fresh-session-smoke-test.md"
+    smoke_text = smoke_gate.read_text(encoding="utf-8") if smoke_gate.is_file() else ""
+    for required_phrase in ("mandatory manual release gate", "existing application", "AI-first", "generic .NET"):
+        if required_phrase not in smoke_text:
+            fail(f"{smoke_gate.relative_to(ROOT)}: missing release-gate requirement {required_phrase!r}", errors)
 
-    root_agents = ROOT / "AGENTS.md"
-    ai_first_agents = PROFILES / "ai-first" / "AGENTS.md"
-    if root_agents.is_file() and ai_first_agents.is_file() and root_agents.read_bytes() != ai_first_agents.read_bytes():
-        fail("Root AGENTS.md must stay in sync with profiles/ai-first/AGENTS.md", errors)
-
-    installer = ROOT / "scripts" / "install-guidance.py"
-    if not installer.is_file():
-        fail("Missing scripts/install-guidance.py", errors)
+    required_ci = [ROOT / ".github" / "workflows" / "validate.yml", ROOT / ".github" / "workflows" / "source-audit.yml"]
+    for workflow in required_ci:
+        if not workflow.is_file():
+            fail(f"Missing CI workflow: {workflow.relative_to(ROOT)}", errors)
 
     if errors:
         print("Template validation FAILED:")
         for error in errors:
             print(f"- {error}")
         return 1
-
-    print(f"Template validation OK: {len(skill_files)} skills")
+    print(f"Template validation OK: {len(skill_files)} skills, 17 playbooks, routing v1")
     return 0
 
 

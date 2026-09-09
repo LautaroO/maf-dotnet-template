@@ -53,6 +53,6 @@ The AI module is an orchestration/integration layer. MAF tools and workflows sho
 
 See `.agents/references/application-boundaries.md`.
 
-## Automated install
+## Historical note
 
-Use `scripts/install-guidance.py` for new adoptions. It refuses to overwrite differing guidance by default.
+The v3 installer described by the original release is obsolete in v4. Follow `migration-v3-to-v4.md` and use the manual, non-overwriting adoption workflow.

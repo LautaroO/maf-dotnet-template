@@ -1,6 +1,6 @@
 ---
 name: maf-workflows
-description: Implement or review Microsoft Agent Framework workflows in C#/.NET using WorkflowBuilder, Executor, MessageHandler, typed messages, edges, conditional/switch routing, fan-out/fan-in, shared state, checkpoints, RequestPort/HITL, workflow outputs, agent executors, workflow-as-agent, or durable workflow integration. Use when process control must be explicit rather than model-decided.
+description: Implement or review Microsoft Agent Framework programmatic or declarative workflows in C#/.NET when sequence, routing, fan-out/fan-in, approval, state, checkpointing, resumability, durability, or long-running process control must be explicit rather than model-decided.
 ---
 
 # MAF workflows
@@ -12,6 +12,10 @@ Read `../../references/official-sources.md`, `../../references/langgraph-crosswa
 Before authoring a custom graph, check MAF's built-in sequential, concurrent, handoff, group-chat, and Magentic orchestration patterns. Use one when its control semantics match the requirement; otherwise use a custom typed workflow.
 
 Do not use a model-driven multi-agent orchestration for deterministic business flow.
+
+## Programmatic vs declarative
+
+Prefer programmatic workflows when compile-time types, custom executors, testability, DI, or precise recovery behavior matter. Consider declarative workflows when supported configuration is the desired product boundary and its schema covers the process. Treat declarative files as validated, versioned code; do not assume feature parity or translate unsupported constructs into prompt logic.
 
 ## Core model
 
@@ -74,6 +78,8 @@ Use workflow request/response mechanisms such as `RequestPort` patterns when the
 ## Checkpoints / durability
 
 Use checkpoints when in-process workflow state must be resumed/replayed. Use durable extensions/runtime when the execution itself must survive process loss and long waits. Keep domain persistence distinct from runtime checkpoint state.
+
+For long-running work define identity/tenancy, lease or concurrency behavior, timeout/deadline, continuation ownership, storage retention, deployment compatibility, replay semantics, and idempotent effects. A provider background response is not a durable workflow.
 
 ## Workflow as agent
 

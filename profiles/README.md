@@ -4,13 +4,7 @@ The reusable asset in this repository is the MAF knowledge layer under `.agents/
 
 `AGENTS.md` placement depends on how MAF participates in the target solution. Do not force one root prompt onto every architecture.
 
-## `ai-first`
-
-Use when the repository is primarily an AI/agentic system and MAF is a central architecture concern.
-
-Install `profiles/ai-first/AGENTS.md` at repository root.
-
-## `application-with-ai-module`
+## `application-with-ai-module` (recommended default)
 
 Use when an existing product/application has ordinary domain/application projects plus one AI/MAF project.
 
@@ -18,6 +12,12 @@ Use when an existing product/application has ordinary domain/application project
 - merge the supplied root fragment to establish the AI boundary;
 - place the supplied AI-module `AGENTS.md` inside the AI project;
 - keep `.agents/skills/` once at repository root.
+
+## `ai-first`
+
+Use when the repository is primarily an AI/agentic system and MAF is a central architecture concern.
+
+Manually merge `profiles/ai-first/AGENTS.md` at repository root; do not replace existing instructions blindly.
 
 ## Adding another profile
 

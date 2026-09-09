@@ -1,6 +1,6 @@
 ---
 name: maf-review
-description: Review a Microsoft Agent Framework C#/.NET implementation or repository for idiomatic use of AIAgent/ChatClientAgent, tools, workflows/executors/edges, context/session/memory, middleware, provider isolation, structured outputs, reliability, security, observability, testing, durability, and DevUI. Use for architecture/code reviews and identify manual mechanisms that MAF should own.
+description: Review a Microsoft Agent Framework C#/.NET repository or change/diff for architecture, abstractions, state, security, reliability, provider portability, hosting, observability, testing, durability, and production operability. Produce evidence-first findings and identify manual mechanisms that MAF should own.
 ---
 
 # MAF review
@@ -8,6 +8,11 @@ description: Review a Microsoft Agent Framework C#/.NET implementation or reposi
 Read `../../references/official-sources.md`, `../../references/langgraph-crosswalk.md`, and `references/review-checklist.md`. When MAF is one module inside a larger product, also read `../../references/application-boundaries.md`.
 
 ## Review method
+
+Select the review mode explicitly:
+
+- **Whole repository** — inspect instruction hierarchy, solution/project/package boundaries, representative runtime paths, composition, state/storage, hosts, tests, CI and operations.
+- **Change/diff** — inspect the diff and enough surrounding code/config/tests to establish impact; distinguish introduced regressions from pre-existing risks.
 
 For each agentic component answer:
 
@@ -20,6 +25,19 @@ For each agentic component answer:
 7. What state lifetime is being assumed?
 8. What happens on invalid model output, cancellation, retry, resume, duplicate delivery, or partial failure?
 9. Can the important behavior be tested without a live model?
+
+## Finding contract
+
+Findings come before architecture summaries. Every finding must include:
+
+- severity/category;
+- confidence (`high`, `medium`, or `low`);
+- evidence and precise file/location;
+- impact or failure scenario;
+- recommended correction;
+- MAF version certainty (`verified against installed package`, `verified against matching official release`, or `uncertain`).
+
+Do not report formatting preferences unless repository rules, analyzers or CI require them. If there are no findings, say so and identify residual/untested risks.
 
 ## Severity
 
@@ -35,7 +53,7 @@ Do not inflate stylistic preferences into architecture bugs.
 
 ## Required output
 
-Keep the review actionable:
+Keep the review actionable after findings:
 
 - current architecture summary;
 - bugs;
@@ -44,6 +62,7 @@ Keep the review actionable:
 - provider portability issues;
 - production risks;
 - test gaps;
+- hosting and production-operability gaps, including cost, latency, safety, retrieval, streaming and durability where relevant;
 - top 3 changes by impact.
 
 ## Additional boundary smell for mixed solutions

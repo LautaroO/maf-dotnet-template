@@ -29,6 +29,7 @@ Capture enough to diagnose:
 - external dependencies;
 - retries/errors/cancellation;
 - latency and usage metadata where supported.
+- retrieval queries/results at safe metadata granularity, grounding/citation outcomes, approval decisions, continuation/checkpoint transitions, queue/wait time, duplicate suppression, safety/limit events, and cost where available.
 
 Avoid duplicate spans from instrumenting the same layer twice.
 
@@ -39,3 +40,5 @@ Prompt/tool payload capture can contain PII, secrets, business data, or retrieve
 ## Correlation
 
 Preserve trace/correlation context through agents, tools, workflows, HTTP calls, and background/durable boundaries. For queued/resumed executions, design correlation explicitly.
+
+Define operational SLOs and alerts for success, latency, streaming first-event time, tool/retrieval failures, safety denials, stuck background work, checkpoint/resume failures and spend. Document how an incident responder can move from a user-visible failure to the relevant agent, provider, tool and workflow evidence without enabling sensitive-body capture by default.

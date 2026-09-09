@@ -1,6 +1,6 @@
 ---
 name: maf-agents
-description: Implement or review Microsoft Agent Framework agents in C#/.NET, especially AIAgent and ChatClientAgent, agent construction, RunAsync/streaming, AgentSession use, agent instructions, structured outputs, custom agents, or agent-as-tool composition. Use when the model owns an open-ended semantic decision or tool-selection loop.
+description: Implement or review Microsoft Agent Framework agents in C#/.NET when the model owns open-ended semantic behavior, including AIAgent/ChatClientAgent, sessions, streaming or multimodal runs, structured outputs, bounded autonomy, background responses, declarative agents, runtime Agent Skills, Harness Agent, and agent composition.
 ---
 
 # MAF agents
@@ -16,6 +16,22 @@ For application-owned chat/model agents, prefer the framework's normal `AIAgent`
 `AIAgent` is the common agent abstraction. `ChatClientAgent` is the important application-owned implementation for a provider-neutral `IChatClient` pipeline. Verify constructor/options signatures against installed packages.
 
 Only derive a custom `AIAgent` when the runtime behavior genuinely cannot be represented by an existing MAF agent type. Do not create a custom agent merely to wrap one prompt call.
+
+## Input, streaming and long-running runs
+
+Use MAF/MEAI content types for multimodal input and validate media before model access. Treat supported modality, upload, URI and size behavior as provider capabilities.
+
+Stream with `RunStreamingAsync` when the caller benefits from incremental events. Cancellation, disconnect, partial-output persistence and safe event projection remain application/host responsibilities.
+
+Background responses use continuation tokens and are provider-limited. Do not equate them with workflow durability. Protect tokens, bound polling/reconnection, and use durable execution when work must survive process loss.
+
+## Bounded autonomy
+
+Looping, planning, todos and background-agent delegation require explicit stop conditions and hard limits for iterations, tool calls, parallelism, time, tokens and cost. Prefer a workflow where sequence, branching, approval or recovery must be guaranteed.
+
+Declarative agents/workflows are configuration forms with their own supported schema and maturity; do not assume parity with programmatic APIs. Validate configuration and version support before adoption.
+
+MAF runtime Agent Skills are application-agent inputs discovered during a run. Repository `.agents/skills/` are Codex developer guidance. Never load this guidance pack into an application agent as runtime skills. Use Harness Agent only when its opinionated runtime behavior is deliberately required, not merely for terminal UX.
 
 ## Agent responsibility
 
@@ -62,4 +78,4 @@ If delegation order/branching must be guaranteed, prefer a workflow instead.
 
 ## Completion check
 
-Confirm that the implementation uses a real MAF agent abstraction, provider types do not leak into core contracts, session lifetime is intentional, structured output is validated, tools are bounded, cancellation propagates, and deterministic process control has not been hidden inside the prompt.
+Confirm that the implementation uses a real MAF agent abstraction, provider types do not leak into core contracts, session lifetime is intentional, structured output is validated, multimodal/continuation inputs are protected, autonomy and tools are bounded, cancellation propagates, and deterministic process control has not been hidden inside the prompt.

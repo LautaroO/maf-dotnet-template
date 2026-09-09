@@ -16,10 +16,12 @@ MyProduct/
         └── AGENTS.md
 ```
 
-Install the shared `.agents/` skills at repository root.
+Copy/merge the shared `.agents/` skills at repository root.
 
 Merge `AGENTS.root-fragment.md` into the repository root `AGENTS.md` rather than replacing existing product guidance.
 
 Copy `AGENTS.ai-module.md` to the AI project directory as `AGENTS.md`.
+
+Use `$maf-adoption` to inspect and populate project context. There is no installer; existing root instructions must never be overwritten.
 
 Because Codex resolves `AGENTS.md` from repository root toward the working directory, the root file establishes product boundaries while the nested AI file adds MAF-specific guidance only when Codex works inside the AI module.

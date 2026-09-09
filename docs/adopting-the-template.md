@@ -11,7 +11,7 @@ Choose:
 
 See `../profiles/README.md`.
 
-## 2. Install the shared MAF knowledge layer once
+## 2. Copy/merge the shared MAF knowledge layer once
 
 Keep `.agents/skills/` and `.agents/references/` at repository root so all relevant code can discover the same MAF guidance.
 
@@ -21,7 +21,7 @@ Do not fork skills per project/module unless framework behavior truly differs.
 
 ### AI-first
 
-Install the MAF-centric `AGENTS.md` at repository root.
+Manually merge the MAF-centric `AGENTS.md` at repository root. Preserve any existing rules.
 
 ### Application with AI module
 
@@ -37,7 +37,7 @@ Do not duplicate the entire root file into nested directories. Nested instructio
 
 ## 4. Populate project-specific context
 
-Ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints.
+Invoke `$maf-adoption` and ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints. Never overwrite an existing root `AGENTS.md`.
 
 ## 5. Keep application/domain behavior outside the AI layer
 

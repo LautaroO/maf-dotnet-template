@@ -51,6 +51,8 @@ Third-party MCP servers are external trust boundaries. Review data sharing, auth
 
 If a tool can perform consequential/irreversible actions, use the framework's approval/HITL mechanism supported by the installed agent/provider rather than asking the prompt to "be careful".
 
+Bind approval to the exact invocation occurrence, principal and material arguments. Revalidate authorization when executing, expire stale approvals, and use an application idempotency key so replay/resume cannot duplicate the business effect.
+
 ## Agent as tool
 
 Use `AsAIFunction()` for semantic delegation to a specialized child agent when the parent model should decide whether to delegate. If routing is deterministic, use workflow edges instead.

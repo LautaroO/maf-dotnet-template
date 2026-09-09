@@ -34,6 +34,23 @@ Useful Learn areas:
 - Agent observability: https://learn.microsoft.com/agent-framework/agents/observability
 - DevUI: https://learn.microsoft.com/agent-framework/devui/
 - Harness: https://learn.microsoft.com/agent-framework/agents/harness
+- Multimodal: https://learn.microsoft.com/agent-framework/agents/multimodal
+- Background responses: https://learn.microsoft.com/agent-framework/agents/background-responses
+- Declarative agents: https://learn.microsoft.com/agent-framework/agents/declarative
+- Agent Skills (application runtime): https://learn.microsoft.com/agent-framework/agents/skills
+- Hosting overview: https://learn.microsoft.com/agent-framework/hosting/
+- Self-hosting: https://learn.microsoft.com/agent-framework/hosting/self-hosting/
+- Foundry Hosted Agents: https://learn.microsoft.com/agent-framework/hosting/foundry-hosted-agent
+- A2A hosting: https://learn.microsoft.com/agent-framework/hosting/agent-to-agent
+- AG-UI: https://learn.microsoft.com/agent-framework/integrations/ag-ui/
+
+## Repository skills vs runtime Agent Skills
+
+The `.agents/skills/maf-*` directories in this pack are Codex developer guidance. MAF runtime Agent Skills are instructions/resources/scripts discovered by an application agent during execution. They have different consumers and trust boundaries. Never copy this pack into an application's runtime skill store.
+
+## Verification baseline
+
+The checked-in capability matrix records `dotnet-1.18.0`, released 2026-08-18, as last verified on 2026-09-09. Treat that as maintenance metadata, not a substitute for inspecting the adopting repository's installed packages.
 
 ## Version rule
 

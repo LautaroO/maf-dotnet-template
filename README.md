@@ -1,164 +1,62 @@
 # Codex + Microsoft Agent Framework .NET Guidance Pack
 
-Reusable Codex guidance for building and reviewing Microsoft Agent Framework (MAF) systems in C#/.NET.
+A guidance-only Codex capability pack for designing, implementing, reviewing, testing and operating Microsoft Agent Framework (MAF) systems in C#/.NET.
 
-This repository is **not an application scaffold**. Its reusable core is the MAF knowledge layer under `.agents/`. Adoption profiles decide where `AGENTS.md` should live based on the target solution shape.
+It contains repository-scoped Codex skills, references, playbooks, evaluation fixtures and maintenance checks. It is not an application scaffold, plugin, installer, compilable sample, or bundle of runtime Agent Skills for application agents.
 
-## Why profiles
+## Adopt into an existing repository
 
-MAF may be:
+The default recommendation is [application with an AI module](profiles/application-with-ai-module/README.md): preserve the application's root instructions and conventions, merge a small MAF boundary fragment, and place focused MAF instructions in the AI subtree.
 
-1. the central architecture of an AI-first repository; or
-2. one AI project/module inside a larger product with ordinary domain/application code.
+Use [AI-first](profiles/ai-first/AGENTS.md) only when MAF genuinely owns the repository's central orchestration architecture.
 
-Those cases should not receive the same root instructions. Codex supports hierarchical `AGENTS.md` files, so this pack scopes MAF guidance to the part of the repository where it belongs instead of making the whole solution agent-centric.
+Adoption is manual and non-overwriting:
 
-## Adoption profiles
+1. copy/merge `.agents/` and the relevant profile;
+2. invoke `$maf-adoption` in the target repository;
+3. let it inspect the solution, packages, commands, boundaries and existing instructions;
+4. populate project context only from evidence;
+5. validate hierarchy and run fresh-session smoke tests.
 
-### AI-first
+See [adoption](docs/adopting-the-template.md) and [v3 migration](docs/migration-v3-to-v4.md).
 
-Use when the repository is primarily an agentic/AI system and MAF is central.
+## Capabilities
 
-```text
-MyAgentService/
-├── AGENTS.md            # MAF-centric root guidance
-└── .agents/skills/...
-```
+Fourteen focused skills cover adoption, architecture, agents, tools/MCP, workflows, context/RAG, middleware, providers, hosting, security, observability, DevUI, testing/evaluation and review.
 
-Profile: `profiles/ai-first/`
+The [versioned capability matrix](docs/capabilities/maf-dotnet-1.18.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](docs/patterns/v4.md) contains 17 uniform playbooks for common application and production scenarios.
 
-### Application with an AI module
+Repository `.agents/skills/` are instructions for Codex while developing software. MAF runtime Agent Skills are application inputs discovered by an agent during execution. Do not copy this pack into a runtime skill store.
 
-Use when MAF is one project inside a larger application.
+## Core decisions
 
-```text
-MyProduct/
-├── AGENTS.md                    # application-centric + AI boundary
-├── .agents/skills/...
-└── src/
-    ├── MyProduct.Domain/
-    ├── MyProduct.Application/
-    ├── MyProduct.Infrastructure/
-    └── MyProduct.AI/
-        └── AGENTS.md            # MAF-specific local guidance
-```
+Use the least-agentic owner:
 
-Profile: `profiles/application-with-ai-module/`
+- deterministic C# for exact rules, authorization, validation and routing;
+- tools for bounded application capabilities;
+- agents for open-ended semantic work and bounded tool choice;
+- workflows for explicit process, approval, recovery and durable control;
+- sessions, context providers, workflow state/checkpoints and application persistence for their distinct lifetimes;
+- provider and hosting adapters at replaceable boundaries.
 
-The core rule is: **MAF orchestrates/adapts application capabilities; it does not become the owner of domain behavior.**
+In mixed solutions, removing the AI module must not remove business rules, ordinary use cases, authorization policy or core persistence.
 
-## Install
-
-AI-first repository:
-
-```bash
-python3 scripts/install-guidance.py \
-  --profile ai-first \
-  --target /path/to/repository
-```
-
-Existing application with an AI project:
-
-```bash
-python3 scripts/install-guidance.py \
-  --profile application-with-ai-module \
-  --target /path/to/repository \
-  --ai-path src/MyProduct.AI
-```
-
-The installer is conservative. It does not silently overwrite differing guidance. In the mixed-application profile, an existing root `AGENTS.md` is preserved and a small boundary fragment is emitted for manual merge.
-
-## MAF knowledge layer
-
-The skills are organized around MAF abstractions rather than generic implementation phases:
-
-- `maf-architecture`;
-- `maf-agents`;
-- `maf-tools` / MCP;
-- `maf-workflows` / built-in orchestrations / executors / edges;
-- `maf-context-memory`;
-- `maf-middleware`;
-- `maf-provider-integration`;
-- `maf-observability`;
-- `maf-devui`;
-- `maf-testing` + evaluation;
-- `maf-review`.
-
-Shared references cover official sources, provider neutrality, LangChain/LangGraph mapping, and application/AI boundaries.
-
-Skills remain the same across profiles. Only instruction placement/scope changes. This avoids maintaining separate copies such as “tools for AI-first” and “tools for enterprise app”.
-
-## Design goals
-
-- MAF-specific rather than generic “AI architecture”.
-- Extensible across different .NET solution shapes.
-- Provider/cloud neutrality by default.
-- Domain/application logic stays independent of MAF when AI is only one module.
-- Strong LangChain/LangGraph → MAF mental-model bridge.
-- Deterministic C# for deterministic behavior.
-- Explicit Agent / Tool / Workflow / Middleware / Context / Session / Checkpoint choices.
-- Typed workflow messages and structured model outputs.
-- No live model dependency in the default test suite.
-- DevUI kept as a development surface.
-- Version-aware instructions because MAF APIs evolve rapidly.
-
-## Layout
-
-```text
-.
-├── AGENTS.md                         # convenience/default AI-first guidance for this repo
-├── .agents/
-│   ├── references/
-│   │   ├── application-boundaries.md
-│   │   ├── langgraph-crosswalk.md
-│   │   ├── official-sources.md
-│   │   └── provider-neutrality.md
-│   └── skills/maf-*/
-├── profiles/
-│   ├── README.md
-│   ├── ai-first/
-│   │   └── AGENTS.md
-│   └── application-with-ai-module/
-│       ├── AGENTS.root-fragment.md
-│       ├── AGENTS.ai-module.md
-│       └── README.md
-├── docs/
-│   ├── adopting-the-template.md
-│   ├── application-with-ai-module.md
-│   ├── codex-setup.md
-│   ├── maintaining-maf-knowledge.md
-│   ├── migration-v1-to-v2.md
-│   └── migration-v2-to-v3.md
-├── scripts/
-│   ├── install-guidance.py
-│   └── validate-template.py
-└── .codex/config.toml.example
-```
-
-## Customize after installation
-
-Ask Codex to inspect the actual repository and fill the project-specific sections rather than inventing structure or package versions.
-
-For an AI module, a useful first prompt is:
-
-```text
-Inspect this solution and update only the Project-specific AI context section of the AI project's AGENTS.md.
-Record the exact MAF packages/versions, AI project boundaries, application services it may call,
-provider integration, session/context/persistence choices, build/test/run commands, and development surfaces.
-Do not move domain/application responsibilities into the AI project.
-```
-
-## Validate the guidance pack
+## Validate
 
 ```bash
 python3 scripts/validate-template.py
+python3 -m compileall -q scripts
 ```
 
-## Source policy
+CI also checks Markdown links and repository hygiene. The scheduled source audit opens or refreshes a maintenance issue; it never edits guidance.
 
-Prefer Microsoft Learn and official Microsoft Agent Framework repositories/samples. Installed NuGet versions win over `main` when API shapes differ.
+Before each release, run fresh-Codex-session smoke tests for both adoption profiles using [the routing dataset](evaluations/skill-routing/v1.jsonl).
 
-Provider-specific examples are treated as adapters, not architecture defaults.
+## Version policy
+
+The pack uses independent Semantic Versioning; see [VERSION](VERSION) and [CHANGELOG](CHANGELOG.md). Current baseline: pack `4.0.0`, last verified MAF .NET release `dotnet-1.18.0` on 2026-09-09.
+
+Installed NuGet APIs are authoritative for adopters. Current Microsoft Learn or `main` samples never override the installed package surface.
 
 ## License
 

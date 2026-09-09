@@ -32,7 +32,9 @@ Providers may differ in:
 - usage/safety metadata;
 - maximum context/tool limits.
 
-Model these as explicit capabilities. Do not silently assume feature parity.
+Model these as explicit capabilities. Include at least structured output, local tool calling, background execution/continuation, hosted tools, multimodal input, streaming fidelity, and required hosting/protocol support. Do not silently assume feature parity.
+
+Detect capabilities during composition/startup where possible and expose a stable descriptor to application-owned orchestration. Fail clearly or select an explicit fallback before a run; do not discover incompatibility after a consequential action begins.
 
 ## Configuration
 

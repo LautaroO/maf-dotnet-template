@@ -33,6 +33,10 @@ Do not smuggle application dependencies through arbitrary dictionaries when DI/t
 
 Do not put core business workflows or hidden routing in middleware. Middleware should remain cross-cutting and composable.
 
+## .NET availability boundary
+
+Agent Hooks and Agent Security with FIDES are not available for .NET as of the versioned capability matrix. Do not copy Python imports or claim equivalent enforcement. Use supported .NET agent-run, function-invocation, or `IChatClient` middleware for interception, backed by deterministic authorization, validation, egress controls and fail-closed tool gates. Recheck the matrix and installed packages before changing this statement.
+
 ## Ordering
 
 Middleware order can change semantics. Document ordering assumptions and test them when multiple middlewares transform/short-circuit calls.
