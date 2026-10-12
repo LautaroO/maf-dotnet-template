@@ -4,6 +4,10 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
+## [0.1.1] - Candidate
+
+Release status and outstanding client checks: [0.1.1 evidence](docs/releases/v0.1.1.md).
+
 ### Changed
 
 - Codex now owns requested MAF audit follow-through: source review, guidance edits, evidence and validation, with release verification kept separate.

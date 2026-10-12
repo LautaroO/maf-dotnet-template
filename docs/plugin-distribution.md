@@ -31,7 +31,7 @@ Create `.agents/plugins/marketplace.json` in your separate marketplace repositor
       "source": {
         "source": "url",
         "url": "https://github.com/LautaroO/maf-dotnet-template.git",
-        "ref": "main"
+        "ref": "v0.1.1"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -43,7 +43,7 @@ Create `.agents/plugins/marketplace.json` in your separate marketplace repositor
 }
 ```
 
-The referenced Git ref must contain the root plugin manifest and its skills/resources. Existing guidance-only tags are not plugin releases. `main` is convenient during development; select a published release tag or commit (`sha` instead of `ref`) for reproducible releases. Do not point a catalog at an unpublished tag.
+The example uses the planned `v0.1.1` release tag; do not use it until it is published. The referenced Git ref must contain the root plugin manifest and its skills/resources. Existing guidance-only tags are not plugin releases. `main` is convenient during development; select a published release tag or commit (`sha` instead of `ref`) for reproducible releases. Do not point a catalog at an unpublished tag.
 
 Once that external catalog is published, register its actual repository:
 
@@ -86,3 +86,22 @@ If the target already contains `.agents/skills/maf-*`, review local changes befo
 5. Publish the plugin files to the intended Git ref, then update the separate marketplace's source selector and verify that installation uses that version.
 
 Automated checks prove manifest/version consistency, reference containment and that an isolated installed copy has its required resources. They do not prove native-client installation, automatic skill selection or remote publication; those remain explicit release checks.
+
+## Versioned publication and updates
+
+Distribute published plugin versions rather than tracking `main`. A MAF knowledge update increments the plugin version independently of the MAF baseline. For `0.1.1`, the knowledge baseline is `dotnet-1.24.0`.
+
+1. Prepare matching manifest and `VERSION` values, changelog notes and release evidence. Run all repository checks.
+2. Complete the [fresh-session smoke test](releases/fresh-session-smoke-test.md) against the candidate from a separate test marketplace. Record actual results; a pending check prevents publication.
+3. Commit the verified candidate, create the matching `vX.Y.Z` tag, and push that tag. Never move a published tag; publish a new version for later changes.
+4. In the external marketplace repository, update only the `maf-dotnet` source selector to the published tag (`ref`). If that entry has a `sha`, remove the old selector when choosing `ref`; alternatively pin the release commit with `sha` alone and record its matching tag in the marketplace change. Commit and publish the catalog update. This step is still performed by the maintainer; no cross-repository automation is configured here.
+5. Users refresh and install the selected package:
+
+```bash
+codex plugin marketplace upgrade lautaro-plugins
+codex plugin add maf-dotnet@lautaro-plugins
+```
+
+Restart the client and open a fresh session. Verify the loaded manifest version and packaged resources, rather than treating a successful catalog refresh as proof that the new plugin is active.
+
+The current candidate's publication status is recorded in [0.1.1 release evidence](releases/v0.1.1.md).
