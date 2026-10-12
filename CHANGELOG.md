@@ -4,9 +4,9 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
-## [0.1.1] - Candidate
+## [0.1.1] - 2026-10-12
 
-Release status and outstanding client checks: [0.1.1 evidence](docs/releases/v0.1.1.md).
+Release checks and publication evidence: [0.1.1 evidence](docs/releases/v0.1.1.md).
 
 ### Changed
 

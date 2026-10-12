@@ -4,7 +4,7 @@
 
 This repository is the `maf-dotnet` skills-only Codex plugin. It contains no .NET application, solution, installed MAF packages, runtime Agent Skills, marketplace catalog, or installer. `plugin.json` is the root manifest; `skills/` and `resources/` are the single authoring source. Edit them directly. Do not add a generated package copy or repository-discovered duplicate skills under `.agents/skills/`.
 
-The current plugin baseline is `0.1.0`; MAF knowledge was last verified against `dotnet-1.24.0` on 2026-10-12. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
+The current plugin baseline is `0.1.1`; MAF knowledge was last verified against `dotnet-1.24.0` on 2026-10-12. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
 
 ## Structure and boundaries
 

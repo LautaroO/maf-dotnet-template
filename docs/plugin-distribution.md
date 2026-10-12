@@ -43,7 +43,7 @@ Create `.agents/plugins/marketplace.json` in your separate marketplace repositor
 }
 ```
 
-The example uses the planned `v0.1.1` release tag; do not use it until it is published. The referenced Git ref must contain the root plugin manifest and its skills/resources. Existing guidance-only tags are not plugin releases. `main` is convenient during development; select a published release tag or commit (`sha` instead of `ref`) for reproducible releases. Do not point a catalog at an unpublished tag.
+The example selects the `v0.1.1` release tag. The referenced Git ref must contain the root plugin manifest and its skills/resources. Existing guidance-only tags are not plugin releases. `main` is convenient during development; select a published release tag or commit (`sha` instead of `ref`) for reproducible releases. Do not point a catalog at an unpublished tag.
 
 Once that external catalog is published, register its actual repository:
 
@@ -104,4 +104,4 @@ codex plugin add maf-dotnet@lautaro-plugins
 
 Restart the client and open a fresh session. Verify the loaded manifest version and packaged resources, rather than treating a successful catalog refresh as proof that the new plugin is active.
 
-The current candidate's publication status is recorded in [0.1.1 release evidence](releases/v0.1.1.md).
+The release's publication status is recorded in [0.1.1 release evidence](releases/v0.1.1.md).

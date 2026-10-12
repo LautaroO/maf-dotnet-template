@@ -53,7 +53,7 @@ Before each release, install the plugin in a supported client and run fresh-sess
 
 ## Version policy
 
-The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current release candidate: `0.1.1`, with last verified MAF .NET release `dotnet-1.24.0` on 2026-10-12. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
+The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current plugin version: `0.1.1`, with last verified MAF .NET release `dotnet-1.24.0` on 2026-10-12. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
 
 Installed NuGet APIs are authoritative for adopters. Current Microsoft Learn or `main` samples never override the installed package surface.
 
