@@ -2,6 +2,17 @@
 
 All notable changes to this guidance pack are recorded here. The pack follows Semantic Versioning independently of Microsoft Agent Framework (MAF).
 
+## [Unreleased]
+
+### Changed
+
+- Adoption reuses existing documentation and refinement processes, recording a compact context index and proposing missing documentation conventions before creating new documents.
+- Architecture tasks reuse settled requirements, verify relevant context and clarify only material open decisions, with documentation proportional to the change.
+
+### Added
+
+- Shared project-context/refinement guidance and three behavior evaluation fixtures for existing conventions, missing conventions and small fully specified changes.
+
 ## [4.0.0] - 2026-09-09
 
 ### Added

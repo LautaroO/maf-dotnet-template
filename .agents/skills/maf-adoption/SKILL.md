@@ -5,7 +5,7 @@ description: Adopt the Codex MAF guidance pack into an existing C#/.NET reposito
 
 # MAF adoption
 
-Read `../../references/official-sources.md`, `../../references/application-boundaries.md`, and `references/adoption-workflow.md`.
+Read `../../references/official-sources.md`, `../../references/application-boundaries.md`, `../../references/project-context-and-refinement.md`, and `references/adoption-workflow.md`.
 
 Inspect before proposing changes: existing `AGENTS.md` files, solution/project files, `global.json`, central package management, build/test/format/CI configuration, MAF packages, AI boundaries, hosts, storage, providers, and security constraints.
 
@@ -18,5 +18,7 @@ Classify the repository as:
 Adoption is manual copy/merge. Never overwrite an existing root `AGENTS.md`. Adopting-team rules remain authoritative for C# style, solution layout, tests, analyzers, CI/CD, persistence, and hosting.
 
 Populate project-context placeholders only from repository evidence. Report unknowns instead of inventing package versions, commands, ownership, or operational choices. Add concise code-review rules at the closest applicable `AGENTS.md`.
+
+Reuse existing project documentation and refinement/planning processes. Record canonical context links and the documentation convention in the applicable `AGENTS.md`. If no suitable convention exists, propose one and wait for agreement before creating new context or feature documents; continue independent adoption work and record the pending choice.
 
 Do not install a plugin, create a runtime MAF Agent Skill, or scaffold an application.
