@@ -73,3 +73,13 @@
 - Tools/validators independently tested?
 - Provider integration tests isolated?
 - Real-model evaluation opt-in and purpose-specific?
+
+## Hosting / production
+
+- Managed vs self-hosted operation chosen separately from protocol?
+- Authentication, authorization, tenancy and protocol-supplied IDs protected?
+- Streaming disconnect/resume and background continuation bounded?
+- Deployment, scaling, health, storage, checkpoint and incident ownership explicit?
+- Latency, cost, retrieval quality, safety, durability and limit signals measured?
+- Runtime MAF Agent Skills kept distinct from repository Codex skills?
+- Agent Hooks/FIDES claims checked against actual .NET availability?

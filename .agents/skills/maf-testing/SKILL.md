@@ -36,3 +36,7 @@ Keep provider-specific tests focused on adapter construction, supported capabili
 ## Model evaluations
 
 Use evaluations for semantic quality: task success, groundedness, tool selection, hallucination, safety, latency/cost. Do not turn flaky model judgments into the only CI gate for deterministic behavior.
+
+Keep a baseline dataset and record provider/model/configuration. Evaluate retrieval recall/precision and citation correctness separately from answer quality. Include adversarial prompt-injection, cross-tenant access, approval, resource-limit and data-egress cases.
+
+For streaming and durability, test event ordering/projection, disconnect, cancellation, resume, continuation expiry, checkpoint compatibility, duplicate delivery, idempotency and restart/deployment recovery. Track latency percentiles and cost/usage budgets, not only averages.

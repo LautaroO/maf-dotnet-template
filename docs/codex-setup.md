@@ -26,6 +26,8 @@ For an application that contains one AI project, keep product architecture at th
 
 Keep root guidance concise and use skills/references for task-specific detail.
 
+Repository `.agents/skills/` are developer guidance consumed by Codex. MAF runtime Agent Skills are application content discovered by an executing agent. Keep their storage, provenance and security policies separate; never load this pack into the application runtime.
+
 Official Codex references:
 
 - https://developers.openai.com/codex/agent-configuration/agents-md

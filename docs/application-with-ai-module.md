@@ -68,20 +68,11 @@ public sealed class GetOrderPriceTool(IOrderPricingUseCase pricing)
 
 The tool should not reimplement discounts, tax rules, eligibility, or persistence. Those remain application/domain concerns.
 
-## Install
+## Adopt manually
 
-From the guidance-pack repository:
+Copy the shared `.agents/` layer to the repository root. Merge `profiles/application-with-ai-module/AGENTS.root-fragment.md` into the existing root instructions without replacing them, then copy `AGENTS.ai-module.md` into the AI subtree as `AGENTS.md`.
 
-```bash
-python3 scripts/install-guidance.py \
-  --profile application-with-ai-module \
-  --target /path/to/MyProduct \
-  --ai-path src/MyProduct.AI
-```
-
-If the target already has a root `AGENTS.md`, the installer preserves it and writes the proposed AI-boundary fragment to `.maf-guidance/AGENTS.root-fragment.md` for manual merge.
-
-It never silently overwrites differing guidance unless `--force` is explicitly passed.
+Invoke `$maf-adoption` so Codex inspects solution/package/command evidence and populates the project context. There is intentionally no installer or force-overwrite path.
 
 ## What remains shared
 

@@ -91,6 +91,8 @@ logs/
 generated/
 Generated/
 *.generated.cs
+__pycache__/
+*.py[cod]
 
 # Docker local override
 docker-compose.override.yml

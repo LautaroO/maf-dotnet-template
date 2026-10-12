@@ -1,16 +1,12 @@
 ## AI / Microsoft Agent Framework boundary
 
-This repository contains an AI module implemented with Microsoft Agent Framework (MAF). MAF is not the architecture of the whole application.
+This repository contains a MAF AI module; MAF is not the architecture of the whole application. Preserve all existing root instructions. Adopting-team rules remain authoritative.
 
-Repository-wide dependency rules:
+- Domain/application projects do not depend on MAF/provider SDKs merely because AI exists.
+- The AI module calls inward application capabilities; it does not own domain rules, ordinary use cases, authorization policy, or core persistence.
+- Deterministic behavior remains C#; model output is structured and validated before it drives code or effects.
+- Provider SDKs remain in adapters/composition. Hosting model and external protocol are separate decisions.
+- Tools enforce validation, authorization, tenancy, limits and occurrence-bound approval; retryable/resumable effects are idempotent.
+- Default application tests do not require a live model.
 
-- Domain and core application projects must not depend on `Microsoft.Agents.*`, model-provider SDKs, DevUI, or AI runtime abstractions solely because AI features exist.
-- The AI module may depend inward on application/domain contracts and use cases.
-- Business rules remain in domain/application code. Agents, tools, and workflow executors orchestrate or adapt those capabilities; they do not become a second application layer.
-- Provider-specific SDKs remain inside the AI provider adapter/composition boundary.
-- Provider-native response/request types must not leak into domain/application contracts.
-- Deterministic behavior stays deterministic C# even when invoked from an agent or workflow.
-- AI outputs that affect application behavior must be structured and validated before use.
-- Default domain/application tests must run without a live model.
-
-The AI module has its own nested `AGENTS.md`. When editing files under that module, follow those more specific MAF instructions in addition to these repository-wide boundaries.
+Place MAF-specific instructions in the AI subtree. Review AI changes for architecture, state, security, reliability, provider portability, testing, hosting and operational risk; findings require severity, confidence, evidence/location, impact, correction and MAF version certainty.

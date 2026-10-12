@@ -14,6 +14,10 @@ When a new MAF release materially changes an abstraction:
 6. preserve “verify installed package APIs” warnings where version drift is plausible;
 7. add a changelog entry.
 
+The scheduled source audit may open or refresh a maintenance issue with release/link evidence. It must never edit guidance automatically. A maintainer reviews maturity, package and API changes before updating the matrix and skills.
+
+For every release update `VERSION`, `CHANGELOG.md`, release notes, the matrix's last-verified release/date, routing fixtures when boundaries change, and both fresh-session profile smoke-test records.
+
 ## What belongs in AGENTS.md
 
 Only durable invariants that should affect almost every MAF task:

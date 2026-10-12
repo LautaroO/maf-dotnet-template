@@ -27,6 +27,8 @@ Use an `AgentSession` across related agent runs in one conversation. Current C# 
 
 Define who creates, persists, restores, expires, and isolates sessions.
 
+Treat every caller/protocol-supplied session or continuation identifier as untrusted. Bind stored state to authenticated tenant/user/workspace scope before lookup, and define encryption, retention and deletion.
+
 ## Context providers
 
 Context providers participate in the agent pipeline and can supply/transform context around invocation. Use them for controlled context that should be consistently available, not for arbitrary hidden business logic.
@@ -40,6 +42,8 @@ Choose explicitly:
 - hybrid → deterministic common grounding via context provider + retrieval tools for ambiguous/on-demand lookup.
 
 Current MAF includes `TextSearchProvider` as a RAG context-provider implementation. Verify installed package availability and avoid coupling domain logic to its storage implementation.
+
+Authorize corpus access before ranking, preserve source provenance, constrain retrieved content, and treat it as untrusted data that cannot expand tool authority. Measure retrieval recall/precision and citation correctness separately from generated-answer quality.
 
 ## Compaction/storage
 

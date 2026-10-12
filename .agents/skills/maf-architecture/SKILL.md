@@ -1,6 +1,6 @@
 ---
 name: maf-architecture
-description: Design or refactor Microsoft Agent Framework architecture in C#/.NET. Use when deciding whether behavior should be deterministic C# code, a tool, an AIAgent/ChatClientAgent, a Workflow/Executor/edge, middleware, AgentSession state, a context provider/RAG component, checkpoint/durable state, or a provider adapter. Use before implementation when responsibilities or orchestration boundaries are unclear.
+description: Design or refactor Microsoft Agent Framework architecture in C#/.NET. Use before implementation when choosing among deterministic code, tools, agents, workflows, middleware, sessions/context/RAG, checkpoint/durable state, provider adapters, hosting/protocol surfaces, and security boundaries.
 ---
 
 # MAF architecture
@@ -62,6 +62,14 @@ Read `$maf-context-memory`.
 If code depends on provider SDK/auth/options/capabilities, isolate it in infrastructure/composition root.
 
 Read `$maf-provider-integration`.
+
+### Hosting / protocol adapter
+
+Choose who operates the runtime independently from how clients communicate. Keep authentication, tenancy, session persistence, streaming, deployment and durability ownership explicit. Read `$maf-hosting`.
+
+### Security boundary
+
+Authorization, tenant isolation, approval, validation, resource/egress limits and telemetry privacy are deterministic controls spanning the selected components, not a prompt role. Read `$maf-security` for threat modeling or hardening.
 
 ## Application boundary first
 
