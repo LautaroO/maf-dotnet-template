@@ -16,11 +16,11 @@ When a new MAF release materially changes an abstraction:
 
 The scheduled source audit may open or refresh a maintenance issue with release/link evidence. It must never edit guidance automatically. A maintainer reviews maturity, package and API changes before updating the matrix and skills.
 
-For every release update `VERSION`, `CHANGELOG.md`, release notes, the matrix's last-verified release/date, routing fixtures when boundaries change, and both fresh-session profile smoke-test records.
+For every release update `plugin.json`, `VERSION`, `CHANGELOG.md`, release notes, the matrix's last-verified release/date, routing fixtures when boundaries change, and both fresh-session profile smoke-test records.
 
-## What belongs in AGENTS.md
+## What belongs in application AGENTS.md
 
-Only durable invariants that should affect almost every MAF task:
+The application templates in `resources/profiles/` contain durable invariants that should affect almost every MAF task. The root `AGENTS.md` here is plugin-maintenance guidance, not an application template. Keep the shared knowledge in the installed plugin. Application instructions include:
 
 - least-agentic design;
 - provider neutrality;

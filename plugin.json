@@ -1,0 +1,29 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "maf-dotnet",
+  "version": "0.1.0",
+  "description": "Provider-neutral Microsoft Agent Framework guidance for C#/.NET development with Codex.",
+  "author": {
+    "name": "LautaroO",
+    "url": "https://github.com/LautaroO"
+  },
+  "repository": "https://github.com/LautaroO/maf-dotnet-template",
+  "homepage": "https://github.com/LautaroO/maf-dotnet-template",
+  "license": "MIT",
+  "keywords": [
+    "dotnet",
+    "maf",
+    "agents",
+    "workflows"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "MAF .NET Guidance",
+        "shortDescription": "Design, implement and review Microsoft Agent Framework systems.",
+        "developerName": "LautaroO",
+        "category": "Productivity"
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the structure, routing contract, metadata, and hygiene of the guidance pack."""
+"""Validate the repository-root MAF plugin, guidance and maintenance artifacts."""
 from __future__ import annotations
 
 import json
@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ROOT / ".agents" / "skills"
-REFERENCES = ROOT / ".agents" / "references"
-PROFILES = ROOT / "profiles"
-MATRIX = ROOT / "docs" / "capabilities" / "maf-dotnet-1.18.md"
-CATALOG = ROOT / "docs" / "patterns" / "v4.md"
-ROUTING = ROOT / "evaluations" / "skill-routing" / "v1.jsonl"
+SKILLS = ROOT / "skills"
+REFERENCES = ROOT / "resources" / "references"
+PROFILES = ROOT / "resources" / "profiles"
+MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.18.md"
+CATALOG = ROOT / "resources" / "docs" / "patterns" / "v4.md"
+ROUTING = ROOT / "resources" / "evaluations" / "skill-routing" / "v1.jsonl"
 
 REQUIRED_SKILLS = {
     "maf-adoption", "maf-agents", "maf-architecture", "maf-context-memory",
@@ -30,9 +30,9 @@ PLAYBOOK_HEADINGS = [
 ]
 PROFILE_BUDGETS = {
     "AGENTS.md": 12_000,
-    "profiles/ai-first/AGENTS.md": 12_000,
-    "profiles/application-with-ai-module/AGENTS.ai-module.md": 7_000,
-    "profiles/application-with-ai-module/AGENTS.root-fragment.md": 3_000,
+    "resources/profiles/ai-first/AGENTS.md": 12_000,
+    "resources/profiles/application-with-ai-module/AGENTS.ai-module.md": 7_000,
+    "resources/profiles/application-with-ai-module/AGENTS.root-fragment.md": 3_000,
 }
 
 
@@ -61,12 +61,13 @@ def parse_frontmatter(path: Path, errors: list[str]) -> tuple[str, str] | None:
     return name, description
 
 
-def validate_local_links(path: Path, errors: list[str]) -> None:
+def validate_local_links(path: Path, errors: list[str], root: Path | None = None) -> None:
+    root = ROOT if root is None else root
     text = path.read_text(encoding="utf-8")
     candidates = set(re.findall(r"`((?:\.\./|references/)[^`]+\.md)`", text))
     candidates.update(
-        target for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text)
-        if not re.match(r"(?:https?://|mailto:|#)", target)
+        target for target in re.findall(r"\[[^\]]*\]\(([^)]+)\)", text)
+        if not re.match(r"(?:[a-zA-Z][a-zA-Z0-9+.-]*:|#)", target)
     )
     for candidate in candidates:
         clean = candidate.split("#", 1)[0]
@@ -74,12 +75,64 @@ def validate_local_links(path: Path, errors: list[str]) -> None:
             continue
         target = (path.parent / clean).resolve()
         try:
-            target.relative_to(ROOT.resolve())
+            target.relative_to(root.resolve())
         except ValueError:
-            fail(f"{path.relative_to(ROOT)}: reference escapes repository: {candidate}", errors)
+            fail(f"{path.relative_to(root)}: reference escapes plugin: {candidate}", errors)
             continue
         if not target.exists():
-            fail(f"{path.relative_to(ROOT)}: missing local reference {candidate}", errors)
+            fail(f"{path.relative_to(root)}: missing local reference {candidate}", errors)
+
+
+def validate_plugin(root: Path, errors: list[str]) -> None:
+    """Validate a direct plugin checkout or an isolated installed copy, read-only."""
+    for name in ("plugin.json", "VERSION", "LICENSE", "skills", "resources"):
+        path = root / name
+        if not path.exists():
+            fail(f"Missing plugin component: {name}", errors)
+        elif name in {"skills", "resources"} and not path.is_dir():
+            fail(f"Plugin component must be a directory: {name}", errors)
+        elif name not in {"skills", "resources"} and not path.is_file():
+            fail(f"Plugin component must be a file: {name}", errors)
+        if path.is_symlink():
+            fail(f"Plugin component must not be a symlink: {name}", errors)
+    trees = (root / "skills", root / "resources")
+    symlinks = [p for tree in trees for p in tree.rglob("*") if p.is_symlink()]
+    for path in symlinks:
+        fail(f"Plugin resource must not be a symlink: {path.relative_to(root)}", errors)
+    if symlinks or any((root / name).is_symlink() for name in ("plugin.json", "VERSION", "LICENSE", "skills", "resources")):
+        return
+    manifest_path = root / "plugin.json"
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (ValueError, OSError) as exc:
+            fail(f"Invalid plugin.json: {exc}", errors)
+        else:
+            if not isinstance(manifest, dict):
+                fail("plugin.json must contain an object", errors)
+            else:
+                if manifest.get("name") != "maf-dotnet":
+                    fail("plugin.json name must be maf-dotnet", errors)
+                version = (root / "VERSION").read_text(encoding="utf-8").strip() if (root / "VERSION").is_file() else ""
+                if not re.fullmatch(r"\d+\.\d+\.\d+", version) or manifest.get("version") != version:
+                    fail("plugin.json version must match Semantic Versioning in VERSION", errors)
+                for field in ("description", "license", "repository"):
+                    if not isinstance(manifest.get(field), str) or not manifest[field].strip():
+                        fail(f"plugin.json requires a nonempty {field}", errors)
+                if manifest.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
+                    fail("plugin.json must declare the portable Agent Plugins schema", errors)
+    skills = root / "skills"
+    names = {path.parent.name for path in skills.glob("*/SKILL.md")}
+    for name in sorted(REQUIRED_SKILLS - names):
+        fail(f"Missing plugin skill: {name}", errors)
+    for name in sorted(names - REQUIRED_SKILLS):
+        fail(f"Unexpected plugin skill: {name}", errors)
+    for path in skills.rglob("SKILL.md"):
+        if len(path.relative_to(skills).parts) != 2:
+            fail(f"Nested plugin skill is not supported: {path.relative_to(root)}", errors)
+    for tree in trees:
+        for path in sorted(tree.rglob("*.md")):
+            validate_local_links(path, errors, root)
 
 
 def validate_matrix(errors: list[str]) -> None:
@@ -167,6 +220,7 @@ def validate_hygiene(errors: list[str]) -> None:
             check=True, capture_output=True,
         )
         paths = [ROOT / name for name in result.stdout.decode("utf-8").split("\0") if name]
+        paths = [path for path in paths if path.exists() or path.is_symlink()]
     else:
         # Exported packs have no Git index; validate every delivered file.
         paths = [path for path in ROOT.rglob("*") if path.is_file()]
@@ -186,13 +240,14 @@ def validate_hygiene(errors: list[str]) -> None:
             fail(f"Forbidden generated directory contains: {relative}", errors)
     if (ROOT / "scripts" / "install-guidance.py").exists():
         fail("Obsolete installer must not exist", errors)
-    if (ROOT / ".codex-plugin" / "plugin.json").exists():
-        fail("Plugin manifest is outside this guidance-only release", errors)
+    for path in paths:
+        if path.name == "marketplace.json":
+            fail("Marketplace catalog belongs in a separate repository", errors)
     for skill_file in (path for path in paths if path.name == "SKILL.md"):
         try:
-            skill_file.relative_to(SKILLS)
+            skill_file.relative_to(ROOT / "skills")
         except ValueError:
-            fail(f"Runtime/copied skill outside repository Codex skill root: {skill_file.relative_to(ROOT)}", errors)
+            fail(f"Runtime/copied skill outside plugin skill root: {skill_file.relative_to(ROOT)}", errors)
     secret_patterns = [
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
         re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
@@ -237,7 +292,7 @@ def main() -> int:
 
     for required in ("official-sources.md", "provider-neutrality.md", "langgraph-crosswalk.md", "application-boundaries.md"):
         if not (REFERENCES / required).is_file():
-            fail(f"Missing shared reference: .agents/references/{required}", errors)
+            fail(f"Missing shared reference: resources/references/{required}", errors)
     for markdown in ROOT.rglob("*.md"):
         if ".git" not in markdown.relative_to(ROOT).parts:
             validate_local_links(markdown, errors)
@@ -248,10 +303,6 @@ def main() -> int:
             fail(f"Missing profile instruction: {relative}", errors)
         elif len(path.read_bytes()) > budget:
             fail(f"{relative}: exceeds {budget}-byte instruction budget", errors)
-    if (ROOT / "AGENTS.md").is_file() and (PROFILES / "ai-first" / "AGENTS.md").is_file():
-        if (ROOT / "AGENTS.md").read_bytes() != (PROFILES / "ai-first" / "AGENTS.md").read_bytes():
-            fail("Root AGENTS.md must stay synchronized with AI-first profile", errors)
-
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip() if (ROOT / "VERSION").is_file() else ""
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         fail("VERSION must contain Semantic Versioning x.y.z", errors)
@@ -262,10 +313,11 @@ def main() -> int:
     validate_catalog(errors)
     validate_routing(set(names), errors)
     validate_hygiene(errors)
+    validate_plugin(ROOT, errors)
 
     entrypoint_links = {
-        ROOT / "README.md": ["docs/capabilities/maf-dotnet-1.18.md", "docs/patterns/v4.md", "evaluations/skill-routing/v1.jsonl"],
-        ROOT / "docs" / "patterns" / "README.md": ["v4.md"],
+        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.18.md", "resources/docs/patterns/v4.md", "resources/evaluations/skill-routing/v1.jsonl"],
+        ROOT / "resources" / "docs" / "patterns" / "README.md": ["v4.md"],
     }
     for path, required_targets in entrypoint_links.items():
         text = path.read_text(encoding="utf-8") if path.is_file() else ""

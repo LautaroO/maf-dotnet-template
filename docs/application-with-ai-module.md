@@ -4,12 +4,11 @@ This is the recommended profile for a normal product/application where MAF is on
 
 ## Target shape
 
+This example uses the installed plugin for shared skills/resources and keeps only project-specific instructions in the application.
+
 ```text
 MyProduct/
 ├── AGENTS.md                         # product-wide rules and dependency boundaries
-├── .agents/
-│   ├── references/
-│   └── skills/maf-*/                 # one shared MAF knowledge layer
 └── src/
     ├── MyProduct.Domain/
     ├── MyProduct.Application/
@@ -70,10 +69,10 @@ The tool should not reimplement discounts, tax rules, eligibility, or persistenc
 
 ## Adopt manually
 
-Copy the shared `.agents/` layer to the repository root. Merge `profiles/application-with-ai-module/AGENTS.root-fragment.md` into the existing root instructions without replacing them, then copy `AGENTS.ai-module.md` into the AI subtree as `AGENTS.md`.
+Use the installed plugin's shared knowledge layer. Merge its `resources/profiles/application-with-ai-module/AGENTS.root-fragment.md` into the existing root instructions without replacing them, then copy `AGENTS.ai-module.md` into the AI subtree as `AGENTS.md`.
 
 Invoke `$maf-adoption` so Codex inspects solution/package/command evidence and populates the project context. There is intentionally no installer or force-overwrite path.
 
 ## What remains shared
 
-Do not duplicate the MAF skills into the AI project. Keep them once under repository-root `.agents/skills/`. Their descriptions provide discovery and the selected skill loads detailed guidance only when needed.
+Do not duplicate the MAF skills into the AI project. Keep the shared skills in the installed plugin. Their descriptions provide discovery and the selected skill loads detailed guidance only when needed.

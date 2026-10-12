@@ -1,4 +1,4 @@
-# Adopting the guidance pack
+# Adopting the installed MAF plugin
 
 ## 1. Choose the solution profile before copying `AGENTS.md`
 
@@ -9,15 +9,13 @@ Choose:
 - `ai-first` when MAF is central to the repository;
 - `application-with-ai-module` when MAF lives in one project/module inside a larger product.
 
-See `../profiles/README.md`.
+See `../resources/profiles/README.md`.
 
-## 2. Copy/merge the shared MAF knowledge layer once
+## 2. Use the installed knowledge layer
 
-Keep `.agents/skills/` and `.agents/references/` at repository root so all relevant code can discover the same MAF guidance.
+Install `maf-dotnet` through your separate marketplace before adoption. Select its `maf-adoption` skill using the plugin namespace shown by the client. The skill uses bundled profiles, capability and pattern resources; do not copy skills or shared resources into the target repository. See [distribution](plugin-distribution.md).
 
-Also copy/merge `docs/capabilities/` and `docs/patterns/` at the same relative paths. Skills depend on the capability matrix; preserve existing documentation and resolve differing files by merging rather than overwriting.
-
-Do not fork skills per project/module unless framework behavior truly differs.
+If the target already has older `.agents/skills/maf-*` copies, review local adaptations and preserve project-specific instructions before removing duplicates. Installing the plugin alone does not perform that migration or edit project rules.
 
 ## 3. Scope `AGENTS.md` hierarchically
 
@@ -39,17 +37,17 @@ Do not duplicate the entire root file into nested directories. Nested instructio
 
 ## 4. Populate project-specific context
 
-Invoke `$maf-adoption` and ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints. Never overwrite an existing root `AGENTS.md`.
+Invoke `$maf-adoption` and ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints. Never overwrite an existing root `AGENTS.md`. Use a packaged profile rather than the plugin repository's maintainer instructions.
 
 Reuse existing architecture, ADR and feature documentation and the team's refinement/planning process. Keep a compact index of canonical context links and the process in the closest applicable `AGENTS.md`, avoiding duplicated documentation. Saved context reduces repeated discovery; code/configuration and installed package APIs still need checks relevant to each change.
 
 If no suitable documentation convention exists, Codex proposes a location and naming approach with a rationale and waits for agreement before creating new context or feature documents. It can continue independent inspection and authorized instruction merging, recording the destination as pending. The agreed convention is reused on later tasks; this pack imposes no `docs/architecture/` or `docs/features/` hierarchy.
 
-For example, if a product uses `handbook/ai-context.md`, feature notes under `handbook/`, and its own brainstorming skill, adoption links to those documents and follows that skill. A later “add an agent that queries orders” request reuses documented order contracts, permissions and operational limits, asking only about unresolved decisions. A fully specified display-name change follows the team's lightweight process without generating a new specification. See the [context and refinement guidance](../.agents/references/project-context-and-refinement.md).
+For example, if a product uses `handbook/ai-context.md`, feature notes under `handbook/`, and its own brainstorming skill, adoption links to those documents and follows that skill. A later “add an agent that queries orders” request reuses documented order contracts, permissions and operational limits, asking only about unresolved decisions. A fully specified display-name change follows the team's lightweight process without generating a new specification. See the [context and refinement guidance](../resources/references/project-context-and-refinement.md).
 
 ## 5. Keep application/domain behavior outside the AI layer
 
-In mixed solutions, use `.agents/references/application-boundaries.md` as the default boundary model.
+In mixed solutions, use the installed plugin's `resources/references/application-boundaries.md` as the default boundary model.
 
 MAF agents/workflows/tools may orchestrate or adapt application capabilities. They should not become a parallel domain/application layer.
 

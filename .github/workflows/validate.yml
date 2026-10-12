@@ -1,4 +1,4 @@
-name: Validate guidance pack
+name: Validate MAF plugin
 
 on:
   push:
@@ -22,11 +22,11 @@ jobs:
       - name: Test validator regressions
         run: python3 -B -m unittest discover -s tests -v
       - name: Check shell script syntax
-        run: find .agents -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
+        run: find skills -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
       - name: Check Markdown links
         uses: lycheeverse/lychee-action@v2
         with:
           lycheeVersion: v0.24.2
-          args: --no-progress --accept 200,429 './**/*.md' '.agents/**/*.md'
+          args: --no-progress --accept 200,429 './**/*.md'
           fail: true
 

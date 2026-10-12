@@ -11,7 +11,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MATRIX = ROOT / "docs" / "capabilities" / "maf-dotnet-1.18.md"
+MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.18.md"
 SOURCES = [
     "https://learn.microsoft.com/en-us/agent-framework/agents/",
     "https://learn.microsoft.com/en-us/agent-framework/workflows/",

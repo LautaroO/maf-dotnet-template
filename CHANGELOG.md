@@ -1,16 +1,20 @@
 # Changelog
 
-All notable changes to this guidance pack are recorded here. The pack follows Semantic Versioning independently of Microsoft Agent Framework (MAF).
+All notable changes to this guidance pack are recorded here. The plugin follows Semantic Versioning independently of Microsoft Agent Framework (MAF). Plugin versioning starts at `0.1.0`; earlier `4.x` entries describe the historical guidance pack.
 
-## [Unreleased]
+## [0.1.0] - 2026-10-12
 
 ### Changed
 
+- Plugin-only authoring layout: `skills/` and `resources/` replace repository-scoped `.agents/` guidance; adoption merges project instructions while keeping the skills installed.
+- Root maintainer instructions are separate from application adoption profiles.
 - Adoption reuses existing documentation and refinement processes, recording a compact context index and proposing missing documentation conventions before creating new documents.
 - Architecture tasks reuse settled requirements, verify relevant context and clarify only material open decisions, with documentation proportional to the change.
 
 ### Added
 
+- Repository-root, skills-only `maf-dotnet` plugin for distribution through a separate marketplace; this repository is the plugin, not a marketplace.
+- Plugin manifest/version validation, standalone resource checks, installation-layout regression tests, and external-marketplace documentation.
 - Shared project-context/refinement guidance and three behavior evaluation fixtures for existing conventions, missing conventions and small fully specified changes.
 
 ## [4.0.0] - 2026-09-09

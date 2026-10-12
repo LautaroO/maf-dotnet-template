@@ -1,10 +1,12 @@
 # Codex setup
 
-Codex reads repository `AGENTS.md` automatically and discovers repository-scoped skills under `.agents/skills/`.
+Install the `maf-dotnet` plugin through a separate marketplace, including when testing changes in this repository. Portable skills live in `skills/`; they are discovered through plugin installation rather than repository-scoped `.agents/skills/` discovery. See [distribution](plugin-distribution.md).
+
+Codex reads the target application's `AGENTS.md` hierarchy separately. Plugin installation does not edit those instructions.
 
 ## Skills
 
-Invoke explicitly with `$skill-name` when you want deterministic selection, for example:
+Select the installed skill explicitly when you want deterministic selection. The names below identify capabilities; use the plugin namespace shown by the client. For example:
 
 ```text
 $maf-workflows Implement the approved workflow design.
@@ -22,11 +24,11 @@ Keep detailed MAF knowledge in skill references. Do not move all references back
 
 Codex layers project instructions from repository root toward the working directory, with more local guidance taking precedence. This is why the pack uses adoption profiles instead of one universal MAF-centric root file.
 
-For an application that contains one AI project, keep product architecture at the root and place the MAF-specific `AGENTS.md` in that AI subtree. See `../profiles/application-with-ai-module/`.
+For an application that contains one AI project, keep product architecture at the root and place the MAF-specific `AGENTS.md` in that AI subtree. See [the packaged profile](../resources/profiles/application-with-ai-module/README.md).
 
 Keep root guidance concise and use skills/references for task-specific detail.
 
-Repository `.agents/skills/` are developer guidance consumed by Codex. MAF runtime Agent Skills are application content discovered by an executing agent. Keep their storage, provenance and security policies separate; never load this pack into the application runtime.
+This plugin's `skills/` are developer guidance consumed by Codex. MAF runtime Agent Skills are application content discovered by an executing agent. Keep their storage, provenance and security policies separate; never load this pack into the application runtime.
 
 Official Codex references:
 
