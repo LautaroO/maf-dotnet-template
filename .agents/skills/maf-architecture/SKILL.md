@@ -11,11 +11,11 @@ Choose the smallest idiomatic MAF design before writing code.
 
 ## Required process
 
-1. Read repository `AGENTS.md` and project-specific context.
-2. Inspect installed MAF package versions and existing abstractions.
+1. Read repository `AGENTS.md`, its context index, relevant feature/architecture documents, and `../../references/project-context-and-refinement.md`. Follow the existing refinement and design process.
+2. Verify installed MAF package versions and existing abstractions relevant to the change. Reuse recorded context and inspect its relevant gaps or stale facts.
 3. Detect whether MAF is the center of the repository or one module inside a larger application. If it is one module, read `../../references/application-boundaries.md`.
 4. Read `../../references/official-sources.md`, `../../references/provider-neutrality.md`, and `../../references/langgraph-crosswalk.md` as needed.
-5. Decompose the requirement into semantic decisions, deterministic rules, side effects, state, and external integrations.
+5. Reuse settled requirements and clarify only open decisions that affect behavior, access, acceptance or material operational constraints before implementing affected behavior. Scale documentation to the task and use the established/agreed location. Then decompose the requirement into semantic decisions, deterministic rules, side effects, state, and external integrations.
 6. Classify each responsibility using the decision matrix below.
 7. Route implementation work to the specialized skill rather than inventing APIs here.
 

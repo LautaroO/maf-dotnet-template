@@ -41,6 +41,12 @@ Do not duplicate the entire root file into nested directories. Nested instructio
 
 Invoke `$maf-adoption` and ask Codex to inspect the actual solution and fill the relevant context section. Capture package versions, commands, project boundaries, provider adapters, hosts, persistence/session choices, application dependencies, and security constraints. Never overwrite an existing root `AGENTS.md`.
 
+Reuse existing architecture, ADR and feature documentation and the team's refinement/planning process. Keep a compact index of canonical context links and the process in the closest applicable `AGENTS.md`, avoiding duplicated documentation. Saved context reduces repeated discovery; code/configuration and installed package APIs still need checks relevant to each change.
+
+If no suitable documentation convention exists, Codex proposes a location and naming approach with a rationale and waits for agreement before creating new context or feature documents. It can continue independent inspection and authorized instruction merging, recording the destination as pending. The agreed convention is reused on later tasks; this pack imposes no `docs/architecture/` or `docs/features/` hierarchy.
+
+For example, if a product uses `handbook/ai-context.md`, feature notes under `handbook/`, and its own brainstorming skill, adoption links to those documents and follows that skill. A later “add an agent that queries orders” request reuses documented order contracts, permissions and operational limits, asking only about unresolved decisions. A fully specified display-name change follows the team's lightweight process without generating a new specification. See the [context and refinement guidance](../.agents/references/project-context-and-refinement.md).
+
 ## 5. Keep application/domain behavior outside the AI layer
 
 In mixed solutions, use `.agents/references/application-boundaries.md` as the default boundary model.
