@@ -19,11 +19,14 @@ jobs:
         run: python3 scripts/validate-template.py
       - name: Check Python script syntax
         run: python3 -m compileall -q scripts
+      - name: Test validator regressions
+        run: python3 -B -m unittest discover -s tests -v
       - name: Check shell script syntax
         run: find .agents -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
       - name: Check Markdown links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --exclude-mail --accept 200,429 './**/*.md'
+          lycheeVersion: v0.24.2
+          args: --no-progress --accept 200,429 './**/*.md' '.agents/**/*.md'
           fail: true
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -133,6 +134,9 @@ def validate_routing(known_skills: set[str], errors: list[str]) -> None:
         except json.JSONDecodeError as exc:
             fail(f"{ROUTING.relative_to(ROOT)}:{number}: invalid JSON: {exc}", errors)
             continue
+        if not isinstance(record, dict):
+            fail(f"{ROUTING.relative_to(ROOT)}:{number}: fixture must be a JSON object", errors)
+            continue
         records.append(record)
         fixture_id = record.get("id")
         if not isinstance(fixture_id, str) or fixture_id in ids:
@@ -141,7 +145,7 @@ def validate_routing(known_skills: set[str], errors: list[str]) -> None:
             ids.add(fixture_id)
         for field in ("expected_skills", "must_not_route"):
             values = record.get(field)
-            if not isinstance(values, list) or any(v not in known_skills for v in values):
+            if not isinstance(values, list) or any(not isinstance(v, str) or v not in known_skills for v in values):
                 fail(f"{ROUTING.relative_to(ROOT)}:{number}: invalid {field}", errors)
     required_ids = {
         "rag-two-step", "consequential-tool", "deterministic-routing", "hosting-choice",
@@ -155,25 +159,36 @@ def validate_routing(known_skills: set[str], errors: list[str]) -> None:
 
 
 def validate_hygiene(errors: list[str]) -> None:
+    # Validate publishable files, including tracked files even when ignored.
+    # Local ignored caches/configuration are not part of the guidance pack.
+    if (ROOT / ".git").exists():
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            check=True, capture_output=True,
+        )
+        paths = [ROOT / name for name in result.stdout.decode("utf-8").split("\0") if name]
+    else:
+        # Exported packs have no Git index; validate every delivered file.
+        paths = [path for path in ROOT.rglob("*") if path.is_file()]
     forbidden_names = {".DS_Store", "Thumbs.db"}
     forbidden_suffixes = {
         ".pyc", ".dll", ".exe", ".nupkg", ".snupkg",
         ".cs", ".csproj", ".fsproj", ".vbproj", ".sln",
     }
     forbidden_dirs = {"__pycache__", "bin", "obj"}
-    for path in ROOT.rglob("*"):
+    for path in paths:
         relative = path.relative_to(ROOT)
         if ".git" in relative.parts:
             continue
         if path.name in forbidden_names or path.suffix.lower() in forbidden_suffixes:
             fail(f"Forbidden generated/copied artifact: {relative}", errors)
-        if path.is_dir() and path.name in forbidden_dirs:
-            fail(f"Forbidden generated directory: {relative}", errors)
+        if any(part in forbidden_dirs for part in relative.parts[:-1]):
+            fail(f"Forbidden generated directory contains: {relative}", errors)
     if (ROOT / "scripts" / "install-guidance.py").exists():
         fail("Obsolete installer must not exist", errors)
     if (ROOT / ".codex-plugin" / "plugin.json").exists():
         fail("Plugin manifest is outside this guidance-only release", errors)
-    for skill_file in ROOT.rglob("SKILL.md"):
+    for skill_file in (path for path in paths if path.name == "SKILL.md"):
         try:
             skill_file.relative_to(SKILLS)
         except ValueError:
@@ -183,7 +198,7 @@ def validate_hygiene(errors: list[str]) -> None:
         re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
         re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
     ]
-    for path in ROOT.rglob("*"):
+    for path in paths:
         if not path.is_file() or ".git" in path.relative_to(ROOT).parts:
             continue
         if path.suffix.lower() not in {".md", ".py", ".sh", ".toml", ".json", ".jsonl", ".yml", ".yaml"}:

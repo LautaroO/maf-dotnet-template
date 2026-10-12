@@ -15,6 +15,8 @@ See `../profiles/README.md`.
 
 Keep `.agents/skills/` and `.agents/references/` at repository root so all relevant code can discover the same MAF guidance.
 
+Also copy/merge `docs/capabilities/` and `docs/patterns/` at the same relative paths. Skills depend on the capability matrix; preserve existing documentation and resolve differing files by merging rather than overwriting.
+
 Do not fork skills per project/module unless framework behavior truly differs.
 
 ## 3. Scope `AGENTS.md` hierarchically

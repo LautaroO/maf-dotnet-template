@@ -8,6 +8,8 @@ Use `rg --files`, then inspect existing instructions, solution/project boundarie
 
 For an embedded AI module, copy the shared `.agents/` knowledge layer to the repository root, merge the root boundary fragment without replacing local rules, and place the AI-module profile at the AI subtree. For AI-first, merge the AI-first profile into the root.
 
+For both profiles, also copy/merge `docs/capabilities/` and `docs/patterns/` at their original relative paths. Preserve existing files and resolve conflicts manually. Check that the hosting skill can open the capability matrix after adoption.
+
 ## Populate
 
 Record exact SDK/target frameworks, package versions, commands, component locations, providers/capabilities, state/persistence/durability, hosting/protocols, security/privacy/approval constraints, and provider-specific exceptions.

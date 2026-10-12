@@ -16,7 +16,7 @@ MyProduct/
         └── AGENTS.md
 ```
 
-Copy/merge the shared `.agents/` skills at repository root.
+Copy/merge the shared `.agents/` skills, `docs/capabilities/`, and `docs/patterns/` at repository root, retaining their relative paths and preserving existing files.
 
 Merge `AGENTS.root-fragment.md` into the repository root `AGENTS.md` rather than replacing existing product guidance.
 

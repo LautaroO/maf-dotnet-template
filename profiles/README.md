@@ -2,6 +2,8 @@
 
 The reusable asset in this repository is the MAF knowledge layer under `.agents/`.
 
+For either profile, copy/merge `.agents/`, `docs/capabilities/`, and `docs/patterns/` at their original relative paths. Preserve existing files; the skills require the capability matrix.
+
 `AGENTS.md` placement depends on how MAF participates in the target solution. Do not force one root prompt onto every architecture.
 
 ## `application-with-ai-module` (recommended default)

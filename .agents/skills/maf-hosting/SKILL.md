@@ -5,7 +5,7 @@ description: Design or review how Microsoft Agent Framework agents and workflows
 
 # MAF hosting
 
-Read `../../references/official-sources.md`, `references/hosting-selection.md`, and the versioned capability matrix under `../../../docs/capabilities/`.
+Read `../../references/official-sources.md`, `references/hosting-selection.md`, and the [versioned capability matrix](../../../docs/capabilities/maf-dotnet-1.18.md).
 
 Make two independent decisions:
 

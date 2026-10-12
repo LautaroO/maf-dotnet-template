@@ -10,12 +10,20 @@ All notable changes to this guidance pack are recorded here. The pack follows Se
 - A versioned .NET capability matrix, uniform pattern catalog, and routing evaluation dataset.
 - Whole-repository and change/diff review modes with evidence-first finding fields.
 - CI validation and a scheduled, issue-only official-source audit.
+- Regression tests for repository hygiene and malformed routing fixtures.
 
 ### Changed
 
 - Shortened both adoption profiles and made the embedded-AI profile the default recommendation.
 - Expanded agent, workflow, middleware, provider, testing, observability, and review guidance for current .NET capabilities and operational checks.
 - Adoption is now a manual copy/merge workflow assisted by `$maf-adoption`.
+- All adoption entrypoints include the capability and pattern documents required by skills.
+
+### Fixed
+
+- Invalid Lychee mail flag; link checking now includes hidden `.agents/` guidance and pins the checker version.
+- Ignored local caches no longer fail pack hygiene; tracked ignored artifacts are still rejected.
+- Non-object routing fixtures produce validation errors instead of crashing the validator.
 
 ### Removed
 

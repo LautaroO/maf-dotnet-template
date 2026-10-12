@@ -12,7 +12,7 @@ Use [AI-first](profiles/ai-first/AGENTS.md) only when MAF genuinely owns the rep
 
 Adoption is manual and non-overwriting:
 
-1. copy/merge `.agents/` and the relevant profile;
+1. copy/merge `.agents/`, `docs/capabilities/`, `docs/patterns/`, and the relevant profile at their original relative paths, preserving existing files;
 2. invoke `$maf-adoption` in the target repository;
 3. let it inspect the solution, packages, commands, boundaries and existing instructions;
 4. populate project context only from evidence;
@@ -46,6 +46,7 @@ In mixed solutions, removing the AI module must not remove business rules, ordin
 ```bash
 python3 scripts/validate-template.py
 python3 -m compileall -q scripts
+python3 -B -m unittest discover -s tests -v
 ```
 
 CI also checks Markdown links and repository hygiene. The scheduled source audit opens or refreshes a maintenance issue; it never edits guidance.
