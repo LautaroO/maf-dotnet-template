@@ -4,7 +4,7 @@
 
 This repository is the `maf-dotnet` skills-only Codex plugin. It contains no .NET application, solution, installed MAF packages, runtime Agent Skills, marketplace catalog, or installer. `plugin.json` is the root manifest; `skills/` and `resources/` are the single authoring source. Edit them directly. Do not add a generated package copy or repository-discovered duplicate skills under `.agents/skills/`.
 
-The current plugin baseline is `0.1.0`; MAF knowledge was last verified against `dotnet-1.18.0` on 2026-09-09. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
+The current plugin baseline is `0.1.0`; MAF knowledge was last verified against `dotnet-1.24.0` on 2026-10-12. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
 
 ## Structure and boundaries
 
@@ -25,6 +25,8 @@ Keep all skill/resource links resolvable within the plugin after installation. D
 Preserve least-agentic responsibility assignment, provider/cloud neutrality, installed-version checks, typed validation, authorization/tenancy boundaries, bounded async/cancellation/retry behavior, state-lifetime distinctions and live-model-free default tests. Prefer MAF-native semantics when available. Keep provider SDK setup separate from reusable agents, tools, workflows and application behavior.
 
 ## Verification and releases
+
+When asked to update MAF knowledge or review a source audit, Codex owns the follow-through: read `docs/maintaining-maf-knowledge.md`, review official release/tag/API evidence, edit affected guidance, record a dated review and run validation. Do not stop at telling the user to review sources manually. The source-audit script gathers evidence; it does not replace this maintenance workflow. Preserve scoped verification metadata when only part of the knowledge base has been reviewed.
 
 Run `python3 scripts/validate-template.py`, `python3 -m compileall -q scripts`, and `python3 -B -m unittest discover -s tests -v`. Check shell syntax for embedded `.sh` scripts and use `git diff --check`. CI also verifies Markdown links.
 

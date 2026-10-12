@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
 REFERENCES = ROOT / "resources" / "references"
 PROFILES = ROOT / "resources" / "profiles"
-MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.18.md"
+MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.24.md"
 CATALOG = ROOT / "resources" / "docs" / "patterns" / "v4.md"
 ROUTING = ROOT / "resources" / "evaluations" / "skill-routing" / "v1.jsonl"
 
@@ -316,7 +316,7 @@ def main() -> int:
     validate_plugin(ROOT, errors)
 
     entrypoint_links = {
-        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.18.md", "resources/docs/patterns/v4.md", "resources/evaluations/skill-routing/v1.jsonl"],
+        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.24.md", "resources/docs/patterns/v4.md", "resources/evaluations/skill-routing/v1.jsonl"],
         ROOT / "resources" / "docs" / "patterns" / "README.md": ["v4.md"],
     }
     for path, required_targets in entrypoint_links.items():

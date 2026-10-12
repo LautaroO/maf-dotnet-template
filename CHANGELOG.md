@@ -2,6 +2,15 @@
 
 All notable changes to this guidance pack are recorded here. The plugin follows Semantic Versioning independently of Microsoft Agent Framework (MAF). Plugin versioning starts at `0.1.0`; earlier `4.x` entries describe the historical guidance pack.
 
+## [Unreleased]
+
+### Changed
+
+- Codex now owns requested MAF audit follow-through: source review, guidance edits, evidence and validation, with release verification kept separate.
+- Integral documentary review of all matrix capabilities and .NET releases 1.19–1.24 updates session storage, MCP tasks and approval binding, provider upgrade notes, DevUI continuation, telemetry and regression guidance.
+- Agent Hooks guidance distinguishes the alpha .NET implementation in the 1.24 tag from conflicting Learn text and published alpha package and installed-version checks; the overall matrix baseline advances to 1.24.
+- Harness links use the reviewed canonical concept URL. Added a dated maintenance review and updated the middleware behavior fixture.
+
 ## [0.1.0] - 2026-10-12
 
 ### Changed
@@ -44,6 +53,6 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 - The guidance installer and all automated-install instructions.
 
-Last verified MAF .NET release: `dotnet-1.18.0` on 2026-09-09.
+Historical 4.0.0 baseline: `dotnet-1.18.0` on 2026-09-09. Current verification is recorded in the 1.24 capability matrix.
 
 [4.0.0]: docs/releases/v4.0.0.md

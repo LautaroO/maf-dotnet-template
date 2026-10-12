@@ -11,7 +11,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.18.md"
+MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.24.md"
 SOURCES = [
     "https://learn.microsoft.com/en-us/agent-framework/agents/",
     "https://learn.microsoft.com/en-us/agent-framework/workflows/",
@@ -19,7 +19,7 @@ SOURCES = [
     "https://learn.microsoft.com/en-us/agent-framework/hosting/self-hosting/",
     "https://learn.microsoft.com/en-us/agent-framework/agents/background-responses",
     "https://learn.microsoft.com/en-us/agent-framework/agents/skills",
-    "https://learn.microsoft.com/en-us/agent-framework/agents/harness",
+    "https://learn.microsoft.com/en-us/agent-framework/concepts/harness",
     "https://github.com/microsoft/agent-framework/releases",
 ]
 EXPECTED_SIGNALS = {

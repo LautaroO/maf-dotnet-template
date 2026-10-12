@@ -18,7 +18,7 @@ See [adoption](docs/adopting-the-template.md) and [migration to plugin-only dist
 
 Fourteen focused skills cover adoption, architecture, agents, tools/MCP, workflows, context/RAG, middleware, providers, hosting, security, observability, DevUI, testing/evaluation and review.
 
-The [versioned capability matrix](resources/docs/capabilities/maf-dotnet-1.18.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](resources/docs/patterns/v4.md) contains 17 playbooks for common application and production scenarios.
+The [versioned capability matrix](resources/docs/capabilities/maf-dotnet-1.24.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](resources/docs/patterns/v4.md) contains 17 playbooks for common application and production scenarios.
 
 These skills guide Codex during software development. MAF runtime Agent Skills are inputs discovered by application agents during execution. Never place this plugin in an application's runtime skill store.
 
@@ -47,11 +47,13 @@ python3 -B -m unittest discover -s tests -v
 
 CI checks the manifest/version, skill contracts, resource paths, profiles, matrix, fixtures, Markdown links and repository hygiene. The scheduled source audit opens or refreshes a maintenance issue; it never edits guidance.
 
+After an audit, Codex reviews official releases and tagged APIs, updates affected guidance and records validation. Ask: “Review `/tmp/maf-source-audit.md` and update the MAF knowledge using the [maintenance workflow](docs/maintaining-maf-knowledge.md).” The script collects evidence; Codex performs the requested documentation update.
+
 Before each release, install the plugin in a supported client and run fresh-session smoke tests for both adoption profiles using [the routing dataset](resources/evaluations/skill-routing/v1.jsonl). Structural tests do not prove native-client installation or autonomous routing.
 
 ## Version policy
 
-The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current development baseline: `0.1.0`, with last verified MAF .NET release `dotnet-1.18.0` on 2026-09-09. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
+The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current development baseline: `0.1.0`, with last verified MAF .NET release `dotnet-1.24.0` on 2026-10-12. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
 
 Installed NuGet APIs are authoritative for adopters. Current Microsoft Learn or `main` samples never override the installed package surface.
 

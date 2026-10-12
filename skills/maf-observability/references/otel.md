@@ -4,6 +4,8 @@ MAF integrates with OpenTelemetry / GenAI semantic conventions. Current C# docs 
 
 Exact source names/extensions evolve. Inspect installed packages before hardcoding them.
 
+The [1.22 release](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.22.0) exposes `OpenTelemetryAgent.DefaultSourceName`. Prefer the installed constant when available; keep a version-appropriate fallback rather than assuming this API exists in older packages.
+
 Verification should answer separately:
 
 1. are spans/metrics/logs being created?;

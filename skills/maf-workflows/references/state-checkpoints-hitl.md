@@ -14,6 +14,12 @@ Checkpoints capture workflow runtime state so execution can resume from a saved 
 
 Checkpoint state is not a substitute for domain/application persistence.
 
+The [reviewed .NET checkpoint guide](https://learn.microsoft.com/agent-framework/workflows/checkpoints) requires matching topology and executor identities. Reconstructed local `ChatClientAgent` participants need stable, unique logical-role `ChatClientAgentOptions.Id` values and unchanged names when set. Regenerated IDs break compatibility; later assigning stable IDs does not repair an old lineage. Keep tenancy/session IDs separate from agent-role IDs and start a new checkpoint lineage when identities change.
+
+Queued state updates are visible immediately to the writer and to other executors in the next superstep; use an explicit shared scope. Supported reset between runs is not concurrent-run isolation.
+
+The [Durable hosting guide](https://learn.microsoft.com/agent-framework/hosting/azure-functions) separates Azure Functions integration from a bring-your-own-compute Durable Task worker. Their package/infrastructure versions are independent from core MAF; scheduling does not eliminate application idempotency or authorization.
+
 ## HITL / RequestPort
 
 Current MAF workflow docs use request/response handling (`RequestPort` in C#) for interactions with external systems/humans. The workflow emits a request event and waits; the outside host returns a typed response and execution resumes.

@@ -72,3 +72,5 @@ Bind DevUI to loopback by default. If remote access is explicitly required, add 
 7. Cancellation/provider errors behave correctly.
 8. External telemetry and DevUI traces are verified separately.
 9. DevUI is not remotely exposed by accident.
+
+The [1.23 release](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.23.0) includes a breaking correction to DevUI approval continuation. When upgrading, verify that approval requests are displayed and resumed against the same entity/session and that denial, replay and changed tool arguments cannot execute the action. A successful native agent run does not verify the hosted DevUI continuation path.

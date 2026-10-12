@@ -11,29 +11,29 @@ Useful Learn areas:
 
 - Overview: https://learn.microsoft.com/agent-framework/overview/
 - Agents: https://learn.microsoft.com/agent-framework/agents/
-- Agent pipeline: https://learn.microsoft.com/agent-framework/agents/agent-pipeline
+- Agent pipeline: https://learn.microsoft.com/agent-framework/concepts/agents/agent-pipeline
 - Tools: https://learn.microsoft.com/agent-framework/agents/tools/
 - Function tools: https://learn.microsoft.com/agent-framework/agents/tools/function-tools
 - Local MCP tools: https://learn.microsoft.com/agent-framework/agents/tools/local-mcp-tools
 - Structured outputs: https://learn.microsoft.com/agent-framework/agents/structured-outputs
-- Sessions: https://learn.microsoft.com/agent-framework/agents/conversations/session
-- Context providers: https://learn.microsoft.com/agent-framework/agents/conversations/context-providers
+- Sessions: https://learn.microsoft.com/agent-framework/concepts/agents/conversations/session
+- Context providers: https://learn.microsoft.com/agent-framework/concepts/agents/conversations/context-providers
 - RAG: https://learn.microsoft.com/agent-framework/agents/rag
-- Middleware: https://learn.microsoft.com/agent-framework/agents/middleware/
-- Runtime context: https://learn.microsoft.com/agent-framework/agents/middleware/runtime-context
+- Middleware: https://learn.microsoft.com/agent-framework/concepts/agents/middleware/
+- Runtime context: https://learn.microsoft.com/agent-framework/concepts/agents/middleware/runtime-context
 - Workflows: https://learn.microsoft.com/agent-framework/workflows/
 - Built-in orchestrations: https://learn.microsoft.com/agent-framework/workflows/orchestrations/
-- Executors: https://learn.microsoft.com/agent-framework/workflows/executors
-- Edges: https://learn.microsoft.com/agent-framework/workflows/edges
-- Workflow state: https://learn.microsoft.com/agent-framework/workflows/state
+- Executors: https://learn.microsoft.com/agent-framework/concepts/workflows/executors
+- Edges: https://learn.microsoft.com/agent-framework/concepts/workflows/edges
+- Workflow state: https://learn.microsoft.com/agent-framework/concepts/workflows/state
 - Checkpoints: https://learn.microsoft.com/agent-framework/workflows/checkpoints
 - HITL: https://learn.microsoft.com/agent-framework/workflows/human-in-the-loop
 - Workflows as agents: https://learn.microsoft.com/agent-framework/workflows/as-agents
-- Durable extension: https://learn.microsoft.com/agent-framework/integrations/durable-extension
+- Durable extension: https://learn.microsoft.com/agent-framework/hosting/azure-functions
 - Agent evaluation: https://learn.microsoft.com/agent-framework/agents/evaluation
 - Agent observability: https://learn.microsoft.com/agent-framework/agents/observability
-- DevUI: https://learn.microsoft.com/agent-framework/devui/
-- Harness: https://learn.microsoft.com/agent-framework/agents/harness
+- DevUI: https://learn.microsoft.com/agent-framework/integrations/by-component/ui/devui/
+- Harness: https://learn.microsoft.com/agent-framework/concepts/harness
 - Multimodal: https://learn.microsoft.com/agent-framework/agents/multimodal
 - Background responses: https://learn.microsoft.com/agent-framework/agents/background-responses
 - Declarative agents: https://learn.microsoft.com/agent-framework/agents/declarative
@@ -41,8 +41,8 @@ Useful Learn areas:
 - Hosting overview: https://learn.microsoft.com/agent-framework/hosting/
 - Self-hosting: https://learn.microsoft.com/agent-framework/hosting/self-hosting/
 - Foundry Hosted Agents: https://learn.microsoft.com/agent-framework/hosting/foundry-hosted-agent
-- A2A hosting: https://learn.microsoft.com/agent-framework/hosting/agent-to-agent
-- AG-UI: https://learn.microsoft.com/agent-framework/integrations/ag-ui/
+- A2A hosting: https://learn.microsoft.com/agent-framework/hosting/self-hosting/a2a/dotnet
+- AG-UI: https://learn.microsoft.com/agent-framework/integrations/by-component/ui/ag-ui/
 
 ## Repository skills vs runtime Agent Skills
 
@@ -50,7 +50,13 @@ The `skills/maf-*` directories in this plugin are Codex developer guidance. MAF 
 
 ## Verification baseline
 
-The checked-in capability matrix records `dotnet-1.18.0`, released 2026-08-18, as last verified on 2026-09-09. Treat that as maintenance metadata, not a substitute for inspecting the adopting repository's installed packages.
+The [capability matrix](../docs/capabilities/maf-dotnet-1.24.md) records `dotnet-1.24.0`, released 2026-10-07, with documentary/API-surface verification on 2026-10-12. All rows were reviewed against official C# guidance, tagged source/package metadata and published NuGet indexes; see [verification evidence](../docs/capabilities/verification-1.24.md). This is not application compilation or installed-package compatibility evidence.
+
+## Conflicting official evidence
+
+Learn and tagged source can disagree. Record the exact page, tag and package metadata; distinguish implementation in source from a published package and from the application's installed API. Prefer matching tagged API evidence for version-specific implementation questions while keeping unresolved compatibility claims qualified.
+
+For example, [Learn Agent Hooks](https://learn.microsoft.com/agent-framework/agents/agent-hooks) still says Python-only, while [the 1.24 .NET project](https://github.com/microsoft/agent-framework/blob/dotnet-1.24.0/dotnet/src/Microsoft.Agents.AI.AgentHooks/Microsoft.Agents.AI.AgentHooks.csproj) defines an alpha package that [NuGet publishes](https://www.nuget.org/packages/Microsoft.Agents.AI.AgentHooks/1.24.0-alpha.261006.1). Do not repeat “unavailable for .NET” categorically or silently treat it as stable/installed. This evidence does not establish .NET FIDES support.
 
 ## Version rule
 

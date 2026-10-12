@@ -35,7 +35,7 @@ Do not put core business workflows or hidden routing in middleware. Middleware s
 
 ## .NET availability boundary
 
-Agent Hooks and Agent Security with FIDES are not available for .NET as of the versioned capability matrix. Do not copy Python imports or claim equivalent enforcement. Use supported .NET agent-run, function-invocation, or `IChatClient` middleware for interception, backed by deterministic authorization, validation, egress controls and fail-closed tool gates. Recheck the matrix and installed packages before changing this statement.
+Check Agent Hooks and FIDES separately. The matrix records a published .NET Agent Hooks alpha package and implementation in the `dotnet-1.24.0` tag despite Learn's Python-only statement; reconcile tagged package metadata and the application's installed APIs before selecting it. FIDES remains Python-only in the reviewed documentation/source. Do not copy Python imports or claim equivalent enforcement. Use supported .NET agent-run, function-invocation, or `IChatClient` middleware for application interception, backed by deterministic authorization, validation, egress controls and fail-closed tool gates. Read the conflict rule in the shared official-sources reference.
 
 ## Ordering
 

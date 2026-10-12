@@ -9,3 +9,9 @@
 - Bound input/output size, context, iterations, tool calls, parallelism, time, retries, spend and retained state.
 - Encrypt/protect state and secrets, define retention/deletion, and avoid sensitive prompt/tool bodies in default telemetry.
 - Exercise cancellation, partial failure, resume, replay, duplicate delivery, provider refusal, quota exhaustion and incident revocation.
+
+## Agent Hooks evidence and limits
+
+The [1.24 tagged factory](https://github.com/microsoft/agent-framework/blob/dotnet-1.24.0/dotnet/src/Microsoft.Agents.AI.AgentHooks/AgentHooksChatClientExtensions.cs) exposes `AsAIAgentWithAgentHooks` on `IChatClient`, while Learn still states Python-only. NuGet publishes the matching alpha package; verify installed package versions and APIs before using this factory. It composes enforcement across agent/model/function seams; custom middleware alone does not establish equivalent semantics. Buffered output changes streaming behavior. Provider-executed tools and service-owned durable history remain outside local pre-tool/persistence control. Sensitive request telemetry can observe pre-transform content. These are source-level boundaries, not production guarantees for an adopting host. FIDES availability is a separate question.
+
+The reviewed [FIDES C# section](https://learn.microsoft.com/agent-framework/agents/security) says it is Python-only. .NET CodeAct host-function calls do not receive FIDES enforcement; authorization and destination controls belong inside those host tools even when generated code invokes them.
