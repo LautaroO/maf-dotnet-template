@@ -54,4 +54,4 @@
 - [x] Apply the same source/detail and architectural scenarios to candidate references; distinguish response probes from native discovery or actual upstream inspection.
 - [x] Request one independent read-only review of this amendment against its spec; fix material findings with regression verification and record limitations.
 - [x] Run final structural/unit/Python/shell/link/whitespace checks and confirm the working tree includes no accidental provider or version claims.
-- [ ] Commit and push to `codex/maf-architectural-assistant` at the already-authorized repository. Rewrite PR #4 title/body for final scope, removing claims about retained release knowledge/auditing. No merge or release.
+- [x] Commit and push to `codex/maf-architectural-assistant` at the already-authorized repository. Rewrite PR #4 title/body for final scope, removing claims about retained release knowledge/auditing. No merge or release.
