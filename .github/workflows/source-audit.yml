@@ -9,6 +9,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: maf-source-audit
+  cancel-in-progress: false
+
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -20,16 +24,12 @@ jobs:
       - name: Audit official sources and releases
         id: audit
         continue-on-error: true
-        run: python3 scripts/audit-maf-sources.py --output "$RUNNER_TEMP/maf-source-audit.md"
-      - name: Open or refresh maintenance issue
+        run: python3 scripts/audit-maf-sources.py --output "$RUNNER_TEMP/maf-source-audit.md" --json-output "$RUNNER_TEMP/maf-source-audit.json"
+      - name: Synchronize new actionable findings
+        if: always() && steps.audit.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
-          REPORT: ${{ runner.temp }}/maf-source-audit.md
-        run: |
-          issue_number="$(gh issue list --state open --search 'MAF source audit in:title' --json number --jq '.[0].number // empty')"
-          if [ -n "$issue_number" ]; then
-            gh issue edit "$issue_number" --body-file "$REPORT"
-            gh issue comment "$issue_number" --body "Scheduled audit refreshed for run $GITHUB_RUN_ID."
-          else
-            gh issue create --title "MAF source audit" --body-file "$REPORT"
-          fi
+        run: python3 scripts/sync-maf-audit-issue.py --audit-json "$RUNNER_TEMP/maf-source-audit.json" --report "$RUNNER_TEMP/maf-source-audit.md"
+      - name: Preserve collector failure status
+        if: always() && steps.audit.outcome == 'failure'
+        run: exit 1
