@@ -18,7 +18,7 @@ See [adoption](docs/adopting-the-template.md) and [migration to plugin-only dist
 
 Five task-oriented skills cover adoption, architectural assistance, implementation, testing/evaluation and review. Focused technical references retain agents, tools/MCP, workflows, context, middleware, providers, hosting, security, telemetry and DevUI knowledge.
 
-The [versioned capability matrix](resources/docs/capabilities/maf-dotnet-1.24.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](resources/docs/patterns/v4.md) contains the maintained playbooks for common application and production scenarios.
+The [versioned capability matrix](resources/docs/capabilities/maf-dotnet-1.24.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](resources/docs/patterns/catalog.md) contains the maintained playbooks for common application and production scenarios.
 
 Unreleased guidance includes a [scoped review of MAF 1.25–1.26](resources/docs/capabilities/verification-1.26.md) on 2026-10-24. The last whole-matrix verification remains 1.24; scoped updates do not certify every newer capability or installed API.
 

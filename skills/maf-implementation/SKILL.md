@@ -27,6 +27,6 @@ Identify actual SDK/projects and installed NuGet APIs before choosing signatures
 | Instrumentation and telemetry privacy | [Observability](references/observability.md) |
 | Local discovery/graph/debug surface | [DevUI](references/devui.md) |
 
-For problem-oriented alternatives consult [patterns](../../resources/docs/patterns/v4.md). Keep domain rules, authorization and ordinary persistence in application services; tools/executors adapt or orchestrate them. Preserve provider-neutral contracts, validated typed model output, cancellation, bounded execution and idempotent effects. Existing reference version notes are scoped evidence, not universal guarantees for installed packages.
+For problem-oriented alternatives consult [patterns](../../resources/docs/patterns/catalog.md). Keep domain rules, authorization and ordinary persistence in application services; tools/executors adapt or orchestrate them. Preserve provider-neutral contracts, validated typed model output, cancellation, bounded execution and idempotent effects. Existing reference version notes are scoped evidence, not universal guarantees for installed packages.
 
 Verify behavior at affected deterministic boundaries, with semantic quality evaluated separately. Report the selected abstraction, changes/checks, provider coupling and specific remaining API/runtime uncertainty. Consult testing or review skills when the task actually calls for them.

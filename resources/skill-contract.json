@@ -20,5 +20,5 @@
     "maf-devui": "maf-implementation"
   },
   "routing_dataset": "resources/evaluations/skill-routing/v2.jsonl",
-  "pattern_catalog": "resources/docs/patterns/v4.md"
+  "pattern_catalog": "resources/docs/patterns/catalog.md"
 }

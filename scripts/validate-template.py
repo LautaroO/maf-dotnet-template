@@ -8,7 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from maf_knowledge import load_coverage
+from maf_knowledge import load_coverage, release_key
+from datetime import date
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
@@ -18,12 +19,6 @@ MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.24.md"
 CATALOG = ROOT / "resources" / "docs" / "patterns" / "v4.md"
 ROUTING = ROOT / "resources" / "evaluations" / "skill-routing" / "v2.jsonl"
 
-PLAYBOOK_HEADINGS = [
-    "Intent", "Responsibility classification", "Recommended abstraction",
-    "State and trust boundaries", "Maturity/provider constraints",
-    "Illustrative C# fragment", "Implementation prompt", "Review checklist",
-    "Acceptance/evaluation criteria",
-]
 PROFILE_BUDGETS = {
     "AGENTS.md": 12_000,
     "resources/profiles/ai-first/AGENTS.md": 12_000,
@@ -177,32 +172,43 @@ def validate_matrix(errors: list[str]) -> None:
     if header not in text:
         fail(f"{MATRIX.relative_to(ROOT)}: incomplete matrix header", errors)
     rows = [line for line in text.splitlines() if line.startswith("| ")][1:]
-    if len(rows) < 20:
-        fail(f"{MATRIX.relative_to(ROOT)}: expected at least 20 feature rows, found {len(rows)}", errors)
-    for number, row in enumerate(rows, 1):
-        if len(row.split("|")) != 10:
-            fail(f"{MATRIX.relative_to(ROOT)}: row {number} does not have 8 fields", errors)
-        if any(marker in row for marker in ("TBD", "TODO", "????")):
-            fail(f"{MATRIX.relative_to(ROOT)}: row {number} has incomplete metadata", errors)
-        if "http" not in row or "2026-" not in row or "dotnet-" not in row:
-            fail(f"{MATRIX.relative_to(ROOT)}: row {number} lacks source/release/date metadata", errors)
+    if not rows:
+        fail(f"{MATRIX.relative_to(ROOT)}: expected nonempty feature matrix",errors)
+    features=set()
+    for number,row in enumerate(rows,1):
+        fields=[v.strip() for v in row.split("|")[1:-1]]
+        if len(fields) != 8:
+            fail(f"{MATRIX.relative_to(ROOT)}: row {number} does not have 8 fields",errors); continue
+        if not all(fields) or any(marker in row for marker in ("TBD","TODO","????")):
+            fail(f"{MATRIX.relative_to(ROOT)}: row {number} has incomplete metadata",errors)
+        if fields[0] in features: fail(f"{MATRIX.relative_to(ROOT)}: duplicate feature {fields[0]}",errors)
+        features.add(fields[0])
+        try:
+            release_key(fields[6])
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",fields[7]): raise ValueError("invalid ISO date")
+            date.fromisoformat(fields[7])
+        except ValueError as exc:fail(f"{MATRIX.relative_to(ROOT)}: row {number}: {exc}",errors)
+        if not re.search(r"https?://",fields[5]):fail(f"{MATRIX.relative_to(ROOT)}: row {number} lacks source",errors)
 
 
 def validate_catalog(errors: list[str]) -> None:
-    if not CATALOG.is_file():
-        fail(f"Missing pattern catalog: {CATALOG.relative_to(ROOT)}", errors)
-        return
-    text = CATALOG.read_text(encoding="utf-8")
-    matches = list(re.finditer(r"^## (\d+)\. .+$", text, re.MULTILINE))
-    if len(matches) != 17 or [int(m.group(1)) for m in matches] != list(range(1, 18)):
-        fail(f"{CATALOG.relative_to(ROOT)}: expected numbered playbooks 1 through 17", errors)
-        return
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        section = text[match.end():end]
-        for heading in PLAYBOOK_HEADINGS:
-            if f"### {heading}\n" not in section:
-                fail(f"{CATALOG.relative_to(ROOT)}: playbook {index + 1} missing {heading!r}", errors)
+    contract=load_skill_contract(ROOT,errors)
+    if not contract:return
+    catalog=ROOT/contract['pattern_catalog']
+    text=catalog.read_text(encoding='utf-8')
+    matches=list(re.finditer(r"^## ([a-z0-9]+(?:-[a-z0-9]+)*): .+$",text,re.MULTILINE))
+    if not matches:
+        fail(f"{catalog.relative_to(ROOT)}: expected nonempty pattern catalog",errors);return
+    ids=set()
+    for index,match in enumerate(matches):
+        ident=match.group(1)
+        if ident in ids:fail(f"{catalog.relative_to(ROOT)}: duplicate pattern {ident}",errors)
+        ids.add(ident)
+        end=matches[index+1].start() if index+1<len(matches) else len(text)
+        section=text[match.end():end]
+        for heading in ("When it fits","Responsibilities and boundaries","Alternatives","Failure behavior","Acceptance examples"):
+            value=re.search(r"^### "+re.escape(heading)+r"\n(.*?)(?=^### |\Z)",section,re.MULTILINE|re.DOTALL)
+            if not value or not value.group(1).strip():fail(f"{catalog.relative_to(ROOT)}: {ident} missing {heading!r}",errors)
 
 
 def validate_routing(known_skills: set[str], errors: list[str], routing: Path | None = None) -> None:
@@ -352,8 +358,8 @@ def main() -> int:
     validate_plugin(ROOT, errors)
 
     entrypoint_links = {
-        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.24.md", "resources/docs/patterns/v4.md", contract["routing_dataset"] if contract else "resources/evaluations/skill-routing/v2.jsonl"],
-        ROOT / "resources" / "docs" / "patterns" / "README.md": ["v4.md"],
+        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.24.md", contract["pattern_catalog"] if contract else "resources/docs/patterns/catalog.md", contract["routing_dataset"] if contract else "resources/evaluations/skill-routing/v2.jsonl"],
+        ROOT / "resources" / "docs" / "patterns" / "README.md": [Path(contract["pattern_catalog"]).name] if contract else ["catalog.md"],
     }
     for path, required_targets in entrypoint_links.items():
         text = path.read_text(encoding="utf-8") if path.is_file() else ""
@@ -377,7 +383,8 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print(f"Template validation OK: {len(skill_files)} skills, 17 playbooks, routing {Path(contract['routing_dataset']).stem}")
+    pattern_count=len(re.findall(r"^## [a-z0-9-]+: ", (ROOT/contract["pattern_catalog"]).read_text(),re.MULTILINE))
+    print(f"Template validation OK: {len(skill_files)} skills, {pattern_count} patterns, routing {Path(contract['routing_dataset']).stem}")
     return 0
 
 

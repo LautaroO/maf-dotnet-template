@@ -45,3 +45,24 @@ With an active Superpowers or team process, contribute MAF decisions inside its 
 ## Evidence and maintenance
 
 `resources/docs/capabilities/coverage.json` distinguishes the fully verified 1.24 baseline from the last assessed 1.26 release and narrowly scoped area deltas. The audit reports new releases and source problems without relabeling complete verification. Repeated/clean findings cause no GitHub writes; actual changes are reviewed through the maintenance workflow. Structural tests and supplied-reference probes do not prove native installation, autonomous routing, compilation or runtime application behavior.
+
+## Historical playbook coverage
+
+| v4 playbook | Active pattern ID |
+|---|---|
+| 1 adoption | adoption |
+| 2 sessions/streaming and 5 read-only tools | conversation-lookup |
+| 3 multimodal | multimodal |
+| 4 extraction | structured-decision |
+| 6 side effects | consequential-action |
+| 7 two-step and 8 agentic/hybrid RAG | retrieval |
+| 9 sequential/conditional workflow | controlled-process |
+| 10 fan-out/fan-in | parallel-process |
+| 11 HITL and 12 background/durable | recoverable-wait |
+| 13 orchestration | delegation |
+| 14 runtime skills/Harness | runtime-instructions |
+| 15 hosting/protocol | hosting |
+| 16 provider/package migration | migration |
+| 17 evaluation/observability/incidents/review | verification-operations |
+
+The active catalog groups seventeen historical playbooks into fourteen problem patterns. The validator checks meaningful sections and unique IDs, not that chosen count or the presence of C#.

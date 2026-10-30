@@ -23,7 +23,7 @@ For existing solutions, inspect affected components and contracts. For new solut
 | Conversation, grounding, execution recovery, business facts | Distinct session/context/checkpoint/application lifetimes |
 | SDK capabilities or transport/hosting | Replaceable provider/host boundary |
 
-Classify semantic decisions, deterministic rules, side effects and state before picking APIs. Apply [provider neutrality](../../resources/references/provider-neutrality.md). Consult the [pattern catalog](../../resources/docs/patterns/v4.md) for matching problems; read technical evidence only for capabilities that affect the choice.
+Classify semantic decisions, deterministic rules, side effects and state before picking APIs. Apply [provider neutrality](../../resources/references/provider-neutrality.md). Consult the [pattern catalog](../../resources/docs/patterns/catalog.md) for matching problems; read technical evidence only for capabilities that affect the choice.
 
 For substantial work, deliver a compact design with responsibilities, relevant alternatives/tradeoffs, state/trust boundaries, failure/retry ownership and acceptance criteria. Separate architectural recommendations from documented MAF constraints. Resolve material gaps before dependent implementation; accept adequate designs and proceed when authorized. A small exact change does not require this full workflow.
 

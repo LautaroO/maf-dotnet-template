@@ -128,3 +128,34 @@ class RoutingMigrationTests(unittest.TestCase):
             with patch.object(validator,'ROOT',root):validator.validate_routing({'maf-review'},errors,p)
             self.assertTrue(any('duplicate' in e for e in errors))
             self.assertTrue(any('conflicting' in e for e in errors))
+
+class KnowledgeDocumentTests(unittest.TestCase):
+    def catalog(self,count=1,missing=None,duplicate=False):
+        headings=['When it fits','Responsibilities and boundaries','Alternatives','Failure behavior','Acceptance examples']
+        return '\n'.join('## '+('same' if duplicate else f'case-{i}')+': Example\n'+''.join(f'### {h}\nConcrete example.\n' for h in headings if h != missing) for i in range(count))+'\n'
+    def run_catalog(self,text):
+        import json
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'resources').mkdir();p=root/'catalog.md';p.write_text(text);(root/'routing.jsonl').write_text('{}')
+            (root/'resources/skill-contract.json').write_text(json.dumps({'schema_version':1,'skills':['maf-review'],'retired_routes':{},'routing_dataset':'routing.jsonl','pattern_catalog':'catalog.md'}))
+            errors=[]
+            with patch.object(validator,'ROOT',root),patch.object(validator,'CATALOG',p):validator.validate_catalog(errors)
+            return errors
+    def test_pattern_count_is_not_fixed_and_code_is_optional(self):
+        for n in [1,18]:
+            with self.subTest(n=n):self.assertEqual(self.run_catalog(self.catalog(n)),[])
+    def test_duplicate_ids_and_missing_decision_sections_fail(self):
+        self.assertTrue(self.run_catalog(self.catalog(2,duplicate=True)))
+        for section in ['Alternatives','Acceptance examples']:
+            self.assertTrue(self.run_catalog(self.catalog(missing=section)))
+    def run_matrix(self,source='[Source](https://example.com)',release='dotnet-1.24.0',date='2027-01-15'):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);p=root/'matrix.md'
+            p.write_text('Matrix version: 1\nLast verified MAF release: `dotnet-1.24.0`\nVerification date: 2026-10-12\n\n| Feature | .NET availability | Maturity | Required package/boundary | Provider or hosting restrictions | Official source | Verified release | Verified date |\n|---|---|---|---|---|---|---|---|\n'+f'| Example | Available | Stable | Core | Conditional | {source} | {release} | {date} |\n')
+            errors=[]
+            with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
+            return errors
+    def test_valid_future_year_and_small_matrix_are_accepted(self):self.assertEqual(self.run_matrix(),[])
+    def test_invalid_calendar_tag_and_absent_source_fail(self):
+        for kwargs in [{'date':'2026-02-30'},{'release':'bad'},{'source':'none'}]:
+            with self.subTest(kwargs=kwargs):self.assertTrue(self.run_matrix(**kwargs))
