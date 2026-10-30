@@ -1,86 +1,17 @@
-# DevUI and local MAF testing
+# Development UI and diagnostic hosts
 
-## Do not conflate these components
+Distinguish a product/CLI experience, an opinionated agent runtime, a local development UI and a telemetry backend. DevUI helps inspect/discover/run supported agent or workflow entities; it does not determine the product's core architecture.
 
-| Surface | Purpose |
-|---|---|
-| Plain CLI harness | Repository-owned UX for conversational/typed local tests. |
-| `HarnessAgent` | Opinionated MAF agent runtime with additional operational capabilities. |
-| Harness sample terminal UX | Example console around a harness agent; not a universal console framework. |
-| DevUI | Local web/API surface for discovering, running, visualizing, and debugging agents/workflows. |
-| OTLP backend | External collector/viewer for logs, metrics, and traces. |
+## Keep debug integration thin
 
-Keep CLI UX and DevUI in development hosts. A harness agent may be a real application runtime only when its capabilities are intentionally required.
+Preserve reusable agent/workflow identity and typed contracts. Register native graph entities when graph inspection is the requirement, using workflow-as-agent only when agent invocation semantics are independently needed. Avoid duplicate logical entities.
 
-## Verify the .NET version first
+A typed workflow input may need a host adapter for a chat-oriented execution surface. Test native execution and the actual hosted entry path separately rather than stringify internal state just to satisfy the UI. Verify entity discovery, graph visibility, cancellation, errors and approval continuation where required.
 
-Before implementation:
+## Security and traces
 
-1. inspect installed `Microsoft.Agents.AI.DevUI`, hosting, and workflow package versions;
-2. inspect XML/public APIs;
-3. compare with matching official source/tag;
-4. treat Python-only DevUI documentation as conceptual until confirmed for .NET.
+Treat the UI as a trusted development surface. Choose deliberate network exposure and authentication policy; verify protection for each execution route rather than assume a UI token or proxy protects all mapped endpoints. Development conveniences do not certify production access control.
 
-## Register entities intentionally
+Check instrumentation delivery to the UI separately from external telemetry export and keep sensitive-data capture controlled.
 
-Current .NET patterns use:
-
-- `AddAIAgent` for standalone agents;
-- `AddWorkflow` for native graph workflows so DevUI can discover/visualize topology;
-- workflow-as-agent registration only when agent semantics are independently needed.
-
-Do not register the same logical workflow both natively and as an agent unless two entities are intentional.
-
-Put reusable identity/description on the agent/workflow itself (for example workflow builder name/description APIs supported by the installed version), not only in DevUI host glue.
-
-Verify entity discovery using the actual DevUI endpoint such as `/v1/entities` when that endpoint exists in the installed package.
-
-## Execution protocol
-
-A workflow that accepts a typed application input is not automatically compatible with the chat/OpenAI-compatible protocol exposed by DevUI.
-
-Preserve the typed core contract and add a thin host/entry adapter only when needed. Do not stringify internal workflow state just to satisfy the UI.
-
-Test both:
-
-- native in-process workflow execution;
-- the DevUI hosted request path (for example `/v1/responses` with the installed entity protocol).
-
-## Tracing
-
-External OTLP export and DevUI trace rendering are separate paths. DevUI cannot display spans that were never emitted/delivered to it.
-
-Do not assume an OTLP exporter sends traces "back" to DevUI. Verify:
-
-- instrumentation exists;
-- DevUI's installed trace collector/bridge path;
-- external OTLP export independently;
-- sensitive-data settings.
-
-## Security
-
-Bind DevUI to loopback by default. If remote access is explicitly required, add authentication/network policy. Do not expose it as a production endpoint merely because it can execute agents/workflows.
-
-In the reviewed 1.26 implementation, default local checks require a loopback peer and Host, and reject mismatched/invalid Origin or cross-site state-changing browser requests. They cover DevUI and the standard `/v1/responses` and `/v1/conversations` paths. `AllowRemoteAccess` disables these local checks; a reverse proxy's loopback connection does not authenticate its original caller.
-
-`DevUIOptions.AuthToken` / `DEVUI_AUTH_TOKEN` and `ConfigureEndpoints` apply to UI/entity routes mapped by `MapDevUI`, not automatically to separately mapped standard OpenAI endpoints. Attach host authorization to those routes explicitly. Test peer/Host/Origin checks and token/policy scope independently; a protected entity listing does not prove a protected execution route. Aspire's aggregator also adds local Host/browser checks. See [tagged evidence](../../../resources/docs/capabilities/verification-1.26.md).
-
-## Verification checklist
-
-1. Build/tests pass.
-2. DevUI host starts.
-3. Entity discovery returns each logical entity once.
-4. Agent/workflow names and descriptions are correct.
-5. Native workflow graph is visible when expected.
-6. Every registered entity executes through the UI/API path.
-7. Cancellation/provider errors behave correctly.
-8. External telemetry and DevUI traces are verified separately.
-9. DevUI is not remotely exposed by accident.
-
-The [1.23 release](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.23.0) includes a breaking correction to DevUI approval continuation. When upgrading, verify that approval requests are displayed and resumed against the same entity/session and that denial, replay and changed tool arguments cannot execute the action. A successful native agent run does not verify the hosted DevUI continuation path.
-
-## Responsibility and implementation guidance
-
-DevUI is a development/debug host surface, not the core agent architecture and not a production endpoint by default.
-
-Verify installed DevUI/Hosting package APIs before coding because the .NET surface evolves quickly.
+Find current .NET registration, discovery/execute protocols, security defaults and trace integration through [official-source investigation](../../../resources/references/official-sources.md). Exact endpoints, options and adapter limitations belong to the selected project stack, not this conceptual guide.

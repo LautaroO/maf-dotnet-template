@@ -107,15 +107,8 @@ if __name__ == "__main__":
     unittest.main()
 
 class RoutingMigrationTests(unittest.TestCase):
-    def test_v2_preserves_historical_scenarios_and_behavior(self):
-        import json
+    def test_active_routes_match_declared_skills(self):
         root=Path(__file__).resolve().parents[1]
-        def records(name):return {r['id']:r for r in map(json.loads,(root/f'resources/evaluations/skill-routing/{name}.jsonl').read_text().splitlines())}
-        old,new=records('v1'),records('v2')
-        self.assertTrue(old.keys() <= new.keys())
-        for ident,record in old.items():
-            with self.subTest(id=ident):
-                self.assertTrue(set(record.get('assertions',[])) <= set(new[ident].get('assertions',[])))
         errors=[];contract=validator.load_skill_contract(root,errors)
         validator.validate_routing(set(contract['skills']),errors,root/contract['routing_dataset'])
         self.assertEqual(errors,[])
@@ -139,7 +132,7 @@ class KnowledgeDocumentTests(unittest.TestCase):
             root=Path(directory);(root/'resources').mkdir();p=root/'catalog.md';p.write_text(text);(root/'routing.jsonl').write_text('{}')
             (root/'resources/skill-contract.json').write_text(json.dumps({'schema_version':1,'skills':['maf-review'],'retired_routes':{},'routing_dataset':'routing.jsonl','pattern_catalog':'catalog.md'}))
             errors=[]
-            with patch.object(validator,'ROOT',root),patch.object(validator,'CATALOG',p):validator.validate_catalog(errors)
+            with patch.object(validator,'ROOT',root):validator.validate_catalog(errors)
             return errors
     def test_pattern_count_is_not_fixed_and_code_is_optional(self):
         for n in [1,18]:
@@ -148,18 +141,6 @@ class KnowledgeDocumentTests(unittest.TestCase):
         self.assertTrue(self.run_catalog(self.catalog(2,duplicate=True)))
         for section in ['Alternatives','Acceptance examples']:
             self.assertTrue(self.run_catalog(self.catalog(missing=section)))
-    def run_matrix(self,source='[Source](https://example.com)',release='dotnet-1.24.0',date='2027-01-15'):
-        with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);p=root/'matrix.md'
-            p.write_text('Matrix version: 1\nLast verified MAF release: `dotnet-1.24.0`\nVerification date: 2026-10-12\n\n| Feature | .NET availability | Maturity | Required package/boundary | Provider or hosting restrictions | Official source | Verified release | Verified date |\n|---|---|---|---|---|---|---|---|\n'+f'| Example | Available | Stable | Core | Conditional | {source} | {release} | {date} |\n')
-            errors=[]
-            with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
-            return errors
-    def test_valid_future_year_and_small_matrix_are_accepted(self):self.assertEqual(self.run_matrix(),[])
-    def test_invalid_calendar_tag_and_absent_source_fail(self):
-        for kwargs in [{'date':'2026-02-30'},{'release':'bad'},{'source':'none'}]:
-            with self.subTest(kwargs=kwargs):self.assertTrue(self.run_matrix(**kwargs))
-
 class AssistantCaseTests(unittest.TestCase):
     def setUp(self):
         self.case={'id':'example','prompt':'Design an assistant','repository_files':{},'process_owner':'none','expected_behavior':['Ask a material question'],'forbidden_behavior':['Invent project facts']}
@@ -188,33 +169,18 @@ class AssistantCaseTests(unittest.TestCase):
             self.assertIn(case['id'],records)
             self.assertTrue(set(case['expected_behavior']+['must not: '+v for v in case['forbidden_behavior']]) <= set(records[case['id']].get('assertions',[])))
 
-class MatrixCoverageConsistencyTests(unittest.TestCase):
-    def test_missing_covered_feature_or_promoted_row_is_rejected(self):
-        import json,shutil
-        source=Path(__file__).resolve().parents[1]
-        for mode in ['missing','promoted']:
-            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as directory:
-                root=Path(directory);(root/'plugin.json').write_text('{}')
-                shutil.copytree(source/'resources/docs/capabilities',root/'resources/docs/capabilities')
-                coverage=root/'resources/docs/capabilities/coverage.json';data=json.loads(coverage.read_text())
-                for area in data['areas']:
-                    if area['id']=='streaming':area['feature']='Streaming'
-                coverage.write_text(json.dumps(data))
-                p=root/'resources/docs/capabilities/maf-dotnet-1.24.md';lines=p.read_text().splitlines()
-                lines=[line for line in lines if not (mode=='missing' and line.startswith('| Streaming |'))]
-                if mode=='promoted':lines=[line.replace('dotnet-1.24.0 | 2026-10-12','dotnet-1.26.0 | 2026-10-24') if line.startswith('| Streaming |') else line for line in lines]
-                p.write_text('\n'.join(lines)+'\n');errors=[]
-                with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
-                self.assertTrue(errors)
-    def test_global_header_promotion_cannot_hide_unreviewed_areas(self):
-        import json,shutil
+class ConceptSourceValidationTests(unittest.TestCase):
+    def test_source_export_validates_without_release_knowledge_or_audit(self):
+        import shutil,subprocess,sys
         source=Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);(root/'plugin.json').write_text('{}')
-            shutil.copytree(source/'resources/docs/capabilities',root/'resources/docs/capabilities')
-            coverage=root/'resources/docs/capabilities/coverage.json';data=json.loads(coverage.read_text())
-            data['full_verification'].update(release='dotnet-1.26.0',date='2026-10-24');coverage.write_text(json.dumps(data))
-            p=root/'resources/docs/capabilities/maf-dotnet-1.24.md';s=p.read_text().replace('Last verified MAF release: `dotnet-1.24.0`. Verification date: 2026-10-12.','Last verified MAF release: `dotnet-1.26.0`. Verification date: 2026-10-24.');p.write_text(s)
-            errors=[]
-            with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
-            self.assertTrue(errors)
+            root=Path(directory)
+            for name in ['skills','resources','docs','scripts','.github']:
+                shutil.copytree(source/name,root/name,ignore=shutil.ignore_patterns('__pycache__'))
+            for name in ['plugin.json','VERSION','LICENSE','README.md','AGENTS.md','CHANGELOG.md']:
+                shutil.copy2(source/name,root/name)
+            shutil.rmtree(root/'resources/docs/capabilities',ignore_errors=True)
+            for name in ['scripts/maf_knowledge.py','scripts/audit-maf-sources.py','scripts/sync-maf-audit-issue.py','.github/workflows/source-audit.yml']:
+                (root/name).unlink(missing_ok=True)
+            result=subprocess.run([sys.executable,'-B','scripts/validate-template.py'],cwd=root,capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stdout+result.stderr)

@@ -1,6 +1,6 @@
 # MAF architectural patterns
 
-Select a pattern by the problem and required control. These are design playbooks, not compilable package samples or a mandatory production checklist. Technical references retain their dated evidence: full MAF 1.24 plus scoped 1.25–1.26 deltas; implementation checks the target’s actual APIs. For proportional questioning and process ownership use [agent design](../../references/agent-design.md). The [historical v4 catalog](v4.md) remains available.
+Select a pattern by the problem and required control. These are durable design playbooks, not SDK code samples or a compatibility catalog. For exact implementation contracts use [official-source investigation](../../references/official-sources.md); for proportional questioning and process ownership use [agent design](../../references/agent-design.md).
 
 ## adoption: Fit guidance to a new or existing solution
 
@@ -172,7 +172,7 @@ Local Task.WhenAll is sufficient for incidental independent I/O inside a determi
 
 ### Failure behavior
 
-Define whether one branch failure cancels others or yields partial results. Framework target deduplication within a dispatch is not business idempotency across retries.
+Define whether one branch failure cancels others or yields partial results. Aggregation, dispatch and retries still require application-level idempotency where effects matter.
 
 ### Acceptance examples
 

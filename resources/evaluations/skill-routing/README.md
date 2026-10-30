@@ -1,25 +1,9 @@
-# Skill-routing evaluation dataset
+# Architectural assistant routing and behavior
 
-`v2.jsonl` is the active routing contract; `v1.jsonl` preserves the historical fourteen-skill baseline. Each line contains a realistic prompt, the minimum expected skills, optional prohibited routes, and occasional behavioral assertions.
+`v2.jsonl` is the active five-skill routing contract. Cases evaluate responsibilities, state/trust boundaries, provider neutrality, proportional gap analysis, project-process ownership and on-demand source investigation. Named-release/API-recall fixtures were retired with the release knowledge base; Git history preserves earlier resources.
 
-Evaluate selection in a fresh Codex session. Extra skills are acceptable only when the prompt genuinely needs them; generic .NET negative cases must select no MAF skill. Record failures by fixture ID and correct skill descriptions/routing rather than teaching to exact wording.
+Use `architectural-assistant-cases.json` for repository inputs covering new/existing solutions, adequate designs, small edits, material gaps, standalone/process use and delegated choices. Its IDs map into v2. The [evaluation protocol](architectural-assistant-protocol.md) separates autonomous discovery, explicit skill invocation and supplied-reference probes; structural checks do not prove behavior.
 
-## Context and refinement scenarios
+For source-investigation scenarios, provide actual project/package evidence when available and control whether upstream sources are reachable. Observe whether the assistant inspects the relevant installed APIs, consults matching official .NET evidence and labels unresolved details instead of inventing signatures, requiring a package upgrade or treating connectivity failure as absence of a capability.
 
-The three context/refinement fixtures require repository inputs as well as their prompts. Use temporary product fixtures with a MAF project under `src/Shop.AI`, the installed plugin available to the session, and existing root instructions. Do not copy plugin skills into the fixtures. No live MAF model call or package restore is required.
-
-| Fixture | Repository setup | Behavior to inspect |
-|---|---|---|
-| `adopt-existing-documentation` | Root rules point to `handbook/ai-context.md` and `handbook/orders.md`, with an existing refinement/review process. The order note defines lookup by number, caller-owned orders, output fields, cancellation and a deadline. | Canonical links and existing process reused; no competing folders or repeated questions about settled requirements. |
-| `adopt-missing-documentation` | Product instructions and a MAF project exist, but no product documentation convention or order requirements. Capability/pattern assets are available in the installed plugin. | A destination is proposed and agreement requested; authorized instruction merging continues; no new context/feature document is created; material query/access decisions remain open. |
-| `small-maf-change` | An existing agent label and root rules allowing small exact edits in chat. | Only the requested label changes; no new specification, adoption rerun or requirements questionnaire. |
-
-Inspect changed files as well as the final response. To test the modified skill bodies independently of discovery, explicitly invoke the relevant skill in a separate behavioral probe and record that invocation; it does not prove autonomous routing. For documentation reuse, compare original document contents and verify the persisted context links. For a missing convention, inspect both the proposal and the absence of new product documents. For the small change, verify exact file contents and absence of extra artifacts.
-
-See the [context/refinement behavior check record](context-refinement-smoke.md) for the baseline and representative modified-guidance results.
-
-## Architectural assistant evaluation
-
-See [the protocol](architectural-assistant-protocol.md) and `architectural-assistant-cases.json` for architecture, proportional gap analysis and process coexistence scenarios. Reference probes are separate from native autonomous routing.
-
-The architecture cases cover new/existing solutions, sufficient designs, exact edits, material gaps, existing process ownership, standalone use, delegated choices and distinct control architectures. Use `architectural-assistant-cases.json` for repository inputs; its IDs map into v2. Dated evaluation records live in the source repository; they distinguish reference responses from pending native/client modes and are not dependencies of installed resources.
+Use fresh sessions for native selection. Record inputs, tools/client/model, actions/artifacts and assertion outcomes; include generic .NET negative cases and sufficient designs that need no further questions. Historical context/refinement probes describe earlier revisions and are not a current routing pass rate.

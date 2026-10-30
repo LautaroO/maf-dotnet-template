@@ -7,16 +7,11 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from maf_knowledge import load_coverage, release_key
-from datetime import date
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
 REFERENCES = ROOT / "resources" / "references"
 PROFILES = ROOT / "resources" / "profiles"
-MATRIX = ROOT / "resources" / "docs" / "capabilities" / "maf-dotnet-1.24.md"
-CATALOG = ROOT / "resources" / "docs" / "patterns" / "v4.md"
 ROUTING = ROOT / "resources" / "evaluations" / "skill-routing" / "v2.jsonl"
 
 PROFILE_BUDGETS = {
@@ -158,58 +153,6 @@ def validate_plugin(root: Path, errors: list[str]) -> None:
     for tree in trees:
         for path in sorted(tree.rglob("*.md")):
             validate_local_links(path, errors, root)
-
-
-def validate_matrix(errors: list[str]) -> None:
-    if not MATRIX.is_file():
-        fail(f"Missing capability matrix: {MATRIX.relative_to(ROOT)}", errors)
-        return
-    text = MATRIX.read_text(encoding="utf-8")
-    for metadata in ("Matrix version:", "Last verified MAF release:", "Verification date:"):
-        if metadata not in text:
-            fail(f"{MATRIX.relative_to(ROOT)}: missing {metadata}", errors)
-    header = "| Feature | .NET availability | Maturity | Required package/boundary | Provider or hosting restrictions | Official source | Verified release | Verified date |"
-    if header not in text:
-        fail(f"{MATRIX.relative_to(ROOT)}: incomplete matrix header", errors)
-    rows = [line for line in text.splitlines() if line.startswith("| ")][1:]
-    if not rows:
-        fail(f"{MATRIX.relative_to(ROOT)}: expected nonempty feature matrix",errors)
-    features=set()
-    row_verification={}
-    for number,row in enumerate(rows,1):
-        fields=[v.strip() for v in row.split("|")[1:-1]]
-        if len(fields) != 8:
-            fail(f"{MATRIX.relative_to(ROOT)}: row {number} does not have 8 fields",errors); continue
-        if not all(fields) or any(marker in row for marker in ("TBD","TODO","????")):
-            fail(f"{MATRIX.relative_to(ROOT)}: row {number} has incomplete metadata",errors)
-        if fields[0] in features: fail(f"{MATRIX.relative_to(ROOT)}: duplicate feature {fields[0]}",errors)
-        features.add(fields[0])
-        row_verification[fields[0]]=(fields[6],fields[7])
-        try:
-            release_key(fields[6])
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",fields[7]): raise ValueError("invalid ISO date")
-            date.fromisoformat(fields[7])
-        except ValueError as exc:fail(f"{MATRIX.relative_to(ROOT)}: row {number}: {exc}",errors)
-        if not re.search(r"https?://",fields[5]):fail(f"{MATRIX.relative_to(ROOT)}: row {number} lacks source",errors)
-
-    coverage_path=ROOT/'resources/docs/capabilities/coverage.json'
-    if coverage_path.is_file():
-        try:
-            coverage=load_coverage(coverage_path)
-            mapped=set()
-            for area in coverage['areas']:
-                feature=area.get('feature')
-                if not isinstance(feature,str) or not feature or feature in mapped:
-                    fail('coverage: each area needs a unique matrix feature mapping',errors);continue
-                mapped.add(feature)
-                full=area['full_verification']
-                if row_verification.get(feature) != (full['release'],full['date']):
-                    fail(f'coverage/matrix disagreement for {feature}',errors)
-            if mapped != features:fail('coverage/matrix feature inventory disagrees',errors)
-            full=coverage['full_verification']
-            if f"Last verified MAF release: `{full['release']}`" not in text or f"Verification date: {full['date']}" not in text:
-                fail('coverage/matrix full baseline disagrees',errors)
-        except ValueError as exc:fail(str(exc),errors)
 
 
 def validate_catalog(errors: list[str]) -> None:
@@ -392,11 +335,6 @@ def main() -> int:
     if version and f"## [{version}]" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
         fail("CHANGELOG does not contain current VERSION", errors)
 
-    try:
-        load_coverage(ROOT / "resources/docs/capabilities/coverage.json")
-    except ValueError as exc:
-        fail(str(exc), errors)
-    validate_matrix(errors)
     validate_catalog(errors)
     if contract:
         validate_routing(set(names), errors, ROOT / contract["routing_dataset"])
@@ -405,7 +343,7 @@ def main() -> int:
     validate_plugin(ROOT, errors)
 
     entrypoint_links = {
-        ROOT / "README.md": ["resources/docs/capabilities/maf-dotnet-1.24.md", contract["pattern_catalog"] if contract else "resources/docs/patterns/catalog.md", contract["routing_dataset"] if contract else "resources/evaluations/skill-routing/v2.jsonl"],
+        ROOT / "README.md": [contract["pattern_catalog"] if contract else "resources/docs/patterns/catalog.md", contract["routing_dataset"] if contract else "resources/evaluations/skill-routing/v2.jsonl"],
         ROOT / "resources" / "docs" / "patterns" / "README.md": [Path(contract["pattern_catalog"]).name] if contract else ["catalog.md"],
     }
     for path, required_targets in entrypoint_links.items():
@@ -420,7 +358,7 @@ def main() -> int:
         if required_phrase not in smoke_text:
             fail(f"{smoke_gate.relative_to(ROOT)}: missing release-gate requirement {required_phrase!r}", errors)
 
-    required_ci = [ROOT / ".github" / "workflows" / "validate.yml", ROOT / ".github" / "workflows" / "source-audit.yml"]
+    required_ci = [ROOT / ".github" / "workflows" / "validate.yml"]
     for workflow in required_ci:
         if not workflow.is_file():
             fail(f"Missing CI workflow: {workflow.relative_to(ROOT)}", errors)

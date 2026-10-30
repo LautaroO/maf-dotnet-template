@@ -13,7 +13,7 @@ See `../resources/profiles/README.md`.
 
 ## 2. Use the installed knowledge layer
 
-Install `maf-dotnet` through your separate marketplace before adoption. Select its `maf-adoption` skill using the plugin namespace shown by the client. The skill uses bundled profiles, capability and pattern resources; do not copy skills or shared resources into the target repository. See [distribution](plugin-distribution.md).
+Install `maf-dotnet` through your separate marketplace before adoption. Select its `maf-adoption` skill using the plugin namespace shown by the client. The skill uses bundled profiles, concept and pattern resources; do not copy skills or shared resources into the target repository. See [distribution](plugin-distribution.md).
 
 If the target already has older `.agents/skills/maf-*` copies, review local adaptations and preserve project-specific instructions before removing duplicates. Installing the plugin alone does not perform that migration or edit project rules.
 

@@ -1,75 +1,17 @@
-# Function tools
+# Bounded application capabilities
 
-Current MAF C# docs show local methods converted using `AIFunctionFactory.Create` from `Microsoft.Extensions.AI`.
+A tool adapts one application capability for model selection. Prefer a narrow query or action over a generic privileged command endpoint. Keep domain rules, authorization ownership and ordinary persistence in the application service the tool calls.
 
-Conceptual example:
+## Contract and authority
 
-```csharp
-[Description("Look up a runbook entry by query.")]
-static Task<RunbookResult> SearchRunbookAsync(
-    [Description("Specific operational question to search for.")] string query,
-    CancellationToken cancellationToken)
-    => service.SearchAsync(query, cancellationToken);
+Describe what the capability does, its inputs and useful output precisely. Treat model arguments as untrusted. Resolve principal and tenant from trusted execution context; validate resource access and business invariants before accessing data or executing an effect. Bound payload, time, calls and returned data; redact internal or sensitive fields.
 
-AIFunction tool = AIFunctionFactory.Create(SearchRunbookAsync);
-```
+Propagate cancellation. Choose retry ownership and business idempotency deliberately for effects. Tool descriptions and prompts influence selection; they cannot enforce permissions. Test the actual invocation paths, including middleware, hosted execution and direct calls where used.
 
-The exact supported signatures/metadata mapping can vary by package version/provider. Verify locally.
+## Framework mapping
 
-Prefer returning a bounded result DTO over raw HTTP/database/provider response objects.
+Look for the installed MAF/MEAI function-tool abstractions before creating a custom registry. `AIFunction` and `AITool` are conceptual search terms. A specialist agent may also expose a bounded semantic capability; required process order remains a workflow responsibility.
 
-## Responsibility and implementation guidance
+A retrieval tool returns authorized source snippets and provenance, not a raw database client. A cancellation tool calls an application use case, not an instruction-driven admin switch.
 
-## Local function tools
-
-For local C# capabilities, prefer MAF / `Microsoft.Extensions.AI` function-tool abstractions supported by the installed stack. Current MAF guidance commonly uses `AIFunctionFactory.Create(...)` to convert a method/delegate into an `AIFunction`.
-
-Use descriptions deliberately: tool and parameter descriptions are part of the model's selection interface.
-
-Do not invent a parallel JSON tool registry unless the provider/MAF integration actually requires one.
-
-## Tool boundary
-
-Each tool should expose one bounded capability. The tool may call an application service; it should not become the application service itself. In mixed solutions, treat the tool primarily as an AI-facing adapter over an application capability; keep domain rules, authorization policy ownership, and general persistence behavior in the appropriate non-AI layer.
-
-Good tool:
-
-`SearchRunbookAsync(query, cancellationToken)` → delegates to a tested retrieval service.
-
-Bad tool:
-
-`AdminAsync(action, payload)` → generic privileged capability controlled by model text.
-
-## Deterministic enforcement
-
-Treat model-generated arguments as untrusted.
-
-Inside the deterministic boundary enforce:
-
-- input validation;
-- authorization/tenant scope;
-- business invariants;
-- rate/size limits;
-- timeout/cancellation;
-- idempotency for retried side effects;
-- output shaping/redaction.
-
-## MCP
-
-Use the official MCP C# SDK integration when MCP is the right external capability boundary. Discover only the tools the agent actually needs; do not blindly expose every remote tool.
-
-Third-party MCP servers are external trust boundaries. Review data sharing, auth headers, server provenance, tool descriptions, and side effects.
-
-## Approval
-
-If a tool can perform consequential/irreversible actions, use the framework's approval/HITL mechanism supported by the installed agent/provider rather than asking the prompt to "be careful".
-
-Bind approval to the exact invocation occurrence, principal and material arguments. Revalidate authorization when executing, expire stale approvals, and use an application idempotency key so replay/resume cannot duplicate the business effect.
-
-## Agent as tool
-
-Use `AsAIFunction()` for semantic delegation to a specialized child agent when the parent model should decide whether to delegate. If routing is deterministic, use workflow edges instead.
-
-## Testing
-
-Test the underlying service and tool wrapper without an LLM. Verify invalid/unauthorized arguments fail closed.
+Test validation, denied access, cancellation, failure mapping, bounded output and idempotency without a live model. Find exact binding, metadata and invocation APIs using [official-source investigation](../../../resources/references/official-sources.md).

@@ -4,19 +4,17 @@
 
 This repository is the `maf-dotnet` skills-only Codex plugin. It contains no .NET application, solution, installed MAF packages, runtime Agent Skills, marketplace catalog, or installer. `plugin.json` is the root manifest; `skills/` and `resources/` are the single authoring source. Edit them directly. Do not add a generated package copy or repository-discovered duplicate skills under `.agents/skills/`.
 
-The current plugin baseline is `0.1.1`; MAF knowledge was last verified against `dotnet-1.24.0` on 2026-10-12. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
-
-Scoped 1.25–1.26 release deltas were reviewed on 2026-10-24; see `resources/docs/capabilities/verification-1.26.md`. This does not advance the last whole-matrix baseline or certify unchanged capabilities against newer packages.
+The current plugin version is `0.1.1`; plugin and MAF versions are independent. This is stable architectural guidance, not an SDK compatibility catalog. Keep durable concepts and verification criteria in skills/resources; do not reintroduce release-delta notes, maturity matrices, exact overload recipes or periodic source-audit automation. The official Microsoft MAF repository is the primary external implementation reference; adopting applications inspect their own SDK/projects/resolved packages and matching .NET APIs. There is no application or installed MAF package here, so never claim illustrative guidance compiles against a local SDK.
 
 ## Structure and boundaries
 
 - `skills/maf-*/`: five portable developer skills and their local resources/scripts.
 - `resources/references/`: shared guidance and official-source discipline.
 - `resources/profiles/`: instruction templates for AI-first and embedded-AI applications.
-- `resources/docs/`: capability matrix and pattern catalog.
+- `resources/docs/`: conceptual pattern catalog.
 - `resources/evaluations/skill-routing/`: routing and behavior fixtures.
 - `docs/`: distribution, migration, maintenance and release documentation.
-- `scripts/` and `tests/`: standard-library Python validation, source audit and regression checks.
+- `scripts/` and `tests/`: standard-library Python structural validation and regression checks.
 
 The root instructions govern plugin maintenance; application adoption templates have their own context in `resources/profiles/`. Never copy this root file into an adopting application. Preserve adopting-team rules and existing root `AGENTS.md` during explicit adoption.
 
@@ -28,10 +26,10 @@ Preserve least-agentic responsibility assignment, provider/cloud neutrality, ins
 
 ## Verification and releases
 
-When asked to update MAF knowledge or review a source audit, Codex owns the follow-through: read `docs/maintaining-maf-knowledge.md`, review official release/tag/API evidence, edit affected guidance, record a dated review and run validation. Do not stop at telling the user to review sources manually. The source-audit script gathers evidence; it does not replace this maintenance workflow. Preserve scoped verification metadata when only part of the knowledge base has been reviewed.
+When guidance needs maintenance, read `docs/maintaining-maf-knowledge.md`, inspect the relevant concept and official .NET evidence, update only affected guidance and evaluate the behavior that motivated the change. Do not audit or copy every new MAF release. For a concrete SDK implementation question, verify target package APIs and matching official source on demand; qualify missing/conflicting evidence instead of inventing signatures or availability. Historic review records are not current compatibility claims.
 
 Run `python3 scripts/validate-template.py`, `python3 -m compileall -q scripts`, and `python3 -B -m unittest discover -s tests -v`. Check shell syntax for embedded `.sh` scripts and use `git diff --check`. CI also verifies Markdown links.
 
 Update `plugin.json` and `VERSION` together for a release, record the changelog, and perform the native-client and fresh-session checks in `docs/releases/fresh-session-smoke-test.md`. The external marketplace references this repository root; no catalog belongs here. Do not claim installation, routing, release or publication was verified from structural tests alone.
 
-Report files changed, commands/results, provider coupling, MAF version certainty, and untested client behavior. This repository has no application state, provider calls or production host; do not invent operational guarantees for an adopting application.
+Report files changed, commands/results, provider coupling, installed API/source certainty, and untested client behavior. This repository has no application state, provider calls or production host; do not invent operational guarantees for an adopting application.

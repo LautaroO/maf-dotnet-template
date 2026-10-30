@@ -4,6 +4,9 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
+- Simplify the architectural assistant to stable concepts and on-demand investigation of the official MAF repository. Retire compatibility matrices, release delta resources, coverage metadata, scheduled source auditing/issue synchronization and release-recall fixtures; keep the five public skills and problem-oriented patterns.
+
+
 - Validate transport/read-failure reporting and prevent unsupported whole-matrix verification promotion; 62 deterministic tests pass after independent review and regression fixes. Native installation/routing remains a separate release check.
 
 

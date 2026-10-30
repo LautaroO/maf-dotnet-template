@@ -18,13 +18,13 @@ See [adoption](docs/adopting-the-template.md) and [migration to plugin-only dist
 
 Five task-oriented skills cover adoption, architectural assistance, implementation, testing/evaluation and review. Focused technical references retain agents, tools/MCP, workflows, context, middleware, providers, hosting, security, telemetry and DevUI knowledge.
 
-The [versioned capability matrix](resources/docs/capabilities/maf-dotnet-1.24.md) records .NET availability, maturity, packages, restrictions, official sources and verification metadata. The [pattern catalog](resources/docs/patterns/catalog.md) contains the maintained playbooks for common application and production scenarios.
+The [pattern catalog](resources/docs/patterns/catalog.md) covers common architectural problems. Topic references explain durable responsibilities, alternatives and verification criteria. Exact SDK signatures, defaults, maturity and supported integrations are checked on demand against the target project's packages and the [official MAF repository](https://github.com/microsoft/agent-framework), using [the source investigation guide](resources/references/official-sources.md).
 
-Unreleased guidance includes a [scoped review of MAF 1.25–1.26](resources/docs/capabilities/verification-1.26.md) on 2026-10-24. The last whole-matrix verification remains 1.24; scoped updates do not certify every newer capability or installed API.
+The plugin does not maintain a MAF compatibility matrix, release delta catalog or scheduled release auditor. Historical records describe previous revisions; Git preserves retired resources.
 
 These skills guide Codex during software development. MAF runtime Agent Skills are inputs discovered by application agents during execution. Never place this plugin in an application's runtime skill store.
 
-Use the plugin as an architectural assistant for new or existing solutions: identify consequential gaps, accept sufficient designs and proceed on authorized work. Follow the active Superpowers/team process without another brainstorming loop; standalone use includes lightweight agent-design guidance. See [routing migration](docs/migration-to-architectural-assistant.md) and [the reference evaluation record](docs/reviews/2026-10-30-architectural-assistant-evaluation.md).
+Use the plugin as an architectural assistant for new or existing solutions: identify consequential gaps, accept sufficient designs and proceed on authorized work. Follow the active Superpowers/team process without another brainstorming loop; standalone use includes lightweight agent-design guidance. See [routing migration](docs/migration-to-architectural-assistant.md) and [the reference evaluation record](docs/reviews/2026-10-30-stable-guidance-amendment.md).
 
 ## Core decisions
 
@@ -49,15 +49,13 @@ python3 -m compileall -q scripts
 python3 -B -m unittest discover -s tests -v
 ```
 
-CI checks the manifest/version, skill contracts, resource paths, profiles, matrix, fixtures, Markdown links and repository hygiene. The scheduled source audit opens or refreshes a maintenance issue only for new or changed actionable findings; it never edits guidance.
-
-After an audit, Codex reviews official releases and tagged APIs, updates affected guidance and records validation. Ask: “Review `/tmp/maf-source-audit.md` and update the MAF knowledge using the [maintenance workflow](docs/maintaining-maf-knowledge.md).” The script collects evidence; Codex performs the requested documentation update.
+CI checks the manifest/version, skill contracts, contained resources, profiles, behavior fixtures, Markdown links and repository hygiene. Maintain concepts/patterns when meaningful architectural changes or observed usage gaps warrant it; see [maintenance](docs/maintaining-maf-knowledge.md). A new MAF release alone does not require copying its changes into this plugin.
 
 Before each release, install the plugin in a supported client and run fresh-session smoke tests for both adoption profiles using [the routing dataset](resources/evaluations/skill-routing/v2.jsonl). Structural tests do not prove native-client installation or autonomous routing.
 
 ## Version policy
 
-The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current plugin version: `0.1.1`, with last verified MAF .NET release `dotnet-1.24.0` on 2026-10-12. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
+The plugin uses independent Semantic Versioning. Keep `plugin.json`, [VERSION](VERSION), and [CHANGELOG.md](CHANGELOG.md) synchronized for releases. Current plugin version: `0.1.1`. No global MAF release compatibility or verification baseline is claimed. Plugin versioning starts at `0.1.0` for this initial development release. Earlier `4.x` records describe the guidance pack, not plugin maturity; historical Git tags do not contain this plugin layout.
 
 Installed NuGet APIs are authoritative for adopters. Current Microsoft Learn or `main` samples never override the installed package surface.
 

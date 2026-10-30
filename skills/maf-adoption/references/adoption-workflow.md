@@ -8,11 +8,11 @@ Find authoritative context, architecture/ADR and feature documents, naming conve
 
 ## Place
 
-Use the bundled `resources/profiles/`, capability matrix and pattern catalog relative to the installed plugin root. Merge the selected profile into the target instructions; keep the plugin knowledge layer installed instead of copying a second set of skills. These are package resources, not paths assumed to exist in the target application. Remove old repository skill copies only after reviewing local adaptations and preserving any necessary project-specific guidance.
+Use the bundled `resources/profiles/`, conceptual references and pattern catalog relative to the installed plugin root. Merge the selected profile into the target instructions; keep the plugin knowledge layer installed instead of copying a second set of skills. These are package resources, not paths assumed to exist in the target application. Remove old repository skill copies only after reviewing local adaptations and preserving any necessary project-specific guidance.
 
 For an embedded AI module, merge the root boundary fragment without replacing local rules and place the AI-module profile at the AI subtree. For AI-first, merge the AI-first profile into the root. Use the templates from `resources/profiles/`; the plugin repository's root `AGENTS.md` is maintainer guidance and must not be copied into an application.
 
-For either profile, keep capability and pattern resources in the plugin. Check that the installed hosting skill can open the capability matrix after adoption.
+For either profile, keep shared concept/pattern resources in the plugin. Check that the implementation skill can open its topic references and official-source guidance after adoption.
 
 ## Populate
 

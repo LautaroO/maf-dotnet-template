@@ -1,5 +1,7 @@
 # PR #1 review and verification
 
+Historical record of an earlier revision. Release-specific knowledge/auditing was retired by the [stable-guidance amendment](../superpowers/specs/2026-10-30-stable-maf-guidance-design.md); this document does not define the current maintenance policy or MAF compatibility.
+
 Review date: 2026-10-12. Mode: change/diff. Base: `451db4a`.
 Original candidate: `d053b74`. Scope: guidance-only pack 4.0.0, not application/runtime code.
 

@@ -1,5 +1,7 @@
 # MAF Architectural Assistant Implementation Plan
 
+Historical record of an earlier revision. Release-specific knowledge/auditing was retired by the [stable-guidance amendment](../specs/2026-10-30-stable-maf-guidance-design.md); this document does not define the current maintenance policy or MAF compatibility.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Deliver a MAF .NET architectural assistant that analyzes material gaps, designs and implements new/existing systems, and coexists with the project's development process.

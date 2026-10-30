@@ -15,7 +15,7 @@ MyProduct/
         └── AGENTS.md
 ```
 
-Keep the shared skills, capability matrix and patterns in the installed plugin. Merge the project instructions below; do not create a second knowledge-layer copy in the application.
+Keep the shared skills, conceptual references and patterns in the installed plugin. Merge the project instructions below; do not create a second knowledge-layer copy in the application.
 
 Merge `AGENTS.root-fragment.md` into the repository root `AGENTS.md` rather than replacing existing product guidance.
 

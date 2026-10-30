@@ -1,31 +1,18 @@
-# Built-in multi-agent orchestrations
+# Single-agent, delegation and workflow composition
 
-Before building a custom graph, check whether a current MAF orchestration already matches the collaboration semantics.
+Start with one bounded agent when it meets the task. Add specialists for distinct semantic responsibilities or authority/context boundaries, not to fill a standard multi-agent diagram.
 
-Current Agent Framework documentation includes these orchestration patterns:
+## Select the owner of control
 
-| Pattern | Use when | Do not use merely for |
-|---|---|---|
-| Sequential | participants must run one after another and pass conversational output forward | deterministic validation/retry branches that need typed process control |
-| Concurrent | several participants independently process the same input and results are aggregated | arbitrary parallel C# work that is not an agent/workflow concern |
-| Handoff | an active agent transfers conversational ownership to another specialist | parent-agent delegation where control must return to the parent; use agent-as-tool for that |
-| Group Chat | several agents iteratively collaborate under a speaker-selection manager | a fixed deterministic pipeline |
-| Magentic | a manager dynamically plans and coordinates specialists for complex open-ended work | ordinary routing or predictable business processes |
+- A parent selecting a specialist as a tool keeps routing semantic and retains responsibility for the final response.
+- Handoff transfers a conversational responsibility; establish who owns session/context and how control returns.
+- A sequential, concurrent or collaborative orchestration fits only when its control semantics meet the requirement.
+- Required order, approvals or recovery belong in explicit workflow control around bounded semantic steps.
 
-In current .NET docs these are exposed through workflow/orchestration builders such as `AgentWorkflowBuilder` and specialized builders. Exact builder methods and experimental status are version-sensitive; verify installed packages before coding.
+Check available built-in MAF patterns before implementing an orchestration loop. Define typed results, authority and budgets for calls, recursion, concurrency, time and cost. Shared conversation visibility must be intentional.
 
-## Selection rule
+## Recovery and evaluation
 
-Use a built-in orchestration when its semantics are the requirement. Use a custom `WorkflowBuilder` graph when you need typed domain messages, deterministic branch rules, custom executors, explicit validation/retry transitions, precise HITL placement, or process-specific state/checkpoint behavior.
+Specify what continuation means, which identity/context is preserved, and which completed effects must not replay. Test delegation selection semantically and deterministic cancellation, limits, approval propagation and effect idempotency independently.
 
-Do not choose Magentic/Group Chat simply because “multi-agent” sounds more agentic. They add model-driven coordination cost and variability.
-
-## Handoff vs agent-as-tool
-
-- **Handoff:** ownership of the conversation moves to another agent.
-- **Agent as tool (`AsAIFunction`)**: the parent retains ownership and delegates a bounded subtask.
-- **Deterministic workflow edge:** the application decides the next participant.
-
-These are different control-flow semantics and should not be treated as interchangeable implementations.
-
-The reviewed 1.25 handoff implementation retains participant sessions and adds a participant-local continuation when control returns with a completed handoff and no new user input. Do not replay the original command to make the agent continue: that can repeat side effects. Filtering also removes reasoning-only remnants of filtered calls. One builder method comment conflicts with this implementation; use the [tagged evidence and discrepancy record](../../../resources/docs/capabilities/verification-1.26.md) rather than inferring command replay. Retest return-to-participant and approvals with fake agents.
+Exact composition helpers, built-in orchestration availability and handoff behavior require [official-source investigation](../../../resources/references/official-sources.md) for the selected packages. A familiar pattern name is not proof of compatible runtime semantics.

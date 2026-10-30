@@ -7,7 +7,7 @@ description: Use when implementing or changing MAF .NET agents, tools, workflows
 
 Implement the requested behavior in its existing architectural boundaries. Start with a proportional assessment of relevant code/design: resolve material gaps, reuse settled decisions and proceed on adequate authorized work. For gap criteria or an active design process consult [agent design](../../resources/references/agent-design.md) or [process integration](../../resources/references/process-integration.md); a small edit needs no full architectural workflow or adoption.
 
-Identify actual SDK/projects and installed NuGet APIs before choosing signatures. In a new solution, label package proposals and verify the selected stack when available. Use [official sources](../../resources/references/official-sources.md) for API evidence and limitations; do not silently upgrade pinned packages or claim untested compilation.
+Identify actual SDK/projects and installed NuGet APIs before choosing signatures. In a new solution, label package proposals and verify the selected stack when available. Use [official-source investigation](../../resources/references/official-sources.md) to consult matching .NET source/samples in the MAF repository for API evidence and limitations; do not silently upgrade pinned packages or claim untested compilation.
 
 ## Read only references needed by this change
 
@@ -27,6 +27,6 @@ Identify actual SDK/projects and installed NuGet APIs before choosing signatures
 | Instrumentation and telemetry privacy | [Observability](references/observability.md) |
 | Local discovery/graph/debug surface | [DevUI](references/devui.md) |
 
-For problem-oriented alternatives consult [patterns](../../resources/docs/patterns/catalog.md). Keep domain rules, authorization and ordinary persistence in application services; tools/executors adapt or orchestrate them. Preserve provider-neutral contracts, validated typed model output, cancellation, bounded execution and idempotent effects. Existing reference version notes are scoped evidence, not universal guarantees for installed packages.
+For problem-oriented alternatives consult [patterns](../../resources/docs/patterns/catalog.md). Keep domain rules, authorization and ordinary persistence in application services; tools/executors adapt or orchestrate them. Preserve provider-neutral contracts, validated typed model output, cancellation, bounded execution and idempotent effects. References retain stable concepts and verification questions. Exact SDK contracts come from inspected project packages and the official MAF repository, not a cached release history.
 
 Verify behavior at affected deterministic boundaries, with semantic quality evaluated separately. Report the selected abstraction, changes/checks, provider coupling and specific remaining API/runtime uncertainty. Consult testing or review skills when the task actually calls for them.

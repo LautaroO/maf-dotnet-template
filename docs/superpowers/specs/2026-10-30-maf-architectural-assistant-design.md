@@ -1,5 +1,7 @@
 # MAF architectural assistant design
 
+Historical record of an earlier revision. Release-specific knowledge/auditing was retired by the [stable-guidance amendment](2026-10-30-stable-maf-guidance-design.md); this document does not define the current maintenance policy or MAF compatibility.
+
 Status: approved by the user on 2026-10-30. Date: 2026-10-30.
 
 ## Intent

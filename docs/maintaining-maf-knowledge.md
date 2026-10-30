@@ -1,77 +1,21 @@
-# Maintaining the MAF knowledge base
+# Maintaining stable MAF architectural guidance
 
-MAF changes quickly. Treat this repository as version-aware guidance, not frozen API documentation.
+Maintain decisions and useful methods rather than mirror a fast-changing SDK. The primary implementation reference is the [official MAF repository](https://github.com/microsoft/agent-framework); the [source investigation guide](../resources/references/official-sources.md) explains how to match its .NET code/samples with an adopting project's actual package surface.
 
-## Update process
+## What changes this plugin
 
-When a new MAF release materially changes an abstraction:
+Update a skill, concept reference or pattern when an architectural abstraction changes materially, a real usage scenario exposes a gap, or a behavioral evaluation demonstrates a recurring mistake. A new release or patch alone is not a maintenance task. Keep exact signatures, package maturity/default claims, migration recipes and release fixes in project-specific implementation evidence where needed, not a shared plugin knowledge matrix.
 
-1. read current Microsoft Learn docs;
-2. inspect the official release/tag/source;
-3. compare with the previous template assumption;
-4. update only the skill/reference that owns that abstraction;
-5. avoid copying provider setup unless needed to explain the abstraction;
-6. preserve “verify installed package APIs” warnings where version drift is plausible;
-7. add a changelog entry.
+1. Identify the observed problem or changed design decision and its owning topic.
+2. Inspect relevant official .NET evidence; distinguish framework responsibility from provider/cloud setup. Record uncertainty when local packages, matching source or network access are unavailable.
+3. Change only the useful conceptual guidance, pattern or investigation procedure. Preserve authorization, tenancy, state lifetime, bounded execution, provider neutrality and project process ownership.
+4. Exercise representative responses/actions for the changed behavior, including cases where no new question or finding is needed. Fixture schema validation does not prove assistant behavior.
+5. Update active docs and Unreleased notes, run repository validation, Python compilation, unittest discovery, embedded shell syntax and diff whitespace checks. Check changed links; report untested client/runtime behavior.
 
-The scheduled source audit may open or refresh a maintenance issue with release/link evidence. The script never edits guidance. When the user requests a knowledge update, Codex performs the source review and edits the guidance; the maintainer reviews the resulting diff and any release decision.
+## Context and release boundaries
 
-## Codex maintenance workflow
+Application instructions record project facts and canonical design links; they do not copy the plugin or impose a second development process. Skill roots route tasks; references retain durable concepts and relevant tradeoffs; the pattern catalog explains when alternatives fit.
 
-Running the script is the evidence-gathering step, not the completed update. In this plugin repository, ask Codex:
+There is no scheduled source audit, compatibility matrix, release coverage index or automated maintenance issue flow. Previous dated reviews are historical records, and retired artifacts remain accessible in Git history. Do not promote their evidence into current support claims.
 
-> Review the MAF audit at /tmp/maf-source-audit.md and update the affected skills, references, capability matrix and patterns against the official .NET release. Record sources, version uncertainty and validation results. Keep the plugin version unchanged until a release is requested.
-
-Codex must then:
-
-1. Read the audit, current Git diff and root maintainer instructions. Diagnose failed source requests before treating `unknown` or missing content as release evidence. If no usable report exists, run `python3 scripts/audit-maf-sources.py --output /tmp/maf-source-audit.md`.
-2. Identify the last assessed release in coverage.json and target .NET tag. Reuse earlier dated evidence and read every newly intervening .NET release; exclude unrelated Python changes. Inspect matching tagged source/samples for changed public APIs, packages and maturity. HTTP 200 and phrase matches do not prove semantic correctness.
-3. Reconcile Microsoft Learn with tagged source. When they disagree, record both sources, inspect package metadata and distinguish source implementation, published package and installed API availability. Keep unresolved claims explicitly qualified.
-4. Map each relevant change to its owning skill/reference, matrix row, pattern and behavior fixture. Apply the supported changes directly in `skills/` and `resources/`, preserving provider neutrality and installed-package checks. Record unchanged areas and unresolved evidence rather than replacing version strings globally.
-5. Save a dated review under `docs/reviews/` with baseline/target, official links, decisions, changed files and remaining verification. Update `CHANGELOG.md` under Unreleased. Advance a matrix row's verification only for evidence actually reviewed; advance the overall baseline only after the whole matrix is reviewed.
-6. Run `python3 scripts/validate-template.py`, `python3 -m compileall -q scripts`, `python3 -B -m unittest discover -s tests -v`, shell syntax checks and `git diff --check`. Check changed Markdown links. Report which behavioral probes were run; fixture validation alone does not prove client routing.
-7. Deliver the diff, review record, command results, provider coupling, version certainty and untested client behavior. A requested documentation update authorizes these repository edits; release, publication and native-client verification are separate outcomes.
-
-For Python.org installations on macOS, a missing default CA bundle can cause `CERTIFICATE_VERIFY_FAILED`. Inspect `ssl.get_default_verify_paths()` and use the matching Python installation's `Install Certificates.command`; then rerun the audit. Keep HTTPS certificate verification enabled.
-
-For every plugin release synchronize `plugin.json`, `VERSION`, changelog and release notes, update routing fixtures when boundaries change, and perform both fresh-session profile smoke tests. Preserve matrix/coverage verification dates unless new source review actually supports advancing them; a plugin release alone does not advance MAF knowledge verification.
-
-## What belongs in application AGENTS.md
-
-The application templates in `resources/profiles/` contain durable invariants that should affect almost every MAF task. The root `AGENTS.md` here is plugin-maintenance guidance, not an application template. Keep the shared knowledge in the installed plugin. Application instructions include:
-
-- least-agentic design;
-- provider neutrality;
-- state taxonomy;
-- validation/security/reliability basics;
-- skill routing.
-
-## What belongs in a skill
-
-Task-oriented architectural judgment and workflow for adoption, design, implementation, testing or review. Keep release-specific details in conditional owning references.
-
-## What belongs in references
-
-API patterns, source links, version-sensitive notes, examples, crosswalks, and detailed checklists.
-
-## Avoid stale API cargo culting
-
-Prefer wording such as:
-
-> Current MAF docs use `AIFunctionFactory.Create`; verify the installed package surface before coding.
-
-instead of:
-
-> Always call this exact overload.
-
-The goal is to make Codex MAF-aware without making it confidently compile against the wrong version.
-
-## Assessment versus verification
-
-`resources/docs/capabilities/coverage.json` is the machine-readable coverage index. `last_assessed_release` records the latest release whose deltas were reviewed; `full_verification` and each area retain their own evidence. Record a scoped delta with its exact scope instead of promoting a whole area. A reviewed 1.26 delta does not advance the complete 1.24 baseline. A new release, request failure, redirect or missing content signal is a separate audit finding; phrase matches are not semantic verification. Diagnose connectivity before inferring an API change.
-
-The audit preserves `--output PATH` and optionally writes `--json-output PATH`. Both contain the same finding fingerprint; timestamps, ordering, duplicate findings and transient diagnostic text do not produce new notification identities. The collector never edits guidance.
-
-The scheduled job uses `scripts/sync-maf-audit-issue.py` to compare the canonical finding fingerprint with the exact-title open issue. Clean or unchanged findings cause no writes or comments. Changed findings update the existing issue; new actionable findings create one when none is open. Closed issues are not modified and clean reports do not close issues. Malformed/mismatched reports fail before remote mutation. Collection failures remain failing workflow results even when their diagnostics were successfully reported. Concurrent audit jobs are serialized. Local unit tests fake gh; they do not send messages.
-
-Keep each coverage area’s `feature` mapping consistent with the versioned matrix row; its full release/date must match that row. The validator rejects dropped features, accidental row promotion and delta dates outside the reviewed window. Update technical references only when evidence changes a design decision, supported pattern, significant restriction or implementation contract; releases without relevant changes still get an assessment record, not copied release notes throughout the skills.
+Plugin releases still synchronize plugin.json, VERSION and changelog, and require the existing native/fresh-session checks. A plugin release does not certify a MAF version. Default CI stays standard-library Python and live-model-free; SDK compilation and provider/runtime behavior are checked in an adopting application, not asserted here.

@@ -1,5 +1,7 @@
 # Architectural assistant refactor evaluation
 
+Historical record of an earlier revision. Release-specific knowledge/auditing was retired by the [stable-guidance amendment](../superpowers/specs/2026-10-30-stable-maf-guidance-design.md); this document does not define the current maintenance policy or MAF compatibility.
+
 Date: 2026-10-30. Starting commit: 13d462d, with the pre-existing local 1.25–1.26 guidance changes, approved design status and implementation plan. Full starting files, Git status/patch and SHA-256 hashes were exported locally to `/private/tmp/maf-assistant-baseline-20261030`; this temporary export is evaluation evidence, not a plugin dependency. The baseline has 14 skills, 17 playbooks and routing v1; all 18 deterministic tests passed.
 
 Only explicitly supplied-reference batch probes are initially available. These do not establish native installation, autonomous discovery, actual Superpowers execution, implementation correctness or two independent samples per case. Candidate versus baseline probe observations and unexecuted modes are recorded below as execution proceeds. No provider coupling or MAF verification baseline changes are inferred.

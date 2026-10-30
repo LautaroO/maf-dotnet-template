@@ -18,7 +18,7 @@ Update explicit invocations and the routing section of existing project instruct
 
 ## Technical coverage
 
-All references below are under `skills/maf-implementation/references/`. Existing scoped release evidence remains intact; these paths identify the current knowledge owner, not a fresh API verification.
+All references below are under `skills/maf-implementation/references/`. These references retain stable concepts and investigation criteria; exact SDK behavior is looked up on demand in the official repository and installed packages.
 
 | Former owner/reference | Current reference |
 |---|---|
@@ -42,9 +42,11 @@ The assistant analyzes material gaps before dependent implementation. It accepts
 
 With an active Superpowers or team process, contribute MAF decisions inside its conversation, canonical design and approval rules. Availability alone does not activate a process. Without one, use lightweight agent-specific discovery and proportionate documentation; no Superpowers dependency or universal approval ceremony is added.
 
-## Evidence and maintenance
+## Stable guidance and source investigation
 
-`resources/docs/capabilities/coverage.json` distinguishes the fully verified 1.24 baseline from the last assessed 1.26 release and narrowly scoped area deltas. The audit reports new releases and source problems without relabeling complete verification. Repeated/clean findings cause no GitHub writes; actual changes are reviewed through the maintenance workflow. Structural tests and supplied-reference probes do not prove native installation, autonomous routing, compilation or runtime application behavior.
+The user-selected final scope removes the compatibility matrix, release verification resources, coverage metadata and scheduled audit/issue automation. Exact signatures, fixes and integration defaults are checked in the target stack using [official-source investigation](../resources/references/official-sources.md). There is no global MAF version certification or routine per-release update obligation.
+
+The five public skills and fourteen problem patterns remain. Active routing v2 now evaluates package inspection, official source matching and scoped uncertainty instead of testing recall of named releases. Git history preserves retired v1/version-specific resources and prior review records are historical. Existing applications keep their installed package versions unless the user authorizes a change. Installation/routing and SDK/runtime correctness remain separate checks.
 
 ## Historical playbook coverage
 
@@ -65,4 +67,4 @@ With an active Superpowers or team process, contribute MAF decisions inside its 
 | 16 provider/package migration | migration |
 | 17 evaluation/observability/incidents/review | verification-operations |
 
-The active catalog groups seventeen historical playbooks into fourteen problem patterns. The validator checks meaningful sections and unique IDs, not that chosen count or the presence of C#.
+The active catalog retains concepts from seventeen historical playbooks into fourteen problem patterns. The validator checks meaningful sections and unique IDs, not that chosen count or the presence of C#.
