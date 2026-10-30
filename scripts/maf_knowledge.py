@@ -55,6 +55,10 @@ def coverage_errors(data: object, root: Path) -> list[str]:
         else: ids.add(ident)
         area_full = record(area.get('full_verification'), f'areas[{i}].full_verification')
         if area_full and assessed and area_full > assessed: errors.append(f'coverage.areas[{i}]: unassessed full release')
+        area_date=area.get('full_verification',{}).get('date') if isinstance(area.get('full_verification'),dict) else None
+        assessed_date=data.get('last_assessed_release',{}).get('date') if isinstance(data.get('last_assessed_release'),dict) else None
+        if isinstance(area_date,str) and isinstance(assessed_date,str) and area_date > assessed_date:
+            errors.append(f'coverage.areas[{i}]: full verification date exceeds assessment')
         deltas=area.get('delta_reviews')
         if not isinstance(deltas,list): errors.append(f'coverage.areas[{i}].delta_reviews: expected list'); continue
         for j, delta in enumerate(deltas):
@@ -66,6 +70,9 @@ def coverage_errors(data: object, root: Path) -> list[str]:
             if start and end and (start >= end or (area_full and start < area_full)):
                 errors.append(f'coverage.{field}: invalid delta range')
             if end and assessed and end > assessed: errors.append(f'coverage.{field}: delta exceeds assessed release')
+            delta_date=delta.get('date')
+            if isinstance(delta_date,str) and isinstance(area_date,str) and isinstance(assessed_date,str) and not area_date <= delta_date <= assessed_date:
+                errors.append(f'coverage.{field}: delta date outside assessed window')
             if not isinstance(delta.get('scope'),str) or not delta['scope'].strip(): errors.append(f'coverage.{field}: missing scope')
     return errors
 

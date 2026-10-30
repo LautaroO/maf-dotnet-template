@@ -25,7 +25,7 @@ Running the script is the evidence-gathering step, not the completed update. In 
 Codex must then:
 
 1. Read the audit, current Git diff and root maintainer instructions. Diagnose failed source requests before treating `unknown` or missing content as release evidence. If no usable report exists, run `python3 scripts/audit-maf-sources.py --output /tmp/maf-source-audit.md`.
-2. Identify the checked-in baseline and target .NET tag. Read every intervening .NET release; exclude unrelated Python changes. Inspect matching tagged source/samples for changed public APIs, packages and maturity. HTTP 200 and phrase matches do not prove semantic correctness.
+2. Identify the last assessed release in coverage.json and target .NET tag. Reuse earlier dated evidence and read every newly intervening .NET release; exclude unrelated Python changes. Inspect matching tagged source/samples for changed public APIs, packages and maturity. HTTP 200 and phrase matches do not prove semantic correctness.
 3. Reconcile Microsoft Learn with tagged source. When they disagree, record both sources, inspect package metadata and distinguish source implementation, published package and installed API availability. Keep unresolved claims explicitly qualified.
 4. Map each relevant change to its owning skill/reference, matrix row, pattern and behavior fixture. Apply the supported changes directly in `skills/` and `resources/`, preserving provider neutrality and installed-package checks. Record unchanged areas and unresolved evidence rather than replacing version strings globally.
 5. Save a dated review under `docs/reviews/` with baseline/target, official links, decisions, changed files and remaining verification. Update `CHANGELOG.md` under Unreleased. Advance a matrix row's verification only for evidence actually reviewed; advance the overall baseline only after the whole matrix is reviewed.
@@ -34,7 +34,7 @@ Codex must then:
 
 For Python.org installations on macOS, a missing default CA bundle can cause `CERTIFICATE_VERIFY_FAILED`. Inspect `ssl.get_default_verify_paths()` and use the matching Python installation's `Install Certificates.command`; then rerun the audit. Keep HTTPS certificate verification enabled.
 
-For every release update `plugin.json`, `VERSION`, `CHANGELOG.md`, release notes, the matrix's last-verified release/date, routing fixtures when boundaries change, and both fresh-session profile smoke-test records.
+For every plugin release synchronize `plugin.json`, `VERSION`, changelog and release notes, update routing fixtures when boundaries change, and perform both fresh-session profile smoke tests. Preserve matrix/coverage verification dates unless new source review actually supports advancing them; a plugin release alone does not advance MAF knowledge verification.
 
 ## What belongs in application AGENTS.md
 
@@ -48,7 +48,7 @@ The application templates in `resources/profiles/` contain durable invariants th
 
 ## What belongs in a skill
 
-Task-specific workflow and decision rules for one MAF abstraction.
+Task-oriented architectural judgment and workflow for adoption, design, implementation, testing or review. Keep release-specific details in conditional owning references.
 
 ## What belongs in references
 
@@ -73,3 +73,5 @@ The goal is to make Codex MAF-aware without making it confidently compile agains
 The audit preserves `--output PATH` and optionally writes `--json-output PATH`. Both contain the same finding fingerprint; timestamps, ordering, duplicate findings and transient diagnostic text do not produce new notification identities. The collector never edits guidance.
 
 The scheduled job uses `scripts/sync-maf-audit-issue.py` to compare the canonical finding fingerprint with the exact-title open issue. Clean or unchanged findings cause no writes or comments. Changed findings update the existing issue; new actionable findings create one when none is open. Closed issues are not modified and clean reports do not close issues. Malformed/mismatched reports fail before remote mutation. Collection failures remain failing workflow results even when their diagnostics were successfully reported. Concurrent audit jobs are serialized. Local unit tests fake gh; they do not send messages.
+
+Keep each coverage area’s `feature` mapping consistent with the versioned matrix row; its full release/date must match that row. The validator rejects dropped features, accidental row promotion and delta dates outside the reviewed window. Update technical references only when evidence changes a design decision, supported pattern, significant restriction or implementation contract; releases without relevant changes still get an assessment record, not copied release notes throughout the skills.

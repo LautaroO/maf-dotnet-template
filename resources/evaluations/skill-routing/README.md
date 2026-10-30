@@ -21,3 +21,5 @@ See the [context/refinement behavior check record](context-refinement-smoke.md) 
 ## Architectural assistant evaluation
 
 See [the protocol](architectural-assistant-protocol.md) and `architectural-assistant-cases.json` for architecture, proportional gap analysis and process coexistence scenarios. Reference probes are separate from native autonomous routing.
+
+The architecture cases cover new/existing solutions, sufficient designs, exact edits, material gaps, existing process ownership, standalone use, delegated choices and distinct control architectures. Use `architectural-assistant-cases.json` for repository inputs; its IDs map into v2. Dated evaluation records live in the source repository; they distinguish reference responses from pending native/client modes and are not dependencies of installed resources.

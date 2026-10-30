@@ -18,7 +18,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "`AIAgent` / `ChatClientAgent`"
     },
     {
       "id": "sessions-history",
@@ -35,7 +36,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Cosmos options and partition metadata; experimental deletion; memory cancellation"
         }
-      ]
+      ],
+      "feature": "Sessions and history"
     },
     {
       "id": "streaming",
@@ -44,7 +46,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Streaming"
     },
     {
       "id": "multimodal",
@@ -53,7 +56,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Multimodal input"
     },
     {
       "id": "structured-output",
@@ -62,7 +66,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Structured output"
     },
     {
       "id": "function-tools",
@@ -71,7 +76,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Local function tools"
     },
     {
       "id": "mcp-tools",
@@ -88,7 +94,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Invocation headers and approval integration"
         }
-      ]
+      ],
+      "feature": "MCP tools"
     },
     {
       "id": "tool-approval",
@@ -105,7 +112,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Unanswered calls, standing rules and duplicate active IDs"
         }
-      ]
+      ],
+      "feature": "Tool approval"
     },
     {
       "id": "background-responses",
@@ -114,7 +122,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Background responses"
     },
     {
       "id": "looping-planning",
@@ -123,7 +132,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Looping/planning/background agents"
     },
     {
       "id": "declarative-agents",
@@ -132,7 +142,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Declarative agents"
     },
     {
       "id": "declarative-workflows",
@@ -149,7 +160,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Closed lists, state reset/restore, sensitivity and registered tool approval"
         }
-      ]
+      ],
+      "feature": "Declarative workflows"
     },
     {
       "id": "runtime-skills",
@@ -158,7 +170,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "MAF runtime Agent Skills"
     },
     {
       "id": "harness",
@@ -175,7 +188,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Bounded file search and developer-controlled Docker options only"
         }
-      ]
+      ],
+      "feature": "Harness Agent"
     },
     {
       "id": "programmatic-workflows",
@@ -192,7 +206,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Stateful executors, restore hooks, handoff, approval forwarding and fan-out"
         }
-      ]
+      ],
+      "feature": "Programmatic workflows/orchestrations"
     },
     {
       "id": "durability",
@@ -201,7 +216,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Checkpoints and durable execution"
     },
     {
       "id": "self-hosting",
@@ -210,7 +226,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Self-hosting"
     },
     {
       "id": "foundry-hosting",
@@ -227,7 +244,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Response-scoped toolbox and OAuth consent only"
         }
-      ]
+      ],
+      "feature": "Foundry Hosted Agents"
     },
     {
       "id": "protocols",
@@ -244,7 +262,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "AG-UI lifetimes/identity, SSE and A2A changes only"
         }
-      ]
+      ],
+      "feature": "OpenAI-compatible, A2A and AG-UI protocols"
     },
     {
       "id": "telemetry-evaluation",
@@ -261,7 +280,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "OpenTelemetry agent continuation preservation only"
         }
-      ]
+      ],
+      "feature": "OpenTelemetry and evaluation"
     },
     {
       "id": "devui",
@@ -278,7 +298,8 @@
           "evidence": "resources/docs/capabilities/verification-1.26.md",
           "scope": "Local peer/Host/browser checks and token route scope only"
         }
-      ]
+      ],
+      "feature": "DevUI"
     },
     {
       "id": "agent-hooks",
@@ -287,7 +308,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Agent Hooks"
     },
     {
       "id": "fides",
@@ -296,7 +318,8 @@
         "date": "2026-10-12",
         "evidence": "resources/docs/capabilities/verification-1.24.md"
       },
-      "delta_reviews": []
+      "delta_reviews": [],
+      "feature": "Agent Security with FIDES"
     }
   ]
 }

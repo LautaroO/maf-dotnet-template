@@ -175,6 +175,7 @@ def validate_matrix(errors: list[str]) -> None:
     if not rows:
         fail(f"{MATRIX.relative_to(ROOT)}: expected nonempty feature matrix",errors)
     features=set()
+    row_verification={}
     for number,row in enumerate(rows,1):
         fields=[v.strip() for v in row.split("|")[1:-1]]
         if len(fields) != 8:
@@ -183,12 +184,32 @@ def validate_matrix(errors: list[str]) -> None:
             fail(f"{MATRIX.relative_to(ROOT)}: row {number} has incomplete metadata",errors)
         if fields[0] in features: fail(f"{MATRIX.relative_to(ROOT)}: duplicate feature {fields[0]}",errors)
         features.add(fields[0])
+        row_verification[fields[0]]=(fields[6],fields[7])
         try:
             release_key(fields[6])
             if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",fields[7]): raise ValueError("invalid ISO date")
             date.fromisoformat(fields[7])
         except ValueError as exc:fail(f"{MATRIX.relative_to(ROOT)}: row {number}: {exc}",errors)
         if not re.search(r"https?://",fields[5]):fail(f"{MATRIX.relative_to(ROOT)}: row {number} lacks source",errors)
+
+    coverage_path=ROOT/'resources/docs/capabilities/coverage.json'
+    if coverage_path.is_file():
+        try:
+            coverage=load_coverage(coverage_path)
+            mapped=set()
+            for area in coverage['areas']:
+                feature=area.get('feature')
+                if not isinstance(feature,str) or not feature or feature in mapped:
+                    fail('coverage: each area needs a unique matrix feature mapping',errors);continue
+                mapped.add(feature)
+                full=area['full_verification']
+                if row_verification.get(feature) != (full['release'],full['date']):
+                    fail(f'coverage/matrix disagreement for {feature}',errors)
+            if mapped != features:fail('coverage/matrix feature inventory disagrees',errors)
+            full=coverage['full_verification']
+            if f"Last verified MAF release: `{full['release']}`" not in text or f"Verification date: {full['date']}" not in text:
+                fail('coverage/matrix full baseline disagrees',errors)
+        except ValueError as exc:fail(str(exc),errors)
 
 
 def validate_catalog(errors: list[str]) -> None:
@@ -254,6 +275,31 @@ def validate_routing(known_skills: set[str], errors: list[str], routing: Path | 
         fail(f"{routing.relative_to(ROOT)}: missing required fixtures: {', '.join(sorted(missing))}", errors)
     if not any(not record.get("expected_skills") for record in records):
         fail(f"{routing.relative_to(ROOT)}: needs at least one negative routing fixture", errors)
+
+
+def validate_cases(errors: list[str], cases_path: Path | None = None) -> None:
+    path = ROOT / 'resources/evaluations/skill-routing/architectural-assistant-cases.json' if cases_path is None else cases_path
+    try:
+        data=json.loads(path.read_text(encoding='utf-8'))
+        if not isinstance(data,dict) or type(data.get('schema_version')) is not int or data['schema_version'] != 1 or not isinstance(data.get('cases'),list) or not data['cases']:
+            raise ValueError('expected schema_version 1 with nonempty cases list')
+        ids=set()
+        for item in data['cases']:
+            if not isinstance(item,dict):raise ValueError('case must be an object')
+            ident=item.get('id')
+            if not isinstance(ident,str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',ident) or ident in ids:raise ValueError('invalid/duplicate case id')
+            ids.add(ident)
+            if not isinstance(item.get('prompt'),str) or not item['prompt'].strip():raise ValueError(f'{ident}: missing prompt')
+            if item.get('process_owner') not in ('superpowers','project','none'):raise ValueError(f'{ident}: unknown process owner')
+            files=item.get('repository_files')
+            if not isinstance(files,dict):raise ValueError(f'{ident}: repository_files must be a mapping')
+            for name,value in files.items():
+                if not isinstance(name,str) or not name or Path(name).is_absolute() or '..' in Path(name).parts or '\\' in name or ':' in name or name=='.' or not isinstance(value,str):
+                    raise ValueError(f'{ident}: unsafe fixture path or invalid content')
+            for field in ('expected_behavior','forbidden_behavior'):
+                values=item.get(field)
+                if not isinstance(values,list) or not values or any(not isinstance(v,str) or not v.strip() for v in values):raise ValueError(f'{ident}: {field} must be nonempty strings')
+    except (OSError,ValueError) as exc:fail(f'{path.relative_to(ROOT)}: {exc}',errors)
 
 
 def validate_hygiene(errors: list[str]) -> None:
@@ -354,6 +400,7 @@ def main() -> int:
     validate_catalog(errors)
     if contract:
         validate_routing(set(names), errors, ROOT / contract["routing_dataset"])
+    validate_cases(errors)
     validate_hygiene(errors)
     validate_plugin(ROOT, errors)
 

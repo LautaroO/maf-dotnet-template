@@ -159,3 +159,50 @@ class KnowledgeDocumentTests(unittest.TestCase):
     def test_invalid_calendar_tag_and_absent_source_fail(self):
         for kwargs in [{'date':'2026-02-30'},{'release':'bad'},{'source':'none'}]:
             with self.subTest(kwargs=kwargs):self.assertTrue(self.run_matrix(**kwargs))
+
+class AssistantCaseTests(unittest.TestCase):
+    def setUp(self):
+        self.case={'id':'example','prompt':'Design an assistant','repository_files':{},'process_owner':'none','expected_behavior':['Ask a material question'],'forbidden_behavior':['Invent project facts']}
+    def run_cases(self,data):
+        import json
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);p=root/'cases.json';p.write_text(json.dumps(data));errors=[]
+            with patch.object(validator,'ROOT',root):validator.validate_cases(errors,p)
+            return errors
+    def test_greenfield_empty_repository_is_valid(self):self.assertEqual(self.run_cases({'schema_version':1,'cases':[self.case]}),[])
+    def test_duplicate_ids_and_invalid_process_fail(self):
+        self.assertTrue(self.run_cases({'schema_version':1,'cases':[self.case,self.case]}))
+        self.assertTrue(self.run_cases({'schema_version':1,'cases':[self.case|{'process_owner':'unknown'}]}))
+    def test_unsafe_paths_and_malformed_fixtures_fail(self):
+        for files in [{'../outside':'x'},{'/tmp/out':'x'},{'C:\\tmp\\out':'x'},{'src/../out':'x'},['not a mapping'],{'safe':None}]:
+            with self.subTest(files=files):self.assertTrue(self.run_cases({'schema_version':1,'cases':[self.case|{'repository_files':files}]}))
+    def test_absent_behavior_and_bad_schema_fail(self):
+        for data in [[],{'schema_version':True,'cases':[self.case]},{'schema_version':1,'cases':[self.case|{'expected_behavior':[]}]}]:
+            self.assertTrue(self.run_cases(data))
+    def test_every_behavior_case_has_an_active_route(self):
+        import json
+        root=Path(__file__).resolve().parents[1]
+        cases=json.loads((root/'resources/evaluations/skill-routing/architectural-assistant-cases.json').read_text())['cases']
+        records={r['id']:r for r in map(json.loads,(root/'resources/evaluations/skill-routing/v2.jsonl').read_text().splitlines())}
+        for case in cases:
+            self.assertIn(case['id'],records)
+            self.assertTrue(set(case['expected_behavior']+['must not: '+v for v in case['forbidden_behavior']]) <= set(records[case['id']].get('assertions',[])))
+
+class MatrixCoverageConsistencyTests(unittest.TestCase):
+    def test_missing_covered_feature_or_promoted_row_is_rejected(self):
+        import json,shutil
+        source=Path(__file__).resolve().parents[1]
+        for mode in ['missing','promoted']:
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);(root/'plugin.json').write_text('{}')
+                shutil.copytree(source/'resources/docs/capabilities',root/'resources/docs/capabilities')
+                coverage=root/'resources/docs/capabilities/coverage.json';data=json.loads(coverage.read_text())
+                for area in data['areas']:
+                    if area['id']=='streaming':area['feature']='Streaming'
+                coverage.write_text(json.dumps(data))
+                p=root/'resources/docs/capabilities/maf-dotnet-1.24.md';lines=p.read_text().splitlines()
+                lines=[line for line in lines if not (mode=='missing' and line.startswith('| Streaming |'))]
+                if mode=='promoted':lines=[line.replace('dotnet-1.24.0 | 2026-10-12','dotnet-1.26.0 | 2026-10-24') if line.startswith('| Streaming |') else line for line in lines]
+                p.write_text('\n'.join(lines)+'\n');errors=[]
+                with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
+                self.assertTrue(errors)

@@ -43,3 +43,7 @@ class CoverageTests(unittest.TestCase):
     def test_release_comparison_is_numeric(self):
         self.assertGreater(knowledge.release_key('dotnet-1.10.0'),knowledge.release_key('dotnet-1.9.0'))
         with self.assertRaises(ValueError): knowledge.release_key('dotnet-1.2.0-preview')
+    def test_delta_dates_must_fit_the_assessed_window(self):
+        for value in ['2026-01-01','2027-01-01']:
+            data=copy.deepcopy(self.data);data['areas'][0]['delta_reviews'][0]['date']=value
+            self.assertTrue(knowledge.coverage_errors(data,self.root))

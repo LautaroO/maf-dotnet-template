@@ -24,7 +24,7 @@ Unreleased guidance includes a [scoped review of MAF 1.25–1.26](resources/docs
 
 These skills guide Codex during software development. MAF runtime Agent Skills are inputs discovered by application agents during execution. Never place this plugin in an application's runtime skill store.
 
-Use the plugin as an architectural assistant for new or existing solutions: identify consequential gaps, accept sufficient designs and proceed on authorized work. Follow the active Superpowers/team process without another brainstorming loop; standalone use includes lightweight agent-design guidance. See [routing migration](docs/migration-to-architectural-assistant.md).
+Use the plugin as an architectural assistant for new or existing solutions: identify consequential gaps, accept sufficient designs and proceed on authorized work. Follow the active Superpowers/team process without another brainstorming loop; standalone use includes lightweight agent-design guidance. See [routing migration](docs/migration-to-architectural-assistant.md) and [the reference evaluation record](docs/reviews/2026-10-30-architectural-assistant-evaluation.md).
 
 ## Core decisions
 
