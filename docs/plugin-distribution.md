@@ -89,7 +89,7 @@ Automated checks prove manifest/version consistency, reference containment and t
 
 ## Versioned publication and updates
 
-Distribute published plugin versions rather than tracking `main`. A MAF knowledge update increments the plugin version independently of the MAF baseline. The plugin has no global MAF knowledge/compatibility baseline; exact SDK evidence is checked in the target project as needed.
+Distribute published plugin versions rather than tracking `main`. Guidance releases use independent plugin versioning; they do not track MAF release numbers. The plugin has no global MAF knowledge/compatibility baseline; exact SDK evidence is checked in the target project as needed.
 
 1. Prepare matching manifest and `VERSION` values, changelog notes and release evidence. Run all repository checks.
 2. Complete the [fresh-session smoke test](releases/fresh-session-smoke-test.md) against the candidate from a separate test marketplace. Record actual results; a pending check prevents publication.

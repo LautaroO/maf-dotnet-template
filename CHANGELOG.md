@@ -4,21 +4,13 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
-- Simplify the architectural assistant to stable concepts and on-demand investigation of the official MAF repository. Retire compatibility matrices, release delta resources, coverage metadata, scheduled source auditing/issue synchronization and release-recall fixtures; keep the five public skills and problem-oriented patterns.
-
-
-- Validate transport/read-failure reporting and prevent unsupported whole-matrix verification promotion; 62 deterministic tests pass after independent review and regression fixes. Native installation/routing remains a separate release check.
-
-
-- Reorganize the developer interface around five architectural-assistance tasks; migrate ten subsystem invocations to conditional implementation references with explicit routing migration. Keep plugin version 0.1.1 and existing MAF verification scope.
-- Track assessed release deltas separately from complete/per-area verification and deduplicate scheduled audit issue writes.
-
-
 ### Changed
 
-- Reviewed issue #3 and both official .NET releases 1.25–1.26; recorded dated and portable source evidence while preserving the whole-matrix 1.24 baseline and plugin version 0.1.1.
-- Updated approval recovery/standing-rule reuse, Cosmos options and session deletion, declarative workflow validation/reset/restore, handoff and fan-out semantics, middleware coverage, AG-UI/A2A/Foundry/DevUI boundaries, telemetry continuation and file/shell guidance.
-- Added behavior fixtures and model-free application regression guidance for the new contracts. No application compilation, candidate routing/installation, release or publication is implied by structural checks.
+- Reorganize the developer interface into five task-oriented skills: adoption, architecture, implementation, testing and review. Ten former subsystem invocations now use conditional implementation topic references.
+- Keep stable architectural concepts, proportional gap analysis, provider/application boundaries and one-process coexistence with Superpowers or team workflows. Retain fourteen problem-oriented patterns.
+- Consult installed package APIs and matching .NET evidence in the official MAF repository for exact implementation details. No global MAF compatibility/verification baseline is maintained.
+- Retire versioned capability/verification/coverage resources, release-specific API notes and fixtures, scheduled source auditing and issue synchronization. Historical source records are clearly marked; Git preserves removed artifacts.
+- Validate the concept-only source export and isolated installed resources with 32 deterministic tests. Supplied-reference probes and independent review are recorded separately from native discovery or SDK/runtime verification.
 
 ## [0.1.1] - 2026-10-12
 

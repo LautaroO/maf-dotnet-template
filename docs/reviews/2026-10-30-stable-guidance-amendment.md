@@ -18,6 +18,20 @@ The official repository entry point was opened to verify the reference destinati
 
 ## Reference observations
 
-Baseline source: commit 89aeb87 snapshot at `/private/tmp/maf-stable-guidance-baseline`. A read-only reference application of an unknown-package session/approval task correctly refused verified signatures but still supplied remembered 1.24–1.26 contract details. That is the behavior the amendment removes. Its read-only orders architecture response remained useful and did not require another approval. Candidate response evidence is recorded below after its probe.
+Baseline source: commit 89aeb87 snapshot at `/private/tmp/maf-stable-guidance-baseline`. A read-only reference application of an unknown-package session/approval task correctly refused verified signatures but still supplied remembered 1.24–1.26 contract details. That is the behavior the amendment removes. Its read-only orders architecture response remained useful and did not require another approval. Candidate response evidence follows.
 
 Optional PyYAML/Lychee helpers remain unavailable locally; standard-library package checks cover local links and CI retains external-link checking. Historical claim counts in earlier records describe their own revisions, not this candidate.
+
+The candidate used the same two prompts plus an unavailable-source scenario. It retained a concrete single-agent/read-only-tool architecture, tenant/service ownership, bounded execution, ephemeral conversation and model-free acceptance checks without another approval. For unknown packages it separated required behavior from SDK defaults, identified local package/public API and matching official .NET evidence as prerequisites, and supplied no remembered release contracts or signatures. When neither source nor local metadata was accessible it explicitly left support/signature unknown instead of declaring the capability absent.
+
+These are one baseline and one candidate batch reference-application run, with responses/actions proposed rather than application edits or actual SDK lookup. Native autonomous routing and actual project/upstream API investigation are not demonstrated; no scored quality gain is claimed. Raw local artifacts are `/private/tmp/maf-stable-guidance-baseline-probe.md` and `/private/tmp/maf-stable-guidance-candidate-probe.md`.
+
+- `maf-stable-guidance-baseline-probe.md` SHA-256: `5ada8fcdc1134f42d15667f596478f6c29df7b70fb893f493e223e70dc0b8667`
+
+- `maf-stable-guidance-candidate-probe.md` SHA-256: `cc273bc52dbc978e96c339877fc4b77db3ad61984f00c61482186cfae692f91c`
+
+## Independent review
+
+A fresh read-only reviewer approved the amendment through e75e087 with no Critical, Important or Minor findings. It reproduced source validation, all 32 tests and diff whitespace verification; confirmed the references retain useful conceptual criteria; and checked package-first .NET source investigation, unavailable-evidence handling, retired maintenance dependencies and historical notices. Final release notes were reconciled with the simplified scope afterward; retired pre-release auditor claims are not presented as shipped features.
+
+The reviewer did not judge native discovery, real Superpowers execution, external-link reachability, exact SDK/upstream API availability, application/provider runtime or publication/merge readiness, and did not independently reconstruct controller-observed RED/probe runs. Those modes remain unclaimed; repository checks and reference observations above state their actual scope. No additional package/provider dependency was introduced.
