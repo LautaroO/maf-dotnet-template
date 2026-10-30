@@ -7,6 +7,8 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from maf_knowledge import load_coverage
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
@@ -309,6 +311,10 @@ def main() -> int:
     if version and f"## [{version}]" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
         fail("CHANGELOG does not contain current VERSION", errors)
 
+    try:
+        load_coverage(ROOT / "resources/docs/capabilities/coverage.json")
+    except ValueError as exc:
+        fail(str(exc), errors)
     validate_matrix(errors)
     validate_catalog(errors)
     validate_routing(set(names), errors)

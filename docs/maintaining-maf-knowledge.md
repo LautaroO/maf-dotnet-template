@@ -65,3 +65,9 @@ instead of:
 > Always call this exact overload.
 
 The goal is to make Codex MAF-aware without making it confidently compile against the wrong version.
+
+## Assessment versus verification
+
+`resources/docs/capabilities/coverage.json` is the machine-readable coverage index. `last_assessed_release` records the latest release whose deltas were reviewed; `full_verification` and each area retain their own evidence. Record a scoped delta with its exact scope instead of promoting a whole area. A reviewed 1.26 delta does not advance the complete 1.24 baseline. A new release, request failure, redirect or missing content signal is a separate audit finding; phrase matches are not semantic verification. Diagnose connectivity before inferring an API change.
+
+The audit preserves `--output PATH` and optionally writes `--json-output PATH`. Both contain the same finding fingerprint; timestamps, ordering, duplicate findings and transient diagnostic text do not produce new notification identities. The collector never edits guidance.

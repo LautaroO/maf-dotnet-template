@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "full_verification": {
+    "release": "dotnet-1.24.0",
+    "date": "2026-10-12",
+    "evidence": "resources/docs/capabilities/verification-1.24.md"
+  },
+  "last_assessed_release": {
+    "release": "dotnet-1.26.0",
+    "date": "2026-10-24",
+    "evidence": "resources/docs/capabilities/verification-1.26.md"
+  },
+  "areas": [
+    {
+      "id": "agents",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "sessions-history",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Cosmos options and partition metadata; experimental deletion; memory cancellation"
+        }
+      ]
+    },
+    {
+      "id": "streaming",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "multimodal",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "structured-output",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "function-tools",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "mcp-tools",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Invocation headers and approval integration"
+        }
+      ]
+    },
+    {
+      "id": "tool-approval",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Unanswered calls, standing rules and duplicate active IDs"
+        }
+      ]
+    },
+    {
+      "id": "background-responses",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "looping-planning",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "declarative-agents",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "declarative-workflows",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Closed lists, state reset/restore, sensitivity and registered tool approval"
+        }
+      ]
+    },
+    {
+      "id": "runtime-skills",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "harness",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Bounded file search and developer-controlled Docker options only"
+        }
+      ]
+    },
+    {
+      "id": "programmatic-workflows",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Stateful executors, restore hooks, handoff, approval forwarding and fan-out"
+        }
+      ]
+    },
+    {
+      "id": "durability",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "self-hosting",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "foundry-hosting",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Response-scoped toolbox and OAuth consent only"
+        }
+      ]
+    },
+    {
+      "id": "protocols",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "AG-UI lifetimes/identity, SSE and A2A changes only"
+        }
+      ]
+    },
+    {
+      "id": "telemetry-evaluation",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "OpenTelemetry agent continuation preservation only"
+        }
+      ]
+    },
+    {
+      "id": "devui",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": [
+        {
+          "from_release": "dotnet-1.24.0",
+          "to_release": "dotnet-1.26.0",
+          "date": "2026-10-24",
+          "evidence": "resources/docs/capabilities/verification-1.26.md",
+          "scope": "Local peer/Host/browser checks and token route scope only"
+        }
+      ]
+    },
+    {
+      "id": "agent-hooks",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    },
+    {
+      "id": "fides",
+      "full_verification": {
+        "release": "dotnet-1.24.0",
+        "date": "2026-10-12",
+        "evidence": "resources/docs/capabilities/verification-1.24.md"
+      },
+      "delta_reviews": []
+    }
+  ]
+}

@@ -8,6 +8,9 @@ import re
 import urllib.error
 import urllib.request
 from datetime import date
+import socket
+import ssl
+from maf_knowledge import load_coverage, release_key, audit_fingerprint
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,68 +62,80 @@ def latest_dotnet_release() -> tuple[str, str]:
     raise RuntimeError("No published dotnet-* release found in first 100 releases")
 
 
+def build_audit(coverage: dict, source_checks: list[dict], latest_release: str | None, release_error: str | None) -> dict:
+    findings=[]
+    assessed=coverage['last_assessed_release']['release']
+    if latest_release and release_key(latest_release) > release_key(assessed):
+        findings.append({'kind':'new_release','source':'github-dotnet-releases','detail':latest_release})
+    if release_error:
+        findings.append({'kind':'request_failure','source':'github-dotnet-releases','detail':release_error})
+    for check in source_checks:
+        source=check['source']
+        if check.get('failure'):
+            findings.append({'kind':'request_failure','source':source,'detail':check['failure']}); continue
+        if check.get('final_url',source).rstrip('/') != source.rstrip('/'):
+            findings.append({'kind':'redirect','source':source,'detail':check['final_url']})
+        for signal in check.get('missing_signals',[]):
+            findings.append({'kind':'content_signal','source':source,'detail':signal})
+    findings=[json.loads(x) for x in sorted({json.dumps(f,sort_keys=True) for f in findings})]
+    return {'schema_version':1,'audit_date':date.today().isoformat(),'full_verification':coverage['full_verification'],
+            'last_assessed_release':coverage['last_assessed_release'],'latest_release':latest_release,
+            'source_checks':source_checks,'findings':findings,'needs_review':bool(findings),
+            'fingerprint':audit_fingerprint(findings,assessed)}
+
+
+def render_report(audit: dict) -> str:
+    lines=['# Scheduled MAF source audit','',f"<!-- maf-source-audit:{audit['fingerprint']} -->",'',
+           f"- Audit date: {audit['audit_date']}",f"- Full verification: `{audit['full_verification']['release']}`",
+           f"- Last release assessed for deltas: `{audit['last_assessed_release']['release']}`",
+           f"- Latest published .NET release: `{audit['latest_release'] or 'unknown'}`",
+           f"- Maintainer review required: **{'yes' if audit['needs_review'] else 'no'}**",'',
+           'This automated audit is evidence only. Content signals and reachable links do not prove semantic correctness.',
+           'Assessed releases do not advance full or per-area verification. Inspect coverage.json and dated evidence.','',
+           '## Findings','']
+    lines.extend(f"- {f['kind']}: {f['source']} — {f['detail']}" for f in audit['findings'])
+    if not audit['findings']: lines.append('No new actionable findings.')
+    lines.extend(['','## Source checks',''])
+    for row in audit['source_checks']:
+        lines.append(f"- {row['source']}: {row.get('status',row.get('failure','unknown'))}; {row.get('diagnostic',row.get('final_url',''))}")
+    lines.extend(['','Review official .NET releases/tags and relevant published packages before updating owning references, patterns and fixtures. Do not infer APIs from phrase checks.'])
+    return '\n'.join(lines)+'\n'
+
+
+def failure_category(exc: Exception) -> str:
+    reason=getattr(exc,'reason',exc)
+    if isinstance(exc,urllib.error.HTTPError): return f'http-{exc.code}'
+    if isinstance(reason,ssl.SSLError): return 'tls'
+    if isinstance(reason,socket.gaierror): return 'dns'
+    if isinstance(reason,(TimeoutError,socket.timeout)): return 'timeout'
+    return 'unavailable'
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, required=True)
-    args = parser.parse_args()
-
-    matrix_text = MATRIX.read_text(encoding="utf-8")
-    baseline_match = re.search(r"Last verified MAF release: `([^`]+)`", matrix_text)
-    baseline = baseline_match.group(1) if baseline_match else "unknown"
-
-    rows = []
-    failures = []
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--json-output',type=Path)
+    args=parser.parse_args()
+    try: coverage=load_coverage(ROOT/'resources/docs/capabilities/coverage.json')
+    except ValueError as exc:
+        print(exc); return 2
+    checks=[]
     for source in SOURCES:
         try:
-            status, final_url, body = request(source)
-            notes = ["redirected"] if final_url.rstrip("/") != source.rstrip("/") else []
-            missing_signals = [signal for signal in EXPECTED_SIGNALS.get(source, []) if signal.casefold() not in body.casefold()]
-            if missing_signals:
-                notes.append("maturity/content changed: missing " + ", ".join(missing_signals))
-            note = "; ".join(notes) if notes else "ok"
-            rows.append((source, status, final_url, note))
-        except (urllib.error.URLError, TimeoutError) as exc:
-            failures.append(f"{source}: {exc}")
-
-    latest = "unknown"
-    release_url = ""
-    try:
-        latest, release_url = latest_dotnet_release()
-    except (urllib.error.URLError, TimeoutError, RuntimeError) as exc:
-        failures.append(f"GitHub release lookup: {exc}")
-
-    needs_review = latest != baseline or bool(failures) or any(row[3] != "ok" for row in rows)
-    lines = [
-        "# Scheduled MAF source audit",
-        "",
-        f"- Audit date: {date.today().isoformat()}",
-        f"- Matrix baseline: `{baseline}`",
-        f"- Latest published .NET release: [`{latest}`]({release_url})" if release_url else f"- Latest published .NET release: `{latest}`",
-        f"- Maintainer review required: **{'yes' if needs_review else 'no'}**",
-        "",
-        "This automated audit is evidence only. It does not edit the capability matrix or guidance.",
-        "",
-        "## Source checks",
-        "",
-        "| Requested source | Status | Final URL | Note |",
-        "|---|---:|---|---|",
-    ]
-    lines.extend(f"| {source} | {status} | {final_url} | {note} |" for source, status, final_url, note in rows)
-    if failures:
-        lines.extend(["", "## Failures", "", *[f"- {failure}" for failure in failures]])
-    lines.extend([
-        "",
-        "## Maintainer checklist",
-        "",
-        "- Review release notes and official .NET package/API changes.",
-        "- Check maturity changes, especially hosting, declarative features, runtime Agent Skills, Harness, Agent Hooks and FIDES.",
-        "- Review redirects before updating official-source links.",
-        "- Update guidance, matrix metadata, changelog and routing fixtures manually when evidence warrants it.",
-    ])
-    args.output.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote audit report to {args.output}")
-    return 1 if failures else 0
+            status,final_url,body=request(source)
+            checks.append({'source':source,'status':status,'final_url':final_url,
+                'missing_signals':[s for s in EXPECTED_SIGNALS.get(source,[]) if s.casefold() not in body.casefold()]})
+        except (urllib.error.URLError,TimeoutError) as exc:
+            checks.append({'source':source,'failure':failure_category(exc),'diagnostic':str(exc)})
+    latest=None; error=None
+    try: latest,_=latest_dotnet_release()
+    except (urllib.error.URLError,TimeoutError,RuntimeError) as exc: error=failure_category(exc)
+    result=build_audit(coverage,checks,latest,error)
+    args.output.write_text(render_report(result),encoding='utf-8')
+    if args.json_output: args.json_output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+    print(f'Wrote audit report to {args.output}')
+    return 1 if error or any(c.get('failure') for c in checks) else 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     raise SystemExit(main())

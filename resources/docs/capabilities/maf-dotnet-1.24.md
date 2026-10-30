@@ -1,10 +1,12 @@
 # MAF .NET capability matrix
 
-Matrix version: 1.1. Plugin version: 0.1.0. Last verified MAF release: `dotnet-1.24.0`. Verification date: 2026-10-12.
+Matrix version: 1.2. Plugin version: 0.1.1. Last verified MAF release: `dotnet-1.24.0`. Verification date: 2026-10-12.
 
 This is discovery guidance, not an API lockfile. Verify the target repository's package versions and public API before coding. “Available” means documented for .NET at verification time; package and provider maturity can differ.
 
 Verification covers current official documentation, tagged .NET source/package metadata and published NuGet indexes for every row. Stable packages may contain experimental APIs. It does not prove compilation, installed-package compatibility, client routing or production behavior. See [verification evidence](verification-1.24.md).
+
+Scoped delta review: `dotnet-1.25.0` and `dotnet-1.26.0`, reviewed 2026-10-24. See [scope, exact sources, package certainty and decisions](verification-1.26.md). The row release/date columns below retain the full 1.24 verification; the newer notes do not claim whole-row or whole-matrix reverification. Covered deltas: sessions/history (Cosmos options, deletion/cancellation), tools/MCP/approval (missing answers, standing rules, duplicate IDs, headers and middleware coverage), declarative/programmatic workflows (closed-list questions, reset/restore, sensitivity, handoff/approval forwarding and fan-out), Harness/files/shell, protocols/Foundry/DevUI and telemetry continuation. Other capabilities retain the 1.24 evidence. The scheduled audit compares new releases with the last assessed release in `coverage.json`; the full verification and row baselines remain separate.
 
 | Feature | .NET availability | Maturity | Required package/boundary | Provider or hosting restrictions | Official source | Verified release | Verified date |
 |---|---|---|---|---|---|---|---|
