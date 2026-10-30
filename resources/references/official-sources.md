@@ -52,6 +52,8 @@ The `skills/maf-*` directories in this plugin are Codex developer guidance. MAF 
 
 The [capability matrix](../docs/capabilities/maf-dotnet-1.24.md) records `dotnet-1.24.0`, released 2026-10-07, with documentary/API-surface verification on 2026-10-12. All rows were reviewed against official C# guidance, tagged source/package metadata and published NuGet indexes; see [verification evidence](../docs/capabilities/verification-1.24.md). This is not application compilation or installed-package compatibility evidence.
 
+A [scoped 1.25–1.26 delta review](../docs/capabilities/verification-1.26.md) dated 2026-10-24 updates approval/MCP, storage, workflow, middleware, hosting/DevUI, telemetry and Harness/file/shell guidance. It preserves the full 1.24 baseline and unchanged row metadata; do not generalize its sources into fresh verification of every capability or package. Current Learn can omit tagged fixes or contradict comments; the record distinguishes those cases and publication uncertainty.
+
 ## Conflicting official evidence
 
 Learn and tagged source can disagree. Record the exact page, tag and package metadata; distinguish implementation in source from a published package and from the application's installed API. Prefer matching tagged API evidence for version-specific implementation questions while keeping unresolved compatibility claims qualified.

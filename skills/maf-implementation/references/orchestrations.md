@@ -27,3 +27,5 @@ Do not choose Magentic/Group Chat simply because “multi-agent” sounds more a
 - **Deterministic workflow edge:** the application decides the next participant.
 
 These are different control-flow semantics and should not be treated as interchangeable implementations.
+
+The reviewed 1.25 handoff implementation retains participant sessions and adds a participant-local continuation when control returns with a completed handoff and no new user input. Do not replay the original command to make the agent continue: that can repeat side effects. Filtering also removes reasoning-only remnants of filtered calls. One builder method comment conflicts with this implementation; use the [tagged evidence and discrepancy record](../../../resources/docs/capabilities/verification-1.26.md) rather than inferring command replay. Retest return-to-participant and approvals with fake agents.

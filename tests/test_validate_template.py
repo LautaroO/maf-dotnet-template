@@ -105,3 +105,26 @@ class PluginHygieneTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class RoutingMigrationTests(unittest.TestCase):
+    def test_v2_preserves_historical_scenarios_and_behavior(self):
+        import json
+        root=Path(__file__).resolve().parents[1]
+        def records(name):return {r['id']:r for r in map(json.loads,(root/f'resources/evaluations/skill-routing/{name}.jsonl').read_text().splitlines())}
+        old,new=records('v1'),records('v2')
+        self.assertTrue(old.keys() <= new.keys())
+        for ident,record in old.items():
+            with self.subTest(id=ident):
+                self.assertTrue(set(record.get('assertions',[])) <= set(new[ident].get('assertions',[])))
+        errors=[];contract=validator.load_skill_contract(root,errors)
+        validator.validate_routing(set(contract['skills']),errors,root/contract['routing_dataset'])
+        self.assertEqual(errors,[])
+    def test_conflicting_or_duplicate_routes_are_rejected(self):
+        import json
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);p=root/'routing.jsonl'
+            p.write_text(json.dumps({'id':'one','prompt':'test','expected_skills':['maf-review','maf-review'],'must_not_route':['maf-review']})+'\n')
+            errors=[]
+            with patch.object(validator,'ROOT',root):validator.validate_routing({'maf-review'},errors,p)
+            self.assertTrue(any('duplicate' in e for e in errors))
+            self.assertTrue(any('conflicting' in e for e in errors))

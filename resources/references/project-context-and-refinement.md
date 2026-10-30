@@ -27,3 +27,5 @@ For a small, fully specified change, use the repository's lightweight process an
 ## Keep documentation useful
 
 Update relevant context or feature documents when the task changes their facts or decisions. Preserve unrelated content and local ownership. Avoid duplicate reports, full-tree inspection dumps, secrets and raw user/customer data. If a destination is still undecided, keep the proposed design in the conversation and the pending choice in the context index rather than silently creating a folder.
+
+For proportional agent-specific gap analysis use [agent design](agent-design.md); for standalone versus existing process ownership use [process integration](process-integration.md). This reference owns context/document placement, not a second brainstorming workflow.

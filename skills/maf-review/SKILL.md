@@ -1,70 +1,16 @@
 ---
 name: maf-review
-description: Review a Microsoft Agent Framework C#/.NET repository or change/diff for architecture, abstractions, state, security, reliability, provider portability, hosting, observability, testing, durability, and production operability. Produce evidence-first findings and identify manual mechanisms that MAF should own.
+description: Use when reviewing a MAF .NET design, repository or change for architectural fit, correctness, security, reliability, provider coupling and verification gaps.
 ---
 
-# MAF review
+# Review MAF systems
 
-Read `../../resources/references/official-sources.md`, `../../resources/references/langgraph-crosswalk.md`, and `references/review-checklist.md`. When MAF is one module inside a larger product, also read `../../resources/references/application-boundaries.md`.
+Select the review scope: design, whole repository or change/diff. Inspect enough relevant evidence to establish impact; distinguish new regressions from existing concerns. For design gaps use [agent design](../../resources/references/agent-design.md); follow the [active project process](../../resources/references/process-integration.md).
 
-## Review method
+Use [review checklist](references/review-checklist.md) selectively for relevant responsibilities, state/trust boundaries, failure/retry/resume behavior and testability. When AI is one module, check [application boundaries](../../resources/references/application-boundaries.md): removing AI must not remove ordinary use cases, domain rules, authorization policy or core persistence.
 
-Select the review mode explicitly:
+Ask what each component does, why its abstraction owns that responsibility, what manual mechanism MAF can sufficiently supply, and what deterministic rule or provider SDK has leaked into the wrong layer. For a disputed API/capability inspect the relevant implementation topic reference and [official evidence](../../resources/references/official-sources.md); match installed packages when reviewing code.
 
-- **Whole repository** — inspect instruction hierarchy, solution/project/package boundaries, representative runtime paths, composition, state/storage, hosts, tests, CI and operations.
-- **Change/diff** — inspect the diff and enough surrounding code/config/tests to establish impact; distinguish introduced regressions from pre-existing risks.
+Lead with material findings. Each finding includes severity/category, confidence, precise evidence/location, concrete impact, recommended correction and MAF certainty (installed API verified, matching official release verified, or uncertain). Separate implementation defects, unresolved design decisions and optional improvements. Ignore formatting preferences unless project rules require them.
 
-For each agentic component answer:
-
-1. What is it currently doing?
-2. Which MAF abstraction is it actually using?
-3. Is that abstraction the right owner of the responsibility?
-4. What has been implemented manually that MAF already models?
-5. What deterministic logic has leaked into prompts/agents?
-6. What provider-specific code has leaked upward?
-7. What state lifetime is being assumed?
-8. What happens on invalid model output, cancellation, retry, resume, duplicate delivery, or partial failure?
-9. Can the important behavior be tested without a live model?
-
-## Finding contract
-
-Findings come before architecture summaries. Every finding must include:
-
-- severity/category;
-- confidence (`high`, `medium`, or `low`);
-- evidence and precise file/location;
-- impact or failure scenario;
-- recommended correction;
-- MAF version certainty (`verified against installed package`, `verified against matching official release`, or `uncertain`).
-
-Do not report formatting preferences unless repository rules, analyzers or CI require them. If there are no findings, say so and identify residual/untested risks.
-
-## Severity
-
-Prioritize findings:
-
-- **Bug / correctness** — behavior can fail or corrupt state/data.
-- **Architecture** — wrong abstraction/coupling creates meaningful maintenance risk.
-- **Reliability/security** — unsafe tool/model/state/retry behavior.
-- **MAF idiom** — manual mechanism should use a framework primitive.
-- **Quality** — naming, duplication, test ergonomics, observability.
-
-Do not inflate stylistic preferences into architecture bugs.
-
-## Required output
-
-Keep the review actionable after findings:
-
-- current architecture summary;
-- bugs;
-- misuse/missed MAF abstractions;
-- recommended restructuring;
-- provider portability issues;
-- production risks;
-- test gaps;
-- hosting and production-operability gaps, including cost, latency, safety, retrieval, streaming and durability where relevant;
-- top 3 changes by impact.
-
-## Additional boundary smell for mixed solutions
-
-When MAF is only one project/module, explicitly check whether removing the AI module would also remove domain rules, ordinary use cases, authorization policy, or core persistence behavior. If yes, recommend moving those responsibilities back to application/domain code and keeping MAF as orchestration/adaptation.
+An adequate design or change can have **no findings**: say so, with the actual review scope and untested behavior. Missing future capabilities are not defects without a relevant requirement. Summarize architecture, test/operational gaps and prioritized changes only where evidence warrants them; do not require a minimum number of issues or a generic top-three list.

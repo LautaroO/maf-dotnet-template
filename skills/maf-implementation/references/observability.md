@@ -1,11 +1,22 @@
----
-name: maf-observability
-description: Configure or review Microsoft Agent Framework observability in C#/.NET using OpenTelemetry for agents, IChatClient calls, tools, workflows, executors, logs, metrics, traces, sensitive-data settings, OTLP export, and correlation. Use when debugging or instrumenting MAF runtime behavior; pair with maf-devui for DevUI-specific trace display.
----
+# OpenTelemetry notes
 
-# MAF observability
+MAF integrates with OpenTelemetry / GenAI semantic conventions. Current C# docs show instrumentation on provider-neutral chat clients via builder extensions such as `UseOpenTelemetry(...)` and agent/workflow instrumentation through their supported APIs.
 
-Read `../../resources/references/official-sources.md` and `references/otel.md`.
+Exact source names/extensions evolve. Inspect installed packages before hardcoding them.
+
+The [1.22 release](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.22.0) exposes `OpenTelemetryAgent.DefaultSourceName`. Prefer the installed constant when available; keep a version-appropriate fallback rather than assuming this API exists in older packages.
+
+Verification should answer separately:
+
+1. are spans/metrics/logs being created?;
+2. is the host subscribed?;
+3. is the exporter configured?;
+4. does the target backend receive them?;
+5. does DevUI receive/show traces if DevUI is being used?
+
+The reviewed 1.25 `OpenTelemetryAgent` fixes preservation of agent-level continuation tokens and response/update identity through its chat-client instrumentation bridge. Test both streaming and non-streaming continuation with and without the decorator; resume with the agent token, not a substituted raw provider token. Telemetry delivery alone does not verify continuation. See [tagged evidence](../../../resources/docs/capabilities/verification-1.26.md).
+
+## Responsibility and implementation guidance
 
 ## Separate instrumentation from destination
 

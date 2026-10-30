@@ -1,11 +1,45 @@
----
-name: maf-workflows
-description: Implement or review Microsoft Agent Framework programmatic or declarative workflows in C#/.NET when sequence, routing, fan-out/fan-in, approval, state, checkpointing, resumability, durability, or long-running process control must be explicit rather than model-decided.
----
+# Executors and edges
 
-# MAF workflows
+Current MAF C# guidance recommends `[MessageHandler]` methods on `partial` classes deriving from `Executor`.
 
-Read `../../resources/references/official-sources.md`, `../../resources/references/langgraph-crosswalk.md`, and `references/executors-edges.md`. Read `references/orchestrations.md` for multi-agent composition and `references/state-checkpoints-hitl.md` for state/durability/HITL. When MAF is one module inside a larger application, also read `../../resources/references/application-boundaries.md`.
+Conceptual shape:
+
+```csharp
+internal sealed partial class ValidateExecutor : Executor
+{
+    public ValidateExecutor() : base("Validate") { }
+
+    [MessageHandler]
+    private async ValueTask<ValidationCompleted> HandleAsync(
+        TranslationProduced message,
+        IWorkflowContext context,
+        CancellationToken cancellationToken)
+    {
+        // deterministic validation / bounded collaborator call
+        return new ValidationCompleted(...);
+    }
+}
+```
+
+Do not copy this blindly; constructor and handler shapes are version-sensitive.
+
+## Edge choices
+
+- direct edge → fixed sequence;
+- conditional edge → binary/multiple predicates;
+- switch → multi-route decision with explicit default;
+- fan-out/multi-selection → independent branches;
+- fan-in barrier → aggregate after required branches complete.
+
+Current docs show `WorkflowBuilder` methods such as `AddEdge`, switch/fan-out/fan-in variants, and `WithOutputFrom`. Exact names can evolve.
+
+## LangGraph migration
+
+A LangGraph node often maps to an executor, but many LangGraph nodes that only call deterministic functions should remain ordinary services invoked by a thin executor. A conditional edge should remain a deterministic edge when the condition is known in code.
+
+The reviewed 1.26 fan-out runner deduplicates selected target IDs within one dispatch, preserving first-selected order. Do not rely on duplicate target selections to invoke an executor twice. This does not deduplicate business effects across messages, retries or checkpoint replay; application idempotency remains necessary. See [release evidence](../../../resources/docs/capabilities/verification-1.26.md).
+
+## Responsibility and implementation guidance
 
 ## Choose built-in orchestration vs custom graph
 

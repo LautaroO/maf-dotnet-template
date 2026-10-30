@@ -61,6 +61,10 @@ Do not assume an OTLP exporter sends traces "back" to DevUI. Verify:
 
 Bind DevUI to loopback by default. If remote access is explicitly required, add authentication/network policy. Do not expose it as a production endpoint merely because it can execute agents/workflows.
 
+In the reviewed 1.26 implementation, default local checks require a loopback peer and Host, and reject mismatched/invalid Origin or cross-site state-changing browser requests. They cover DevUI and the standard `/v1/responses` and `/v1/conversations` paths. `AllowRemoteAccess` disables these local checks; a reverse proxy's loopback connection does not authenticate its original caller.
+
+`DevUIOptions.AuthToken` / `DEVUI_AUTH_TOKEN` and `ConfigureEndpoints` apply to UI/entity routes mapped by `MapDevUI`, not automatically to separately mapped standard OpenAI endpoints. Attach host authorization to those routes explicitly. Test peer/Host/Origin checks and token/policy scope independently; a protected entity listing does not prove a protected execution route. Aspire's aggregator also adds local Host/browser checks. See [tagged evidence](../../../resources/docs/capabilities/verification-1.26.md).
+
 ## Verification checklist
 
 1. Build/tests pass.
@@ -74,3 +78,9 @@ Bind DevUI to loopback by default. If remote access is explicitly required, add 
 9. DevUI is not remotely exposed by accident.
 
 The [1.23 release](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.23.0) includes a breaking correction to DevUI approval continuation. When upgrading, verify that approval requests are displayed and resumed against the same entity/session and that denial, replay and changed tool arguments cannot execute the action. A successful native agent run does not verify the hosted DevUI continuation path.
+
+## Responsibility and implementation guidance
+
+DevUI is a development/debug host surface, not the core agent architecture and not a production endpoint by default.
+
+Verify installed DevUI/Hosting package APIs before coding because the .NET surface evolves quickly.

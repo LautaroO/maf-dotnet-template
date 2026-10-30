@@ -1,5 +1,6 @@
 """Check the repository-root plugin using isolated installation fixtures."""
 import importlib.util
+import json
 import shutil
 import tempfile
 import unittest
@@ -28,9 +29,9 @@ class PluginLayoutTests(unittest.TestCase):
         validator.validate_plugin(self.root, errors)
         return errors
 
-    def test_standalone_installation_has_fourteen_skills_and_valid_resources(self):
+    def test_standalone_installation_matches_declared_skills_and_resources(self):
         self.assertEqual(self.validate(), [])
-        self.assertEqual(len(list((self.root / "skills").glob("*/SKILL.md"))), 14)
+        self.assertEqual({p.parent.name for p in (self.root / "skills").glob("*/SKILL.md")}, set(json.loads((self.root/"resources/skill-contract.json").read_text())["skills"]))
 
     def test_manifest_version_must_match_release_version(self):
         (self.root / "VERSION").write_text("99.0.0")
@@ -57,12 +58,12 @@ class PluginLayoutTests(unittest.TestCase):
         self.assertTrue(any("resources" in e and "directory" in e for e in self.validate()))
 
     def test_missing_transitive_reference_is_reported(self):
-        source = self.root / "skills/maf-agents/references/agent-patterns.md"
+        source = self.root / "skills/maf-implementation/references/agents.md"
         source.write_text(source.read_text() + "\n[Missing](missing.md)\n")
         self.assertTrue(any("missing.md" in e for e in self.validate()))
 
     def test_reference_escape_is_reported(self):
-        source = self.root / "skills/maf-agents/SKILL.md"
+        source = self.root / "skills/maf-implementation/SKILL.md"
         source.write_text(source.read_text() + "\n[Unsafe](../../../outside.md)\n")
         self.assertTrue(any("escapes" in e for e in self.validate()))
 
@@ -73,12 +74,12 @@ class PluginLayoutTests(unittest.TestCase):
         self.assertTrue(any("symlink" in e.lower() for e in self.validate()))
 
     def test_missing_or_extra_skill_is_reported(self):
-        shutil.rmtree(self.root / "skills/maf-agents")
+        shutil.rmtree(self.root / "skills/maf-implementation")
         extra = self.root / "skills/unexpected/SKILL.md"
         extra.parent.mkdir()
         extra.write_text("---\nname: unexpected\ndescription: Unexpected skill.\n---\n")
         errors = self.validate()
-        self.assertTrue(any("maf-agents" in e for e in errors))
+        self.assertTrue(any("maf-implementation" in e for e in errors))
         self.assertTrue(any("unexpected" in e for e in errors))
 
     def test_validation_does_not_modify_the_installed_package(self):
@@ -93,3 +94,28 @@ class PluginLayoutTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class SkillContractTests(unittest.TestCase):
+    setUp = PluginLayoutTests.setUp
+    validate = PluginLayoutTests.validate
+    def contract(self):
+        return json.loads((self.root/'resources/skill-contract.json').read_text())
+    def write_contract(self,data):
+        (self.root/'resources/skill-contract.json').write_text(json.dumps(data))
+    def test_declared_extension_needs_no_hardcoded_inventory_change(self):
+        data=self.contract(); data['skills'].append('maf-example'); self.write_contract(data)
+        p=self.root/'skills/maf-example/SKILL.md';p.parent.mkdir();p.write_text('---\nname: maf-example\ndescription: Use when testing declared extension behavior.\n---\n')
+        self.assertEqual(self.validate(),[])
+    def test_missing_duplicate_and_invalid_contract_are_rejected(self):
+        for data in [[],{}, {'schema_version':True},self.contract()|{'skills':['maf-review','maf-review']}]:
+            with self.subTest(data=data):
+                self.write_contract(data);self.assertTrue(self.validate())
+    def test_contract_paths_cannot_escape_or_be_missing(self):
+        original=self.contract()
+        for value in ['../outside.jsonl','/tmp/external.jsonl','resources/missing.jsonl']:
+            self.write_contract(original|{'routing_dataset':value})
+            self.assertTrue(self.validate())
+    def test_retired_name_cannot_be_active_or_target_unknown(self):
+        data=self.contract(); old=next(iter(data['retired_routes']))
+        data['skills'].append(old);self.write_contract(data);self.assertTrue(self.validate())
+        data=self.contract();data['retired_routes'][old]='unknown';self.write_contract(data);self.assertTrue(self.validate())

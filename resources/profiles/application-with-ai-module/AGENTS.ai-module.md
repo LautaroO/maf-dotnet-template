@@ -18,7 +18,7 @@ Use async without sync-over-async, propagate cancellation, choose correct servic
 
 ## Skill routing
 
-Use the relevant installed developer skill: `$maf-adoption`, `$maf-architecture`, `$maf-agents`, `$maf-tools`, `$maf-workflows`, `$maf-context-memory`, `$maf-middleware`, `$maf-provider-integration`, `$maf-hosting`, `$maf-security`, `$maf-observability`, `$maf-devui`, `$maf-testing`, or `$maf-review`. These names identify capabilities; select the plugin namespace shown by the client. Keep the knowledge layer in the installed plugin. Codex developer skills are not application runtime Agent Skills.
+Use the relevant installed developer skill: `$maf-adoption` for explicit instruction merging, `$maf-architecture` for substantive design, `$maf-implementation` for coding/integration, `$maf-testing` for verification design, or `$maf-review` for evidence-backed review. Use the plugin namespace shown by the client. Follow the active project process without duplicate brainstorming or approvals. Developer skills are not MAF runtime Agent Skills.
 
 ## Review and completion
 

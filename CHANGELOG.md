@@ -4,6 +4,16 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
+- Reorganize the developer interface around five architectural-assistance tasks; migrate ten subsystem invocations to conditional implementation references with explicit routing migration. Keep plugin version 0.1.1 and existing MAF verification scope.
+- Track assessed release deltas separately from complete/per-area verification and deduplicate scheduled audit issue writes.
+
+
+### Changed
+
+- Reviewed issue #3 and both official .NET releases 1.25–1.26; recorded dated and portable source evidence while preserving the whole-matrix 1.24 baseline and plugin version 0.1.1.
+- Updated approval recovery/standing-rule reuse, Cosmos options and session deletion, declarative workflow validation/reset/restore, handoff and fan-out semantics, middleware coverage, AG-UI/A2A/Foundry/DevUI boundaries, telemetry continuation and file/shell guidance.
+- Added behavior fixtures and model-free application regression guidance for the new contracts. No application compilation, candidate routing/installation, release or publication is implied by structural checks.
+
 ## [0.1.1] - 2026-10-12
 
 Release checks and publication evidence: [0.1.1 evidence](docs/releases/v0.1.1.md).

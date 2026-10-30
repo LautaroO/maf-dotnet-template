@@ -6,9 +6,11 @@ This repository is the `maf-dotnet` skills-only Codex plugin. It contains no .NE
 
 The current plugin baseline is `0.1.1`; MAF knowledge was last verified against `dotnet-1.24.0` on 2026-10-12. Plugin and MAF versions are independent. Do not claim that illustrative C# compiles against an installed package here: there is no application or installed MAF version in this repository. When updating API guidance, verify official Microsoft sources and state version uncertainty; adopting applications must inspect their own SDK/projects/NuGet APIs.
 
+Scoped 1.25–1.26 release deltas were reviewed on 2026-10-24; see `resources/docs/capabilities/verification-1.26.md`. This does not advance the last whole-matrix baseline or certify unchanged capabilities against newer packages.
+
 ## Structure and boundaries
 
-- `skills/maf-*/`: fourteen portable developer skills and their local resources/scripts.
+- `skills/maf-*/`: five portable developer skills and their local resources/scripts.
 - `resources/references/`: shared guidance and official-source discipline.
 - `resources/profiles/`: instruction templates for AI-first and embedded-AI applications.
 - `resources/docs/`: capability matrix and pattern catalog.
