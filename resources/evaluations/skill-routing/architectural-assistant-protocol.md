@@ -1,0 +1,9 @@
+# Architectural assistant evaluation protocol
+
+Use architectural-assistant-cases.json for raw prompts/repository inputs and v2.jsonl for current routing expectations. Preserve input hashes, candidate export and baseline export before running. Materialize repository_files only inside a disposable directory; reject absolute/traversing paths. Never modify the real target application or use live providers.
+
+For a scored run, use two fresh sessions per case and mode with identical inputs. Record model/client/configuration, installed plugin/process skills, tools, invocation mode, input hashes and transcripts/artifact changes. Give the subject only prompt, repository files and the relevant skill or discoverable candidate plugin, not expected_behavior or forbidden_behavior. Score each assertion pass/fail/not-observed with evidence, including actions rather than intentions. Record questions and whether each resolves a material gap; fewer questions alone does not prove improvement.
+
+Modes: (1) autonomous discovery in a native candidate installation; (2) explicit skill invocation; (3) supplied-reference application. Report these separately. A batch of cases in one fresh agent is a batch reference probe, not independent per-case scoring. A textual process-owner fixture does not verify actual Superpowers integration. Missing native/client access or unavailable run metadata is reported explicitly; no percentages for unexecuted or unobserved assertions.
+
+Compare baseline and candidate under the same case inputs. Record adequate baseline behavior honestly; do not invent RED failures. Fix only observed errors and rerun affected cases, retaining failure and reprobe evidence. Default CI validates artifact schemas and scripts; it does not prove assistant behavior. Native installation/fresh-session adoption remains a separate release gate.

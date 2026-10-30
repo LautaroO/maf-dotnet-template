@@ -1,6 +1,6 @@
 # MAF architectural assistant design
 
-Status: proposed for user approval. Date: 2026-10-30.
+Status: approved by the user on 2026-10-30. Date: 2026-10-30.
 
 ## Intent
 
@@ -30,7 +30,7 @@ Do not force multi-agent designs, create custom abstractions over sufficient MAF
 2. Reorganize around analyzing/designing, implementing and reviewing systems, with focused patterns and technical references. Selected by the user; maintains MAF specialization and gives the assistant a coherent workflow.
 3. Separate framework-independent AI architecture from a MAF adapter product. Useful for a broader audience, but expands scope and maintenance beyond the selected goal.
 
-The skill inventory and maintenance details below are proposed design decisions, not choices the user has separately made.
+The user approved this full design after selecting the reorganization approach; the inventory and maintenance details below are included in that approval.
 
 ## Behavioral contract
 

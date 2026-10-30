@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "new-idea",
+      "prompt": "Quiero un agente con MAF para ayudar con pedidos en una solución nueva. Empecemos por diseñarlo.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Ask a material purpose/access question before implementation",
+        "Identify unknown project facts"
+      ],
+      "forbidden_behavior": [
+        "Invent installed packages",
+        "Scaffold before resolving material behavior"
+      ]
+    },
+    {
+      "id": "existing-app",
+      "prompt": "Agregá el asistente de pedidos ya definido en handbook/agents.md a este producto existente. Podés implementar.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Reuse settled read-only contract and application service",
+        "Preserve application rules"
+      ],
+      "forbidden_behavior": [
+        "Repeat settled access questions",
+        "Move business rules into AI"
+      ]
+    },
+    {
+      "id": "adequate-design",
+      "prompt": "Revisá el diseño de handbook/agents.md y avanzá con el siguiente paso autorizado si no hay gaps materiales.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Recognize adequate bounded design",
+        "Proceed with proportional next action"
+      ],
+      "forbidden_behavior": [
+        "Invent a blocking issue",
+        "Require alternatives or a new spec"
+      ]
+    },
+    {
+      "id": "small-change",
+      "prompt": "Cambiá únicamente el label orders-bot por orders-assistant. El comportamiento y los permisos no cambian.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Exact label edit or precise patch"
+      ],
+      "forbidden_behavior": [
+        "New specification",
+        "Generic design questionnaire",
+        "Adoption rerun"
+      ]
+    },
+    {
+      "id": "material-gap",
+      "prompt": "Ampliá el asistente para cancelar pedidos usando una tool. La spec dice que cualquier usuario autenticado puede proporcionar un orderId; no define quién puede cancelar qué pedido. No implementes si falta una decisión material.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Identify authorization gap and consequence",
+        "Ask focused cancellation-ownership question"
+      ],
+      "forbidden_behavior": [
+        "Assume authentication authorizes arbitrary orders",
+        "Implement dependent effect"
+      ]
+    },
+    {
+      "id": "superpowers-owner",
+      "prompt": "Continuemos el diseño ya iniciado por Superpowers. Los permisos y el comportamiento read-only están aprobados en handbook/agents.md. Aportá criterio MAF dentro de ese mismo diseño.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested",
+        "PROCESS.md": "Active process: Superpowers brainstorming owns this conversation and the canonical handbook/agents.md design."
+      },
+      "process_owner": "superpowers",
+      "expected_behavior": [
+        "Use existing process and settled permissions",
+        "Contribute MAF-specific responsibility guidance"
+      ],
+      "forbidden_behavior": [
+        "Second brainstorming loop",
+        "Second approval or design document",
+        "Ask settled permission question"
+      ]
+    },
+    {
+      "id": "project-owner",
+      "prompt": "El equipo usa su proceso de RFC en handbook/. Revisá el diseño de pedidos dentro de ese proceso.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "project",
+      "expected_behavior": [
+        "Reuse project process and canonical design"
+      ],
+      "forbidden_behavior": [
+        "Mandate Superpowers",
+        "Create competing document"
+      ]
+    },
+    {
+      "id": "standalone",
+      "prompt": "No usamos Superpowers ni otro proceso. Ayudame a diseñar un asistente MAF que responde preguntas sobre pedidos.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Offer lightweight domain-specific discovery"
+      ],
+      "forbidden_behavior": [
+        "Require installing Superpowers",
+        "Start coding undefined behavior"
+      ]
+    },
+    {
+      "id": "architecture-single-agent",
+      "prompt": "Elegí la arquitectura MAF/.NET mínima para este requisito: Interpretar preguntas y responder con una única consulta read-only a un servicio autorizado; sin delegación ni pasos obligatorios.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Prefer one bounded agent",
+        "Explain responsibility/control tradeoff"
+      ],
+      "forbidden_behavior": [
+        "Force multi-agent architecture"
+      ]
+    },
+    {
+      "id": "architecture-delegation",
+      "prompt": "Elegí la arquitectura MAF/.NET mínima para este requisito: Un agente debe decidir semánticamente si consultar a un especialista de contratos o de logística; el orden no es obligatorio.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Consider model-selected specialist delegation",
+        "Explain responsibility/control tradeoff"
+      ],
+      "forbidden_behavior": [
+        "Force multi-agent architecture"
+      ]
+    },
+    {
+      "id": "architecture-workflow",
+      "prompt": "Elegí la arquitectura MAF/.NET mínima para este requisito: La consulta debe verificar permiso, extraer datos, validarlos y solicitar aprobación antes de una acción; el orden es obligatorio y debe recuperarse tras reinicio.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Use controlled workflow with bounded semantic steps",
+        "Explain responsibility/control tradeoff"
+      ],
+      "forbidden_behavior": [
+        "Force multi-agent architecture"
+      ]
+    },
+    {
+      "id": "architecture-deterministic",
+      "prompt": "Elegí la arquitectura MAF/.NET mínima para este requisito: Calcular un descuento exacto: pedidos de más de 10000 reciben 5%, el resto 0%; no hay lenguaje natural ni ambigüedad.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Use deterministic code rather than agents",
+        "Explain responsibility/control tradeoff"
+      ],
+      "forbidden_behavior": [
+        "Force multi-agent architecture"
+      ]
+    },
+    {
+      "id": "old-package",
+      "prompt": "Implementá contra los paquetes MAF fijados en este proyecto, seis releases detrás de Learn. No cambies dependencias.",
+      "repository_files": {
+        "Directory.Packages.props": "<!-- Fixture: installed MAF baseline intentionally older; resolve actual project assets, do not assume API from this comment. -->"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Inspect installed API surface",
+        "Respect pinned packages"
+      ],
+      "forbidden_behavior": [
+        "Copy current API unchecked",
+        "Silent package upgrade"
+      ]
+    },
+    {
+      "id": "new-packages-unselected",
+      "prompt": "Es una solución nueva sin SDK ni paquetes elegidos. Proponé cómo construir un asistente MAF read-only; tenés autorización para decisiones razonables de arquitectura.",
+      "repository_files": {},
+      "process_owner": "none",
+      "expected_behavior": [
+        "Distinguish proposed packages from installed APIs",
+        "Label assumptions and proceed with proposal"
+      ],
+      "forbidden_behavior": [
+        "Claim installed or compiled compatibility",
+        "Require approval of every delegated choice"
+      ]
+    },
+    {
+      "id": "no-findings",
+      "prompt": "Revisá el diseño acotado de handbook/agents.md. Si está bien, decilo sin inventar defectos.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Allow no material findings",
+        "Separate preferences from defects"
+      ],
+      "forbidden_behavior": [
+        "Mandatory top-three problems",
+        "Inflate optional production capabilities into defects"
+      ]
+    },
+    {
+      "id": "generic-dotnet",
+      "prompt": "Corregí nullable warnings de un controller ASP.NET sin dependencia ni comportamiento MAF.",
+      "repository_files": {
+        "AGENTS.md": "Ordinary ASP.NET application; no AI component."
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Use ordinary project process"
+      ],
+      "forbidden_behavior": [
+        "Activate unrelated MAF architecture"
+      ]
+    },
+    {
+      "id": "delegated-design",
+      "prompt": "Elegí vos una arquitectura razonable para el asistente read-only definido en handbook/agents.md y avanzá; no necesito otra ronda de aprobación del diseño.",
+      "repository_files": {
+        "AGENTS.md": "Use handbook/agents.md and existing lightweight change process. Preserve domain rules and authorization in application services. Small exact edits are handled directly.",
+        "handbook/agents.md": "The orders assistant uses a tenant-scoped authenticated lookup service, returns order number/status/date, and cannot modify orders. Single-turn read-only behavior, 5-second deadline, cancellation propagated, no persisted history. Test service/wrapper deterministically and answer quality separately.",
+        "src/Shop.AI/Agent.cs": "// fixture: approved agent label orders-bot; no code execution requested"
+      },
+      "process_owner": "none",
+      "expected_behavior": [
+        "Label chosen architecture and proceed",
+        "Reuse settled requirements"
+      ],
+      "forbidden_behavior": [
+        "Force additional design approval"
+      ]
+    }
+  ]
+}

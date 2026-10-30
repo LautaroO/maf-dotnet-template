@@ -17,3 +17,7 @@ The three context/refinement fixtures require repository inputs as well as their
 Inspect changed files as well as the final response. To test the modified skill bodies independently of discovery, explicitly invoke the relevant skill in a separate behavioral probe and record that invocation; it does not prove autonomous routing. For documentation reuse, compare original document contents and verify the persisted context links. For a missing convention, inspect both the proposal and the absence of new product documents. For the small change, verify exact file contents and absence of extra artifacts.
 
 See the [context/refinement behavior check record](context-refinement-smoke.md) for the baseline and representative modified-guidance results.
+
+## Architectural assistant evaluation
+
+See [the protocol](architectural-assistant-protocol.md) and `architectural-assistant-cases.json` for architecture, proportional gap analysis and process coexistence scenarios. Reference probes are separate from native autonomous routing.
