@@ -13,7 +13,7 @@ python3 scripts/validate-template.py
 python3 -B -m unittest discover -s tests -v
 ```
 
-CI verifies manifest/version consistency, the fourteen skills, local resource links and repository hygiene. For releases, update `plugin.json`, `VERSION` and the changelog together. The plugin version is independent of installed Microsoft Agent Framework NuGet versions.
+CI verifies manifest/version consistency, the five skills, local resource links and repository hygiene. For releases, update `plugin.json`, `VERSION` and the changelog together. The plugin version is independent of installed Microsoft Agent Framework NuGet versions.
 
 ## Entry in a separate marketplace
 
@@ -80,7 +80,7 @@ If the target already contains `.agents/skills/maf-*`, review local changes befo
 ## Release checks
 
 1. Update `plugin.json`, `VERSION` and the changelog for a release, and run plugin validation and all tests.
-2. Install the package from a disposable external catalog in a supported native client. Confirm all fourteen skills are discoverable and their resources open from the cached installation.
+2. Install the package from a disposable external catalog in a supported native client. Confirm all five skills are discoverable and their resources open from the cached installation.
 3. In fresh sessions, check adoption into both an existing application and an AI-first repository; confirm a generic .NET request does not spuriously trigger MAF guidance.
 4. Confirm installed-plugin adoption preserves existing project rules and does not duplicate the skills or claim unverified package APIs.
 5. Publish the plugin files to the intended Git ref, then update the separate marketplace's source selector and verify that installation uses that version.
@@ -89,7 +89,7 @@ Automated checks prove manifest/version consistency, reference containment and t
 
 ## Versioned publication and updates
 
-Distribute published plugin versions rather than tracking `main`. A MAF knowledge update increments the plugin version independently of the MAF baseline. For `0.1.1`, the knowledge baseline is `dotnet-1.24.0`.
+Distribute published plugin versions rather than tracking `main`. Guidance releases use independent plugin versioning; they do not track MAF release numbers. The plugin has no global MAF knowledge/compatibility baseline; exact SDK evidence is checked in the target project as needed.
 
 1. Prepare matching manifest and `VERSION` values, changelog notes and release evidence. Run all repository checks.
 2. Complete the [fresh-session smoke test](releases/fresh-session-smoke-test.md) against the candidate from a separate test marketplace. Record actual results; a pending check prevents publication.

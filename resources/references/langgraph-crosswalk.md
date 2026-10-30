@@ -5,10 +5,10 @@ Use this as a mental-model bridge, not as a claim of one-to-one API equivalence.
 | LangChain / LangGraph concept | Closest MAF concept | Important design difference |
 |---|---|---|
 | LangChain agent | `AIAgent` / commonly `ChatClientAgent` | MAF separates agent runtime, session/context, middleware, and workflows explicitly. |
-| Tool | `AIFunction` / `AITool` / MCP tool | Prefer `AIFunctionFactory.Create` for local C# methods when supported; tool security remains deterministic code. |
-| Agent as tool | `AIAgent.AsAIFunction()` | Use when a parent agent should decide whether to delegate; this is still LLM-driven routing. |
+| Tool | `AIFunction` / `AITool` / MCP tool | Find the installed local-function binding in official .NET evidence; tool security remains deterministic code. |
+| Agent as tool | Specialist agent exposed as a tool | Use when a parent agent should decide whether to delegate; this is still LLM-driven routing. |
 | LangGraph node | Workflow `Executor` or function-based executor | In C#, prefer typed message handlers and MAF workflow contracts rather than a generic dictionary state node. |
-| Graph edge | Workflow edge (`AddEdge`, conditional/switch/fan-out/fan-in patterns) | Routing should be explicit and typed where possible. |
+| Graph edge | Workflow edge (direct, conditional and parallel patterns) | Routing should be explicit and typed where possible. |
 | Conditional edge | MAF conditional edge / switch | Deterministic routing belongs here rather than asking an LLM to route when rules are known. |
 | Graph state | Typed workflow messages + workflow shared state when justified | Do not default to one giant mutable state object; message flow is usually clearer. |
 | Checkpointer | Workflow checkpoints / durable execution integration | Separate checkpoint/runtime durability from domain persistence. |
@@ -19,7 +19,7 @@ Use this as a mental-model bridge, not as a claim of one-to-one API equivalence.
 | Agentic RAG | Search/retrieval exposed as a tool | Agent decides whether/what to retrieve. |
 | Hybrid RAG | Context provider + retrieval tool | Common context can be injected while ambiguous lookups remain agent-controlled. |
 | Structured output parser | MAF/provider-supported structured output + typed validation | Validation remains application responsibility even when schema-constrained generation is available. |
-| Human interrupt | Workflow request/response / `RequestPort` patterns | Model approval and workflow pause/resume should be explicit runtime events. |
+| Human interrupt | Workflow request/response or external-wait pattern | Model approval and workflow pause/resume should be explicit runtime events. |
 | Subgraph | Nested/composed workflow or workflow-as-agent depending semantics | Do not wrap a workflow as an agent unless agent semantics are actually required. |
 
 ## Migration traps

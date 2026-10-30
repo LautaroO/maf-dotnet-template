@@ -39,22 +39,7 @@ Default tests do not require a live model. Test deterministic rules, validators,
 
 ## Skill routing
 
-- `$maf-adoption`: inspect and adopt into an existing repository.
-- `$maf-architecture`: classify responsibilities and boundaries.
-- `$maf-agents`: agents, sessions, multimodal/streaming/background runs, bounded autonomy, declarative agents, runtime Agent Skills, Harness.
-- `$maf-tools`: function tools, agent-as-tool, MCP and approvals.
-- `$maf-workflows`: orchestrations, typed graphs, state, HITL, checkpoints and durability.
-- `$maf-context-memory`: sessions, history, context, RAG and compaction.
-- `$maf-middleware`: agent/function/chat-client interception.
-- `$maf-provider-integration`: provider isolation and capabilities.
-- `$maf-hosting`: operation, protocols, sessions, deployment and streaming.
-- `$maf-security`: threat modeling and production hardening.
-- `$maf-observability`: telemetry and incident diagnosis.
-- `$maf-devui`: local DevUI development surface.
-- `$maf-testing`: deterministic tests and model evaluations.
-- `$maf-review`: whole-repository or change/diff evidence-first review.
-
-Installed Codex developer skills are not MAF runtime Agent Skills. Load only skills relevant to the task.
+Use the installed task-oriented skill appropriate to the request: `$maf-adoption`, `$maf-architecture`, `$maf-implementation`, `$maf-testing`, or `$maf-review`, with the client’s plugin namespace. Apply proportional gap analysis and reuse settled decisions. Superpowers or the team process owns sequencing and approvals when active; otherwise use lightweight agent design. Do not require architecture/adoption for small edits or load every technical reference.
 
 ## Review and completion
 

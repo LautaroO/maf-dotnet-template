@@ -9,12 +9,12 @@ Codex reads the target application's `AGENTS.md` hierarchy separately. Plugin in
 Select the installed skill explicitly when you want deterministic selection. The names below identify capabilities; use the plugin namespace shown by the client. For example:
 
 ```text
-$maf-workflows Implement the approved workflow design.
+$maf-implementation Implement the approved workflow design.
 ```
 
 Otherwise Codex can select a skill implicitly based on its `description`.
 
-Descriptions in this template are intentionally specific so `maf-agents`, `maf-tools`, and `maf-workflows` do not all trigger for generic MAF work.
+Select architecture for substantive design, implementation for coding/integration, testing for verification design, and review for evidence-backed assessment. Small exact edits and generic .NET work need no compulsory MAF pipeline.
 
 ## Progressive disclosure
 

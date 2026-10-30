@@ -1,36 +1,13 @@
-# Test strategy examples
+# Deterministic contracts and semantic evaluation
 
-## Agent-backed executor
+Test the application's enforced behavior independently of a live model. Replace only semantic collaborators with controlled results; preserve actual validators, authorization, routing and storage boundaries in the tests.
 
-Split the executor from the semantic dependency where practical:
+- Tools: arguments, caller/tenant/resource access, bounds, cancellation, failure mapping and result shaping; effect idempotency when applicable.
+- Workflow steps: typed branches/defaults, invalid output, retry ownership, partial failure and concurrency.
+- Context/retrieval: authorized corpus selection, provenance and bounded injection; evaluate retrieval quality separately from answer quality.
+- Conversation/state: isolation, retention, serialization, restore and concurrent access according to the chosen contract.
+- Recovery/approval: restarts, incompatible deployment, expired/changed decisions, duplicate delivery and authorization revalidation.
+- Hosting/streaming: actual entry paths, disconnect/cancellation, partial output, continuation and route-specific access controls.
+- Instrumentation/adapters: behavior preservation, explicit capability fallback, privacy and failure translation.
 
-```text
-Workflow executor
-   -> ITranslator / AIAgent adapter
-   -> typed TranslationResult
-```
-
-Test executor transition logic with a fake semantic result. Test the actual agent prompt/model separately.
-
-## Tool
-
-Test:
-
-- schema/argument validation;
-- authorization;
-- cancellation;
-- timeout/failure mapping;
-- idempotency;
-- redacted/bounded return shape.
-
-## Context provider
-
-Test which context is selected/injected for known inputs without invoking the model.
-
-## Session
-
-Test conversation isolation, persistence/restore semantics, expiration if application-owned, and absence of cross-user leakage.
-
-Checkpoint regression tests must rebuild the workflow with stable local agent role IDs/names and compare topology. Include changed identity/topology rejection and a fresh lineage for incompatible old checkpoints. Background child task metadata restoration must not be mistaken for restoration of the in-process task handle.
-
-For upgrades through 1.24, include null-vs-absent state roundtrips, independent restored session instances and disabled recent-search memory. Approval tests should cover same-session resume, denial, forged/unbound responses, replay, changed arguments/tools, provider-backed MCP invocation isolation and the DevUI hosted continuation path. Use fake model/tool results for deterministic gates; reserve live-provider checks for separately requested integration/evaluation runs. Consult the release-sensitive notes in the owning references before asserting that an old/new package behaves identically.
+Tests assert the project's required behavior, not remembered SDK defaults. Before depending on a concrete MAF contract, use [official-source investigation](../../../resources/references/official-sources.md) and verify against installed packages. Keep real-provider compatibility tests and model-quality evaluations opt-in, with representative datasets and explicit budgets. A label edit does not need a new testing program.

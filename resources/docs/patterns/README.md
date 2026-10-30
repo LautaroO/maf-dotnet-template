@@ -1,5 +1,3 @@
-# MAF .NET pattern catalog
+# MAF .NET architectural patterns
 
-Use [the v4 catalog](v4.md) as playbooks, not compilable samples. Every fragment is illustrative; inspect installed packages before translating it into code.
-
-The catalog covers adoption, agents, tools, RAG, workflows, durability, orchestration, runtime Agent Skills, hosting, provider upgrades, evaluation, observability, incidents, and production review.
+Use the [catalog](catalog.md) to choose responsibilities, alternatives and acceptance by problem. Consult the [official MAF repository](https://github.com/microsoft/agent-framework) for current .NET implementation details and match them to the target project’s installed APIs.

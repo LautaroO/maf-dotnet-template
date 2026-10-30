@@ -1,102 +1,30 @@
 ---
 name: maf-architecture
-description: Design or refactor Microsoft Agent Framework architecture in C#/.NET. Use before implementation when choosing among deterministic code, tools, agents, workflows, middleware, sessions/context/RAG, checkpoint/durable state, provider adapters, hosting/protocol surfaces, and security boundaries.
+description: Use when designing MAF .NET systems, assessing an agent idea or existing design for material gaps, or choosing responsibilities and architecture for a substantial behavior change in a new or existing solution.
 ---
 
-# MAF architecture
+# MAF architectural assistance
 
-## Goal
+Choose the smallest design that satisfies the problem. MAF specialization supplies architectural judgment inside the project's development process.
 
-Choose the smallest idiomatic MAF design before writing code.
+Read [agent design](../../resources/references/agent-design.md) for proportional gap assessment and [process integration](../../resources/references/process-integration.md) for coexistence with Superpowers or team workflows. Reuse relevant project instructions, canonical context and settled requirements before asking questions.
 
-## Required process
+For existing solutions, inspect affected components and contracts. For new solutions, distinguish proposed SDK/packages and assumptions from installed facts; do not impose a universal project layout. Use [application boundaries](../../resources/references/application-boundaries.md) when AI is a module within a larger product.
 
-1. Read repository `AGENTS.md`, its context index, relevant feature/architecture documents, and `../../resources/references/project-context-and-refinement.md`. Follow the existing refinement and design process.
-2. Verify installed MAF package versions and existing abstractions relevant to the change. Reuse recorded context and inspect its relevant gaps or stale facts.
-3. Detect whether MAF is the center of the repository or one module inside a larger application. If it is one module, read `../../resources/references/application-boundaries.md`.
-4. Read `../../resources/references/official-sources.md`, `../../resources/references/provider-neutrality.md`, and `../../resources/references/langgraph-crosswalk.md` as needed.
-5. Reuse settled requirements and clarify only open decisions that affect behavior, access, acceptance or material operational constraints before implementing affected behavior. Scale documentation to the task and use the established/agreed location. Then decompose the requirement into semantic decisions, deterministic rules, side effects, state, and external integrations.
-6. Classify each responsibility using the decision matrix below.
-7. Route implementation work to the specialized skill rather than inventing APIs here.
+## Assign responsibility
 
-## Decision matrix
+| Requirement | Likely owner |
+|---|---|
+| Exact rules, authorization, validation, persistence | Deterministic application code |
+| Bounded lookup/action selected by a model | Tool adapting an application capability |
+| Open-ended interpretation, synthesis or tool selection | Bounded agent |
+| Guaranteed sequence, branches, approval, parallel steps or recovery | Explicit workflow |
+| Model-selected specialist consultation | Agent delegation, if one agent is insufficient |
+| Conversation, grounding, execution recovery, business facts | Distinct session/context/checkpoint/application lifetimes |
+| SDK capabilities or transport/hosting | Replaceable provider/host boundary |
 
-### Deterministic service
+Classify semantic decisions, deterministic rules, side effects and state before picking APIs. Apply [provider neutrality](../../resources/references/provider-neutrality.md). Consult the [pattern catalog](../../resources/docs/patterns/catalog.md) for matching problems; read technical evidence only for capabilities that affect the choice.
 
-Choose ordinary C# when behavior is fully specifiable: validation, calculations, transformations, authorization, exact routing, persistence, retry policy, idempotency, or business rules.
+For substantial work, deliver a compact design with responsibilities, relevant alternatives/tradeoffs, state/trust boundaries, failure/retry ownership and acceptance criteria. Separate architectural recommendations from documented MAF constraints. Resolve material gaps before dependent implementation; accept adequate designs and proceed when authorized. A small exact change does not require this full workflow.
 
-### Tool
-
-Choose a tool when an agent needs a bounded action or lookup. The agent may choose *whether* to call it, but the tool implementation and authorization are deterministic.
-
-Read `$maf-tools` before implementation.
-
-### Agent
-
-Choose an agent for open-ended semantic work: language understanding, synthesis, semantic classification where rules are not exact, planning, conversation, or bounded autonomous tool selection.
-
-Read `$maf-agents` before implementation.
-
-### Workflow
-
-Choose a workflow when the *process itself* must be controlled: required sequence, deterministic branches, parallelism, retries, approvals, pause/resume, checkpoints, aggregation, or explicit state transitions.
-
-An executor is roughly the MAF equivalent of a LangGraph node, but avoid recreating a generic state-machine style if typed messages/edges express the flow.
-
-Read `$maf-workflows` before implementation.
-
-### Middleware
-
-Choose middleware only for cross-cutting interception. First decide whether interception belongs around an entire agent run, a tool/function invocation, or a model-client call.
-
-Read `$maf-middleware`.
-
-### Session / context / memory
-
-Use session state for conversation lifetime, context providers for supplied context/knowledge, and application persistence for durable product data. Do not call all of them “memory”.
-
-Read `$maf-context-memory`.
-
-### Provider adapter
-
-If code depends on provider SDK/auth/options/capabilities, isolate it in infrastructure/composition root.
-
-Read `$maf-provider-integration`.
-
-### Hosting / protocol adapter
-
-Choose who operates the runtime independently from how clients communicate. Keep authentication, tenancy, session persistence, streaming, deployment and durability ownership explicit. Read `$maf-hosting`.
-
-### Security boundary
-
-Authorization, tenant isolation, approval, validation, resource/egress limits and telemetry privacy are deterministic controls spanning the selected components, not a prompt role. Read `$maf-security` for threat modeling or hardening.
-
-## Application boundary first
-
-If the solution contains ordinary domain/application projects plus an AI project, treat the AI project as an orchestration/integration boundary. MAF may call application use cases; it must not become the owner of domain rules. Read `../../resources/references/application-boundaries.md`.
-
-## Strong defaults
-
-- Workflow controls deterministic process; agents perform bounded semantic steps.
-- Typed messages before shared workflow state.
-- Structured model outputs before workflow branching.
-- Deterministic validators after model outputs.
-- Provider-specific construction at the composition root.
-- Human approval outside prompts for consequential actions.
-- No custom orchestration loop until MAF workflow features have been evaluated.
-
-## Architecture deliverable
-
-Return a compact design containing:
-
-1. current behavior;
-2. component/responsibility breakdown;
-3. selected MAF abstraction for each responsibility;
-4. key data/state lifetimes;
-5. provider-specific boundaries;
-6. failure/retry/idempotency model;
-7. test strategy;
-8. risks/assumptions;
-9. which specialized MAF skills should be used next.
-
-Mark architectural judgment separately from documented MAF requirements.
+Implementation and testing can use the corresponding installed skills when needed; do not activate every skill as a fixed pipeline. For API choices, verify the target's packages using [official-source discipline](../../resources/references/official-sources.md).

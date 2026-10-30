@@ -1,11 +1,11 @@
 ---
 name: maf-testing
-description: Design tests and evaluations for Microsoft Agent Framework C#/.NET agents, tools, workflows, middleware, sessions/context providers, provider adapters, structured outputs, DevUI hosts, and model behavior. Use to keep deterministic tests separate from MAF/MEAI evaluation and live-model quality gates.
+description: Use when designing tests or evaluations for MAF .NET behavior, including agents, tools, workflows, state, integration boundaries and semantic quality.
 ---
 
 # MAF testing
 
-Read `references/test-strategy.md` and `references/evaluation.md`.
+Use [test strategy](references/test-strategy.md) for deterministic behavior and [evaluation](references/evaluation.md) for semantic quality. Scale verification to the change and follow the active project process; a label edit does not need a new evaluation program.
 
 ## Testing pyramid
 

@@ -4,6 +4,14 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
+### Changed
+
+- Reorganize the developer interface into five task-oriented skills: adoption, architecture, implementation, testing and review. Ten former subsystem invocations now use conditional implementation topic references.
+- Keep stable architectural concepts, proportional gap analysis, provider/application boundaries and one-process coexistence with Superpowers or team workflows. Retain fourteen problem-oriented patterns.
+- Consult installed package APIs and matching .NET evidence in the official MAF repository for exact implementation details. No global MAF compatibility/verification baseline is maintained.
+- Retire versioned capability/verification/coverage resources, release-specific API notes and fixtures, scheduled source auditing and issue synchronization. Historical source records are clearly marked; Git preserves removed artifacts.
+- Validate the concept-only source export and isolated installed resources with 32 deterministic tests. Supplied-reference probes and independent review are recorded separately from native discovery or SDK/runtime verification.
+
 ## [0.1.1] - 2026-10-12
 
 Release checks and publication evidence: [0.1.1 evidence](docs/releases/v0.1.1.md).

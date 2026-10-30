@@ -4,7 +4,7 @@
 
 Inspect applicable instructions and existing architecture notes, ADRs, feature specifications, templates and development skills. Follow their scope, naming, review and approval rules. MAF guidance supplies framework decisions inside that process; it does not introduce a second brainstorming or planning workflow. Ordinary non-AI tasks continue to follow product conventions.
 
-Distinguish bundled plugin documentation from product documentation: the capability matrix and pattern catalog describe MAF, not the application's requirements or documentation policy.
+Distinguish bundled plugin documentation from product documentation: the conceptual references and pattern catalog describe MAF, not the application's requirements or documentation policy.
 
 ## Keep a compact context index
 
@@ -27,3 +27,5 @@ For a small, fully specified change, use the repository's lightweight process an
 ## Keep documentation useful
 
 Update relevant context or feature documents when the task changes their facts or decisions. Preserve unrelated content and local ownership. Avoid duplicate reports, full-tree inspection dumps, secrets and raw user/customer data. If a destination is still undecided, keep the proposed design in the conversation and the pending choice in the context index rather than silently creating a folder.
+
+For proportional agent-specific gap analysis use [agent design](agent-design.md); for standalone versus existing process ownership use [process integration](process-integration.md). This reference owns context/document placement, not a second brainstorming workflow.

@@ -10,7 +10,7 @@ These should remain the default fast CI suite and should not require a live mode
 
 ## Agent Framework evaluation
 
-Current MAF .NET includes an agent evaluation layer built on `Microsoft.Extensions.AI.Evaluation`. The current API surface includes concepts such as `EvalItem`, `IAgentEvaluator`, `LocalEvaluator`, and agent evaluation extension methods.
+Investigate the evaluation facilities supported by the selected MAF/MEAI stack through [official-source guidance](../../../resources/references/official-sources.md); do not assume particular evaluator types or extension methods.
 
 Use MAF evaluation for behavior that is inherently model-dependent, for example:
 
