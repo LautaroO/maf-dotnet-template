@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import http.client
 import re
 import urllib.error
 import urllib.request
@@ -98,6 +99,8 @@ def render_report(audit: dict) -> str:
     lines.extend(['','## Source checks',''])
     for row in audit['source_checks']:
         lines.append(f"- {row['source']}: {row.get('status',row.get('failure','unknown'))}; {row.get('diagnostic',row.get('final_url',''))}")
+    if audit.get('release_diagnostic'):
+        lines.extend(['','## Release lookup diagnostic','',audit['release_diagnostic']])
     lines.extend(['','Review official .NET releases/tags and relevant published packages before updating owning references, patterns and fixtures. Do not infer APIs from phrase checks.'])
     return '\n'.join(lines)+'\n'
 
@@ -108,6 +111,8 @@ def failure_category(exc: Exception) -> str:
     if isinstance(reason,ssl.SSLError): return 'tls'
     if isinstance(reason,socket.gaierror): return 'dns'
     if isinstance(reason,(TimeoutError,socket.timeout)): return 'timeout'
+    if isinstance(exc,http.client.HTTPException): return 'incomplete-response'
+    if isinstance(exc,ValueError): return 'invalid-response'
     return 'unavailable'
 
 
@@ -125,12 +130,14 @@ def main() -> int:
             status,final_url,body=request(source)
             checks.append({'source':source,'status':status,'final_url':final_url,
                 'missing_signals':[s for s in EXPECTED_SIGNALS.get(source,[]) if s.casefold() not in body.casefold()]})
-        except (urllib.error.URLError,TimeoutError) as exc:
+        except (OSError,http.client.HTTPException) as exc:
             checks.append({'source':source,'failure':failure_category(exc),'diagnostic':str(exc)})
-    latest=None; error=None
+    latest=None; error=None; release_diagnostic=None
     try: latest,_=latest_dotnet_release()
-    except (urllib.error.URLError,TimeoutError,RuntimeError) as exc: error=failure_category(exc)
+    except (OSError,http.client.HTTPException,RuntimeError,ValueError) as exc:
+        error=failure_category(exc); release_diagnostic=str(exc)
     result=build_audit(coverage,checks,latest,error)
+    if release_diagnostic is not None: result["release_diagnostic"]=release_diagnostic
     args.output.write_text(render_report(result),encoding='utf-8')
     if args.json_output: args.json_output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     print(f'Wrote audit report to {args.output}')

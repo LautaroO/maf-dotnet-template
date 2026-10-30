@@ -53,3 +53,24 @@ class AuditTests(unittest.TestCase):
                 self.assertEqual(audit.main(),1)
             r=json.loads(js.read_text()); self.assertTrue(r['needs_review'])
             self.assertTrue(all(x['kind']=='request_failure' for x in r['findings']))
+    def test_transport_read_failure_preserves_reports_and_prior_evidence(self):
+        import http.client
+        for error in [ConnectionResetError('peer reset 123'),http.client.IncompleteRead(b'part',10)]:
+            with self.subTest(error=type(error).__name__),tempfile.TemporaryDirectory() as tmp:
+                md=Path(tmp)/'audit.md';js=Path(tmp)/'audit.json'
+                with patch.object(audit,'SOURCES',['https://ok','https://broken']),patch.object(audit,'request',side_effect=[(200,'https://ok','ok'),error]),patch.object(audit,'latest_dotnet_release',return_value=('dotnet-1.26.0','https://release')),patch.object(sys,'argv',['audit','--output',str(md),'--json-output',str(js)]):
+                    self.assertEqual(audit.main(),1)
+                result=json.loads(js.read_text())
+                self.assertEqual(result['source_checks'][0]['status'],200)
+                self.assertEqual(result['findings'][0]['kind'],'request_failure')
+                self.assertIn('https://broken',md.read_text())
+                self.assertTrue(result['source_checks'][1]['diagnostic'])
+    def test_release_transport_and_decoding_failures_write_unknown_evidence(self):
+        for error in [ConnectionResetError('release peer reset'),json.JSONDecodeError('invalid response','bad',0)]:
+            with self.subTest(error=type(error).__name__),tempfile.TemporaryDirectory() as tmp:
+                md=Path(tmp)/'audit.md';js=Path(tmp)/'audit.json'
+                with patch.object(audit,'SOURCES',[]),patch.object(audit,'latest_dotnet_release',side_effect=error),patch.object(sys,'argv',['audit','--output',str(md),'--json-output',str(js)]):
+                    self.assertEqual(audit.main(),1)
+                result=json.loads(js.read_text());self.assertIsNone(result['latest_release'])
+                self.assertEqual([f['kind'] for f in result['findings']],['request_failure'])
+                self.assertIn(str(error),md.read_text())

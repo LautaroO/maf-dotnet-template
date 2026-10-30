@@ -36,3 +36,14 @@ Static instruction-size observation: public skill bodies total 4904 whitespace-d
 - `maf-candidate-probe-a.md`: `cd5b7b3c1211530be305853134ea10a09138cdd66aeed55bf4a3fe79752cc497`
 - `maf-candidate-probe-b.md`: `89e88b424de76769a50bff90efda886aeb4dc6207415101241ad979abf68e616`
 - `maf-candidate-technical-probe.md`: `d6101ad82213bb01014085e6c73517a9aa9434645d056634d5a7d5a23b2b99ba`
+
+## Independent whole-branch review and fixes
+
+A fresh reviewer inspected the six implementation commits through 96f6ec6, the approved design/plan, relevant source and deterministic checks. It reported no Critical findings, two Important findings and one Minor wording issue. The two Important cases were independently reproduced as failing regression tests before changes:
+
+- Raw transport/read failures (including connection reset and incomplete reads), and malformed release JSON, could abort the collector before writing reports. The collector now writes usable Markdown/JSON with stable failure identities, retains prior successful checks and diagnostics, leaves the release unknown when lookup fails, and returns nonzero.
+- Global full verification could be promoted beyond the full evidence of constituent areas. Coverage validation now rejects that promotion, including when the matrix header is also changed; legitimate newer individual-area verification remains allowed.
+
+The final fix pass passed all 62 unittest tests, repository validation, Python compilation, Bash syntax and whitespace checks. The fixes were verified by RED→GREEN regressions and a green suite; no second independent review is claimed. The Minor wording issue at skills/maf-adoption/references/adoption-workflow.md:15 (the phrase “installed hosting skill”) is deferred; the current public interface is the implementation skill and its hosting reference.
+
+The reviewer explicitly excluded unavailable native/per-case/Superpowers modes, fresh network/API review, runtime/application/provider guarantees and publication, and optional PyYAML/Lychee tooling. These exclusions preserve the limits stated above. The only workspace deviation was using a feature branch in the original checkout after the managed worktree fell outside sandbox write roots; the full starting snapshot was preserved. All thirteen moved reference files retain their original official-source URLs. The carried-in scoped verification record, dated 1.26 review and historical v1 fixture are byte-identical to the starting snapshot.

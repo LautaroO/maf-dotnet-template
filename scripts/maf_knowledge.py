@@ -54,6 +54,8 @@ def coverage_errors(data: object, root: Path) -> list[str]:
             errors.append(f'coverage.areas[{i}]: invalid/duplicate id')
         else: ids.add(ident)
         area_full = record(area.get('full_verification'), f'areas[{i}].full_verification')
+        if area_full and full and area_full < full:
+            errors.append(f'coverage.areas[{i}]: global full verification exceeds this area')
         if area_full and assessed and area_full > assessed: errors.append(f'coverage.areas[{i}]: unassessed full release')
         area_date=area.get('full_verification',{}).get('date') if isinstance(area.get('full_verification'),dict) else None
         assessed_date=data.get('last_assessed_release',{}).get('date') if isinstance(data.get('last_assessed_release'),dict) else None

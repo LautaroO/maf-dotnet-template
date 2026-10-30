@@ -47,3 +47,12 @@ class CoverageTests(unittest.TestCase):
         for value in ['2026-01-01','2027-01-01']:
             data=copy.deepcopy(self.data);data['areas'][0]['delta_reviews'][0]['date']=value
             self.assertTrue(knowledge.coverage_errors(data,self.root))
+    def test_global_full_release_cannot_outrun_constituent_areas(self):
+        data=copy.deepcopy(self.data)
+        data['full_verification'].update(release='dotnet-1.26.0',date='2026-10-24')
+        self.assertTrue(knowledge.coverage_errors(data,self.root))
+    def test_individual_full_area_review_can_exceed_global_baseline(self):
+        data=copy.deepcopy(self.data)
+        data['areas'][0]['full_verification'].update(release='dotnet-1.26.0',date='2026-10-24')
+        data['areas'][0]['delta_reviews']=[]
+        self.assertEqual(knowledge.coverage_errors(data,self.root),[])

@@ -206,3 +206,15 @@ class MatrixCoverageConsistencyTests(unittest.TestCase):
                 p.write_text('\n'.join(lines)+'\n');errors=[]
                 with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
                 self.assertTrue(errors)
+    def test_global_header_promotion_cannot_hide_unreviewed_areas(self):
+        import json,shutil
+        source=Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'plugin.json').write_text('{}')
+            shutil.copytree(source/'resources/docs/capabilities',root/'resources/docs/capabilities')
+            coverage=root/'resources/docs/capabilities/coverage.json';data=json.loads(coverage.read_text())
+            data['full_verification'].update(release='dotnet-1.26.0',date='2026-10-24');coverage.write_text(json.dumps(data))
+            p=root/'resources/docs/capabilities/maf-dotnet-1.24.md';s=p.read_text().replace('Last verified MAF release: `dotnet-1.24.0`. Verification date: 2026-10-12.','Last verified MAF release: `dotnet-1.26.0`. Verification date: 2026-10-24.');p.write_text(s)
+            errors=[]
+            with patch.object(validator,'ROOT',root),patch.object(validator,'MATRIX',p):validator.validate_matrix(errors)
+            self.assertTrue(errors)

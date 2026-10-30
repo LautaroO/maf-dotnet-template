@@ -4,6 +4,9 @@ All notable changes to this guidance pack are recorded here. The plugin follows 
 
 ## [Unreleased]
 
+- Validate transport/read-failure reporting and prevent unsupported whole-matrix verification promotion; 62 deterministic tests pass after independent review and regression fixes. Native installation/routing remains a separate release check.
+
+
 - Reorganize the developer interface around five architectural-assistance tasks; migrate ten subsystem invocations to conditional implementation references with explicit routing migration. Keep plugin version 0.1.1 and existing MAF verification scope.
 - Track assessed release deltas separately from complete/per-area verification and deduplicate scheduled audit issue writes.
 
